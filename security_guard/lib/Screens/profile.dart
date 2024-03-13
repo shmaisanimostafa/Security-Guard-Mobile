@@ -38,12 +38,13 @@ class Profile extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      TextButton(
+                      FilledButton(
                         child: const Text(
                           'Edit Account',
                         ),
                         onPressed: () {/* ... */},
                       ),
+                      const SizedBox(height: 10),
                       // const SizedBox(width: 8),
                       // TextButton(
                       //   child: const Text('Sign up'),
@@ -75,12 +76,13 @@ class Profile extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      TextButton(
+                      FilledButton(
                         child: const Text(
                           'Edit Profile',
                         ),
                         onPressed: () {/* ... */},
                       ),
+                      const SizedBox(height: 10),
                       // const SizedBox(width: 8),
                       // TextButton(
                       //   child: const Text('Sign up'),
@@ -130,12 +132,13 @@ class Profile extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      TextButton(
+                      FilledButton(
                         child: const Text(
                           'Edit Connections',
                         ),
                         onPressed: () {/* ... */},
                       ),
+                      const SizedBox(height: 10),
                       // const SizedBox(width: 8),
                       // TextButton(
                       //   child: const Text('Sign up'),
@@ -148,7 +151,7 @@ class Profile extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
-            ElevatedButton(onPressed: () {}, child: const Text('Log Out')),
+            FilledButton(onPressed: () {}, child: const Text('Log Out')),
             const SizedBox(height: 40),
           ],
         ),

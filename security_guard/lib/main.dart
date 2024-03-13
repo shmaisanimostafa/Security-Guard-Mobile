@@ -2,9 +2,8 @@ import 'package:capstone_proj/Screens/file.dart';
 import 'package:capstone_proj/Screens/home.dart';
 import 'package:capstone_proj/Screens/link.dart';
 import 'package:capstone_proj/Screens/profile.dart';
-import 'package:capstone_proj/Screens/scan.dart';
+// import 'package:capstone_proj/Screens/scan.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,7 +24,6 @@ class _MyAppState extends State<MyApp> {
     const Link(),
     const File(),
     const Profile(),
-    const Scan(),
   ];
   List<ThemeMode> screenThemeMode = [
     ThemeMode.dark,
@@ -45,16 +43,15 @@ class _MyAppState extends State<MyApp> {
       //
       themeMode: screenThemeMode[currentThemeMode],
       darkTheme: ThemeData.dark().copyWith(
-        textTheme: GoogleFonts.antaTextTheme(
-          Theme.of(context).textTheme,
+        textTheme: Theme.of(context).textTheme.apply(fontFamily: 'Anta'),
+        // GoogleFonts.antaTextTheme(
+        //   Theme.of(context).textTheme,
 
-          // colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.yellow),
-        ),
+        //   // colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.yellow),
+        // ),
       ),
       theme: ThemeData(
-        textTheme: GoogleFonts.antaTextTheme(
-          Theme.of(context).textTheme,
-        ),
+        textTheme: Theme.of(context).textTheme.apply(fontFamily: 'Anta'),
         // colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.yellow),
       ),
       home: Scaffold(
@@ -104,7 +101,12 @@ class _MyAppState extends State<MyApp> {
           shape: const CircleBorder(),
           child: const Icon(Icons.document_scanner),
           onPressed: () {
-            setState(() {});
+            setState(() {
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => const Scan()),
+              // );
+            });
           },
         ),
         //
@@ -126,7 +128,7 @@ class _MyAppState extends State<MyApp> {
             ),
             NavigationDestination(
               icon: Icon(Icons.chat),
-              label: 'Profile',
+              label: 'Chat',
             ),
           ],
 
