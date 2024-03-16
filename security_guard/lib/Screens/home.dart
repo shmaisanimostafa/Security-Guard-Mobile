@@ -7,7 +7,7 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Column(
+      child: ListView(
         children: [
           const IntroCard(),
           const SizedBox(height: 10),
@@ -27,6 +27,8 @@ class Home extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 10),
+          const ArticleCard(),
+          const ArticleCard(),
         ],
       ),
     );

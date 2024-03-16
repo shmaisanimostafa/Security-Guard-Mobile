@@ -40,3 +40,55 @@ class IntroCard extends StatelessWidget {
     );
   }
 }
+
+class ArticleCard extends StatelessWidget {
+  const ArticleCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        children: [
+          ListTile(
+            leading: const Icon(Icons.arrow_drop_down_circle),
+            title: const Text('Card title 1'),
+            subtitle: Text(
+              'Secondary Text',
+              style: TextStyle(color: Colors.black.withOpacity(0.6)),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              'Greyhound divisively hello coldly wonderfully marginally far upon excluding.',
+              style: TextStyle(color: Colors.black.withOpacity(0.6)),
+            ),
+          ),
+          ButtonBar(
+            alignment: MainAxisAlignment.start,
+            children: [
+              FilledButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: const Color(0xFF6200EE),
+                ),
+                onPressed: () {
+                  // Perform some action
+                },
+                child: const Text('ACTION 1'),
+              ),
+              FilledButton(
+                onPressed: () {
+                  // Perform some action
+                },
+                child: const Text('ACTION 2'),
+              ),
+            ],
+          ),
+          Image.asset('images/ProfilePic.png'),
+          // Image.asset('images/ProfilePic.png'),
+        ],
+      ),
+    );
+  }
+}

@@ -5,6 +5,13 @@ class Scan extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(child: Text('Scan'));
+    return Center(
+        child: ElevatedButton(
+      onPressed: () {
+        debugPrint('Scan');
+        Navigator.pop(context);
+      },
+      child: const Text('Return'),
+    ));
   }
 }

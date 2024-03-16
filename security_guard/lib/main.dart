@@ -1,12 +1,13 @@
+import 'package:capstone_proj/Screens/chat.dart';
 import 'package:capstone_proj/Screens/file.dart';
 import 'package:capstone_proj/Screens/home.dart';
 import 'package:capstone_proj/Screens/link.dart';
 import 'package:capstone_proj/Screens/profile.dart';
-// import 'package:capstone_proj/Screens/scan.dart';
 import 'package:flutter/material.dart';
+import 'package:capstone_proj/Screens/scan.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const MaterialApp(home: MyApp()));
 }
 
 class MyApp extends StatefulWidget {
@@ -18,17 +19,12 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   int currentPageIndex = 0;
-  int currentThemeMode = 0;
+  ThemeMode? currentThemeMode = ThemeMode.system;
   List<Widget> screens = [
     const Home(),
     const Link(),
     const File(),
-    const Profile(),
-  ];
-  List<ThemeMode> screenThemeMode = [
-    ThemeMode.dark,
-    ThemeMode.light,
-    ThemeMode.system
+    const Chat(),
   ];
 
   void setCurrentPageIndex(int index) {
@@ -38,17 +34,19 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      // routes: {
+      //   '/home': (context) => const Home(),
+      //   '/link': (context) => const Link(),
+      //   '/file': (context) => const File(),
+      //   '/profile': (context) => const Profile(),
+      //   '/scan': (context) => const Scan(),
+      // },
       //
       // Them mode: Light, Dark, System
       //
-      themeMode: screenThemeMode[currentThemeMode],
+      themeMode: currentThemeMode,
       darkTheme: ThemeData.dark().copyWith(
         textTheme: Theme.of(context).textTheme.apply(fontFamily: 'Anta'),
-        // GoogleFonts.antaTextTheme(
-        //   Theme.of(context).textTheme,
-
-        //   // colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.yellow),
-        // ),
       ),
       theme: ThemeData(
         textTheme: Theme.of(context).textTheme.apply(fontFamily: 'Anta'),
@@ -74,23 +72,64 @@ class _MyAppState extends State<MyApp> {
                 child: Icon(Icons.notifications),
               ),
               onPressed: () {
-                setState(() {
-                  currentThemeMode = 1;
-                });
+                setState(() {});
               },
             ),
-            IconButton(
-              icon: const Icon(Icons.more_vert),
+            // IconButton(
+            //   icon: const Icon(Icons.more_vert),
+            //   onPressed: () {
+            //     setState(() {
+            //       currentThemeMode = 2;
+            //     });
+            //   },
+            // ),
+            TextButton(
+              style: TextButton.styleFrom(
+                shape: const CircleBorder(),
+                padding:
+                    const EdgeInsets.all(13), // Adjust the padding as needed
+              ),
               onPressed: () {
-                setState(() {
-                  currentThemeMode = 2;
-                });
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) {
+                    return const Profile();
+                  }),
+                );
               },
+              child: const CircleAvatar(
+                radius: 15.0,
+                backgroundImage: AssetImage('images/ProfilePic.png'),
+              ),
             ),
           ],
         ),
-        drawer: const Drawer(
-          child: Profile(),
+        drawer: Drawer(
+          child: Center(
+            child: DropdownMenu(
+                enableSearch: false,
+                helperText: 'Select a theme mode',
+                label: const Text('Theme Mode'),
+                dropdownMenuEntries: const <DropdownMenuEntry<ThemeMode>>[
+                  DropdownMenuEntry(
+                    value: ThemeMode.light,
+                    label: 'Light',
+                  ),
+                  DropdownMenuEntry(
+                    value: ThemeMode.dark,
+                    label: 'Dark',
+                  ),
+                  DropdownMenuEntry(
+                    value: ThemeMode.system,
+                    label: 'System',
+                  ),
+                ],
+                onSelected: (value) {
+                  setState(() {
+                    currentThemeMode = value;
+                  });
+                }),
+          ),
         ),
         //
         // The Scan button which opens the Camera
@@ -101,12 +140,12 @@ class _MyAppState extends State<MyApp> {
           shape: const CircleBorder(),
           child: const Icon(Icons.document_scanner),
           onPressed: () {
-            setState(() {
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => const Scan()),
-              // );
-            });
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) {
+                return const Scan();
+              }),
+            );
           },
         ),
         //
