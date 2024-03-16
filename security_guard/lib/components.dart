@@ -1,3 +1,4 @@
+import 'package:capstone_proj/constants.dart';
 import 'package:flutter/material.dart';
 
 class IntroCard extends StatelessWidget {
@@ -42,53 +43,68 @@ class IntroCard extends StatelessWidget {
 }
 
 class ArticleCard extends StatelessWidget {
-  const ArticleCard({super.key});
+  const ArticleCard(
+      {super.key,
+      required this.title,
+      required this.author,
+      required this.date,
+      required this.imageUrl});
+
+  final String title;
+  final String author;
+  final String date;
+  final String imageUrl;
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        children: [
-          ListTile(
-            leading: const Icon(Icons.arrow_drop_down_circle),
-            title: const Text('Card title 1'),
-            subtitle: Text(
-              'Secondary Text',
-              style: TextStyle(color: Colors.black.withOpacity(0.6)),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              'Greyhound divisively hello coldly wonderfully marginally far upon excluding.',
-              style: TextStyle(color: Colors.black.withOpacity(0.6)),
-            ),
-          ),
-          ButtonBar(
-            alignment: MainAxisAlignment.start,
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Image.asset(
+          imageUrl,
+          height: 100,
+          width: 100,
+          fit: BoxFit.cover,
+        ),
+        Container(width: 20),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              FilledButton(
-                style: TextButton.styleFrom(
-                  backgroundColor: const Color(0xFF6200EE),
-                ),
-                onPressed: () {
-                  // Perform some action
-                },
-                child: const Text('ACTION 1'),
+              Container(height: 5),
+              Text(
+                title,
+                style: kArticleCardTitleStyle,
               ),
-              FilledButton(
-                onPressed: () {
-                  // Perform some action
-                },
-                child: const Text('ACTION 2'),
+              Container(height: 5),
+              Row(
+                children: [
+                  const CircleAvatar(
+                    radius: 10.0,
+                    backgroundImage: AssetImage('images/ProfilePic.png'),
+                  ),
+                  const SizedBox(width: 5),
+                  Text(
+                    author,
+                  ),
+                ],
+              ),
+              Container(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    date,
+                    maxLines: 2,
+                  ),
+                  IconButton(
+                      onPressed: () {}, icon: const Icon(Icons.arrow_forward)),
+                ],
               ),
             ],
           ),
-          Image.asset('images/ProfilePic.png'),
-          // Image.asset('images/ProfilePic.png'),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

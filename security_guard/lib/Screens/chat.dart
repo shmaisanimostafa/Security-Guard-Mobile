@@ -12,18 +12,18 @@ class _ChatState extends State<Chat> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: null,
-        actions: <Widget>[
-          IconButton(
-              icon: const Icon(Icons.close),
-              onPressed: () {
-                //Implement logout functionality
-              }),
-        ],
-        title: const Text('⚡️Chat'),
-        backgroundColor: Colors.lightBlueAccent,
-      ),
+      // appBar: AppBar(
+      //   leading: null,
+      //   actions: <Widget>[
+      //     IconButton(
+      //         icon: const Icon(Icons.close),
+      //         onPressed: () {
+      //           //Implement logout functionality
+      //         }),
+      //   ],
+      //   title: const Text('⚡️Chat'),
+      //    backgroundColor: Colors.lightBlueAccent,
+      // ),
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 const kSendButtonTextStyle = TextStyle(
-  color: Colors.lightBlueAccent,
+  // color: Colors.lightBlueAccent,
   fontWeight: FontWeight.bold,
   fontSize: 18.0,
 );
@@ -14,7 +14,7 @@ const kMessageTextFieldDecoration = InputDecoration(
 
 const kMessageContainerDecoration = BoxDecoration(
   border: Border(
-    top: BorderSide(color: Colors.lightBlueAccent, width: 2.0),
+    top: BorderSide(width: 2.0),
   ),
 );
 const kTextFieldDecoration = InputDecoration(
@@ -31,4 +31,9 @@ const kTextFieldDecoration = InputDecoration(
     borderSide: BorderSide(color: Colors.blueAccent, width: 2.0),
     borderRadius: BorderRadius.all(Radius.circular(32.0)),
   ),
+);
+
+const kArticleCardTitleStyle = TextStyle(
+  fontSize: 20,
+  fontWeight: FontWeight.bold,
 );
