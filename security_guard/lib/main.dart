@@ -1,10 +1,10 @@
-import 'package:capstone_proj/Screens/chat.dart';
-import 'package:capstone_proj/Screens/file.dart';
-import 'package:capstone_proj/Screens/home.dart';
-import 'package:capstone_proj/Screens/link.dart';
-import 'package:capstone_proj/Screens/profile.dart';
+import 'package:capstone_proj/screens/navigation_screens/chat.dart';
+import 'package:capstone_proj/screens/navigation_screens/file.dart';
+import 'package:capstone_proj/screens/navigation_screens/home.dart';
+import 'package:capstone_proj/screens/navigation_screens/link.dart';
+import 'package:capstone_proj/screens/profile.dart';
 import 'package:flutter/material.dart';
-import 'package:capstone_proj/Screens/scan.dart';
+import 'package:capstone_proj/screens/scan.dart';
 
 void main() {
   runApp(const MaterialApp(home: MyApp()));

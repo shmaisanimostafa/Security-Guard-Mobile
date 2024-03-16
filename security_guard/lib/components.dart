@@ -1,4 +1,5 @@
 import 'package:capstone_proj/constants.dart';
+import 'package:capstone_proj/screens/article.dart';
 import 'package:flutter/material.dart';
 
 class IntroCard extends StatelessWidget {
@@ -98,7 +99,15 @@ class ArticleCard extends StatelessWidget {
                     maxLines: 2,
                   ),
                   IconButton(
-                      onPressed: () {}, icon: const Icon(Icons.arrow_forward)),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) {
+                            return const Article();
+                          }),
+                        );
+                      },
+                      icon: const Icon(Icons.arrow_forward)),
                 ],
               ),
             ],
