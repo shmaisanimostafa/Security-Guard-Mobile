@@ -9,6 +9,7 @@ class Chat extends StatefulWidget {
 }
 
 class _ChatState extends State<Chat> {
+  final messageTextController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -98,6 +99,7 @@ class _ChatState extends State<Chat> {
               children: <Widget>[
                 Expanded(
                   child: TextField(
+                    controller: messageTextController,
                     onChanged: (value) {
                       //Do something with the user input.
                     },
@@ -106,6 +108,7 @@ class _ChatState extends State<Chat> {
                 ),
                 TextButton(
                   onPressed: () {
+                    messageTextController.clear();
                     //Implement send functionality.
                   },
                   child: const Text(
