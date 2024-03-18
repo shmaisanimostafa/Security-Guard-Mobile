@@ -15,7 +15,7 @@ class LogInScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset('images/logo.png', height: 200),
+              Image.asset('images/Logo.png', height: 200),
               const SizedBox(height: 16),
               const TextField(
                 decoration: InputDecoration(

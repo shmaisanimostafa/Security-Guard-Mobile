@@ -14,7 +14,7 @@ class RegisterScreen extends StatelessWidget {
         child: ListView(
           children: [
             Image.asset(
-              'images/logo.png', // Replace with your logo file path
+              'images/Logo.png', // Replace with your logo file path
               height: 100,
               width: 100,
             ),

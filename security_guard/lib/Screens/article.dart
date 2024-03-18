@@ -7,16 +7,15 @@ class Article extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // actions: [
-        //   IconButton(
-        //     onPressed: () {
-        //       Navigator.pop(context);
-        //     },
-        //     icon: const Icon(Icons.arrow_back),
-        //   )
-        // ],
-      ),
-
+          // actions: [
+          //   IconButton(
+          //     onPressed: () {
+          //       Navigator.pop(context);
+          //     },
+          //     icon: const Icon(Icons.arrow_back),
+          //   )
+          // ],
+          ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: ListView(

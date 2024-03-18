@@ -12,7 +12,7 @@ class IntroCard extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           ListTile(
-            leading: Image.asset('images/logo.png'),
+            leading: Image.asset('images/Logo.png'),
             title: const Text(
               'Welcome to Security Guard!',
               style: TextStyle(fontWeight: FontWeight.bold),

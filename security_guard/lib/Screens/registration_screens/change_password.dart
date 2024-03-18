@@ -13,7 +13,7 @@ class ChangePasswordScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
-            Image.asset('images/logo.png',
+            Image.asset('images/Logo.png',
                 height:
                     200), // Replace 'logo.png' with your actual logo image file
             const SizedBox(height: 16.0),
