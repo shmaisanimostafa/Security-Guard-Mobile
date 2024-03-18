@@ -6,63 +6,67 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: ListView(
-        children: [
-          const IntroCard(),
-          const SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              FilledButton(onPressed: () {}, child: const Text('Scan File')),
-              FilledButton(onPressed: () {}, child: const Text('Scan Link')),
-              FilledButton(
-                onPressed: () {},
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.teal),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Center(
+        child: ListView(
+          children: [
+            const IntroCard(),
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                FilledButton(onPressed: () {}, child: const Text('Scan File')),
+                FilledButton(onPressed: () {}, child: const Text('Scan Link')),
+                FilledButton(
+                  onPressed: () {},
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.teal),
+                  ),
+                  child: const Text('Sign Up',
+                      style: TextStyle(color: Colors.white)),
                 ),
-                child: const Text('Sign Up',
-                    style: TextStyle(color: Colors.white)),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          const ArticleCard(
-            title: "Cryptography and Network Security",
-            author: "Mostafa Shmaisani",
-            date: 'Feb 14 2023',
-            imageUrl: 'images/ProfilePic.png',
-          ),
-          const Divider(),
-          const ArticleCard(
-            title: "Cryptography and Network Security",
-            author: "Mostafa Shmaisani",
-            date: 'Feb 14 2023',
-            imageUrl: 'images/ProfilePic.png',
-          ),
-          const Divider(),
-          const ArticleCard(
-            title: "Cryptography and Network Security",
-            author: "Mostafa Shmaisani",
-            date: 'Feb 14 2023',
-            imageUrl: 'images/ProfilePic.png',
-          ),
-          const Divider(),
-          const ArticleCard(
-            title: "Cryptography and Network Security",
-            author: "Mostafa Shmaisani",
-            date: 'Feb 14 2023',
-            imageUrl: 'images/ProfilePic.png',
-          ),
-          const Divider(),
-          const ArticleCard(
-            title: "Cryptography and Network Security",
-            author: "Mostafa Shmaisani",
-            date: 'Feb 14 2023',
-            imageUrl: 'images/ProfilePic.png',
-          ),
-          const Divider(),
-        ],
+              ],
+            ),
+            const SizedBox(height: 10),
+            const Divider(),
+            const ArticleCard(
+              title: "Cryptography and Network Security",
+              author: "Mostafa Shmaisani",
+              date: 'Feb 14 2023',
+              imageUrl: 'images/ProfilePic.png',
+            ),
+            const Divider(),
+            const ArticleCard(
+              title: "Cryptography and Network Security",
+              author: "Mostafa Shmaisani",
+              date: 'Feb 14 2023',
+              imageUrl: 'images/ProfilePic.png',
+            ),
+            const Divider(),
+            const ArticleCard(
+              title: "Cryptography and Network Security",
+              author: "Mostafa Shmaisani",
+              date: 'Feb 14 2023',
+              imageUrl: 'images/ProfilePic.png',
+            ),
+            const Divider(),
+            const ArticleCard(
+              title: "Cryptography and Network Security",
+              author: "Mostafa Shmaisani",
+              date: 'Feb 14 2023',
+              imageUrl: 'images/ProfilePic.png',
+            ),
+            const Divider(),
+            const ArticleCard(
+              title: "Cryptography and Network Security",
+              author: "Mostafa Shmaisani",
+              date: 'Feb 14 2023',
+              imageUrl: 'images/ProfilePic.png',
+            ),
+            const Divider(),
+          ],
+        ),
       ),
     );
   }

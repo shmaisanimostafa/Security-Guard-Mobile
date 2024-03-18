@@ -34,6 +34,6 @@ const kTextFieldDecoration = InputDecoration(
 );
 
 const kArticleCardTitleStyle = TextStyle(
-  fontSize: 20,
+  fontSize: 17,
   fontWeight: FontWeight.bold,
 );

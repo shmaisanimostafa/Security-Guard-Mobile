@@ -6,16 +6,16 @@ class Article extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   actions: [
-      //     IconButton(
-      //       onPressed: () {
-      //         Navigator.pop(context);
-      //       },
-      //       icon: const Icon(Icons.arrow_back),
-      //     )
-      //   ],
-      // ),
+      appBar: AppBar(
+        // actions: [
+        //   IconButton(
+        //     onPressed: () {
+        //       Navigator.pop(context);
+        //     },
+        //     icon: const Icon(Icons.arrow_back),
+        //   )
+        // ],
+      ),
 
       body: Padding(
         padding: const EdgeInsets.all(8.0),
