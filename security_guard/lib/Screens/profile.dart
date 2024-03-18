@@ -1,3 +1,4 @@
+import 'package:capstone_proj/screens/registration_screens/change_password.dart';
 import 'package:flutter/material.dart';
 
 class Profile extends StatelessWidget {
@@ -46,7 +47,14 @@ class Profile extends StatelessWidget {
                           child: const Text(
                             'Edit Account',
                           ),
-                          onPressed: () {/* ... */},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) {
+                                return const ChangePasswordScreen();
+                              }),
+                            );
+                          },
                         ),
                       ],
                     ),

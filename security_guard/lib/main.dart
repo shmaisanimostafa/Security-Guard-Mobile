@@ -3,6 +3,7 @@ import 'package:capstone_proj/screens/navigation_screens/file.dart';
 import 'package:capstone_proj/screens/navigation_screens/home.dart';
 import 'package:capstone_proj/screens/navigation_screens/link.dart';
 import 'package:capstone_proj/screens/profile.dart';
+import 'package:capstone_proj/screens/registration_screens/register.dart';
 import 'package:flutter/material.dart';
 import 'package:capstone_proj/screens/scan.dart';
 
@@ -72,7 +73,12 @@ class _MyAppState extends State<MyApp> {
                 child: Icon(Icons.notifications),
               ),
               onPressed: () {
-                setState(() {});
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) {
+                    return const RegisterScreen();
+                  }),
+                );
               },
             ),
             // IconButton(

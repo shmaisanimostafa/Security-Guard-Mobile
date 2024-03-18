@@ -1,4 +1,5 @@
 import 'package:capstone_proj/components.dart';
+import 'package:capstone_proj/screens/registration_screens/log_in.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatelessWidget {
@@ -19,7 +20,12 @@ class Home extends StatelessWidget {
                 FilledButton(onPressed: () {}, child: const Text('Scan File')),
                 FilledButton(onPressed: () {}, child: const Text('Scan Link')),
                 FilledButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return const LogInScreen();
+                    }));
+                  },
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.teal),
                   ),
