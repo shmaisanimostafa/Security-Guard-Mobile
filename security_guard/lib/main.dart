@@ -51,7 +51,7 @@ class _MyAppState extends State<MyApp> {
       ),
       theme: ThemeData(
         textTheme: Theme.of(context).textTheme.apply(fontFamily: 'Anta'),
-        // colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.yellow),
+        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.yellow),
       ),
       home: Scaffold(
         appBar: AppBar(
