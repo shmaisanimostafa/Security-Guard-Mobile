@@ -25,12 +25,18 @@ class _ChatState extends State<Chat> {
       //   title: const Text('⚡️Chat'),
       //    backgroundColor: Colors.lightBlueAccent,
       // ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Add your onPressed code here!
-        },
-        child: const Icon(Icons.star),
-        // backgroundColor: Colors.lightBlueAccent,
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: () {
+              // Add your onPressed code here!
+            },
+            child: const Icon(Icons.star),
+            // backgroundColor: Colors.lightBlueAccent,
+          ),
+          const SizedBox(height: 40.0),
+        ],
       ),
       body: Column(
         children: [
