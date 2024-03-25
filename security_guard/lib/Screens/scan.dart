@@ -12,9 +12,12 @@ class Scan extends StatefulWidget {
 class _ScanState extends State<Scan> {
   File? image;
 
-  Future pickImage() async {
+//
+// Image picker method
+//
+  Future pickImage(ImageSource source) async {
     try {
-      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      final image = await ImagePicker().pickImage(source: source);
       if (image == null) return;
       final imageTemporary = File(image.path);
       setState(() {
@@ -28,15 +31,23 @@ class _ScanState extends State<Scan> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Image to Text Converter'),
+      ),
       body: Center(
           child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           image != null
-              ? Image.file(
-                  image!,
-                  width: 200,
-                  height: 200,
+              ? Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Image.file(
+                    image!,
+                    width: 200,
+                    height: 200,
+                  ),
                 )
               : const Text('No image selected'),
           const SizedBox(height: 20.0),
@@ -44,7 +55,7 @@ class _ScanState extends State<Scan> {
             onPressed: () {
               // debugPrint('Scan');
               // Navigator.pop(context);
-              pickImage();
+              pickImage(ImageSource.gallery);
             },
             child: const Text('Upload Image'),
           ),
@@ -53,6 +64,7 @@ class _ScanState extends State<Scan> {
             onPressed: () {
               // debugPrint('Scan');
               // Navigator.pop(context);
+              pickImage(ImageSource.camera);
             },
             child: const Text('Capture Image'),
           ),
