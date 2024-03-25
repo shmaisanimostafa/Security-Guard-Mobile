@@ -10,16 +10,28 @@ class Link extends StatelessWidget {
         appBar: AppBar(
           title: const Text('Enter the link'),
         ),
-        body: const Center(
-          child: SizedBox(
-            width: 250,
-            child: TextField(
-              obscureText: true,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Enter the link here',
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const SizedBox(
+                width: 250,
+                child: TextField(
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Enter the link here',
+                  ),
+                ),
               ),
-            ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  // Add your onPressed code here!
+                },
+                child: const Text('Submit'),
+              ),
+            ],
           ),
         ),
       ),
