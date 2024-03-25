@@ -101,7 +101,7 @@ class RegisterScreen extends StatelessWidget {
             const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () {
-                // TODO: Implement registration logic
+                // Implement registration logic
               },
               child: const Text('Register'),
             ),

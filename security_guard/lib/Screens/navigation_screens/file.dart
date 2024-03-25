@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class File extends StatelessWidget {
-  const File({super.key});
+class FileUploadScreen extends StatelessWidget {
+  const FileUploadScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

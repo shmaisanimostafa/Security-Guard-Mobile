@@ -24,7 +24,7 @@ class _MyAppState extends State<MyApp> {
   List<Widget> screens = [
     const Home(),
     const Link(),
-    const File(),
+    const FileUploadScreen(),
     const Chat(),
   ];
 
@@ -111,30 +111,45 @@ class _MyAppState extends State<MyApp> {
           ],
         ),
         drawer: Drawer(
-          child: Center(
-            child: DropdownMenu(
-                enableSearch: false,
-                helperText: 'Select a theme mode',
-                label: const Text('Theme Mode'),
-                dropdownMenuEntries: const <DropdownMenuEntry<ThemeMode>>[
-                  DropdownMenuEntry(
-                    value: ThemeMode.light,
-                    label: 'Light',
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                flex: 9,
+                child: Center(
+                  child: DropdownMenu(
+                    enableSearch: false,
+                    helperText: 'Select a theme mode',
+                    label: const Text('Theme Mode'),
+                    dropdownMenuEntries: const <DropdownMenuEntry<ThemeMode>>[
+                      DropdownMenuEntry(
+                        value: ThemeMode.light,
+                        label: 'Light',
+                      ),
+                      DropdownMenuEntry(
+                        value: ThemeMode.dark,
+                        label: 'Dark',
+                      ),
+                      DropdownMenuEntry(
+                        value: ThemeMode.system,
+                        label: 'System',
+                      ),
+                    ],
+                    onSelected: (value) {
+                      setState(
+                        () {
+                          currentThemeMode = value;
+                        },
+                      );
+                    },
                   ),
-                  DropdownMenuEntry(
-                    value: ThemeMode.dark,
-                    label: 'Dark',
-                  ),
-                  DropdownMenuEntry(
-                    value: ThemeMode.system,
-                    label: 'System',
-                  ),
-                ],
-                onSelected: (value) {
-                  setState(() {
-                    currentThemeMode = value;
-                  });
-                }),
+                ),
+              ),
+              const Expanded(
+                flex: 1,
+                child: Text('Developed by Mostafa Shmaisani'),
+              ),
+            ],
           ),
         ),
         //
