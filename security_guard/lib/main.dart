@@ -51,7 +51,7 @@ class _MyAppState extends State<MyApp> {
       ),
       theme: ThemeData(
         textTheme: Theme.of(context).textTheme.apply(fontFamily: 'Anta'),
-        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.yellow),
+        // colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.yellow),
       ),
       home: Scaffold(
         appBar: AppBar(
@@ -142,18 +142,20 @@ class _MyAppState extends State<MyApp> {
         //
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
-        floatingActionButton: FloatingActionButton(
-          shape: const CircleBorder(),
-          child: const Icon(Icons.document_scanner),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) {
-                return const Scan();
-              }),
-            );
-          },
-        ),
+        floatingActionButton: currentPageIndex == 3
+            ? null
+            : FloatingActionButton(
+                shape: const CircleBorder(),
+                child: const Icon(Icons.document_scanner),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) {
+                      return const Scan();
+                    }),
+                  );
+                },
+              ),
         //
         // The bottom navigation bar
         //
