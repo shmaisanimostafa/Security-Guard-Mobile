@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:image_picker/image_picker.dart';
 
 class Scan extends StatefulWidget {
@@ -11,7 +12,12 @@ class Scan extends StatefulWidget {
 }
 
 class _ScanState extends State<Scan> {
+  // For loading widget
+  bool textRecognizing = false;
+  // The picked up Image
   File? image;
+  // The recognized text
+  String recognizedText = '';
 
 //
 // Image picker method
@@ -21,12 +27,31 @@ class _ScanState extends State<Scan> {
       final image = await ImagePicker().pickImage(source: source);
       if (image == null) return;
       final imageTemporary = File(image.path);
+      textRecognizing = true;
       setState(() {
         this.image = imageTemporary;
       });
+      recognizeText(this.image!);
     } on Exception catch (e) {
-      debugPrint('Error: $e');
+      recognizedText = 'Error: $e';
     }
+  }
+
+  Future recognizeText(File image) async {
+    final inputImage = InputImage.fromFile(image);
+    final textDetector = TextRecognizer();
+    final RecognizedText recognizedTextTemp =
+        await textDetector.processImage(inputImage);
+    await textDetector.close();
+    recognizedText = '';
+    for (TextBlock block in recognizedTextTemp.blocks) {
+      for (TextLine line in block.lines) {
+        recognizedText += '${line.text} ';
+      }
+    }
+    setState(() {
+      textRecognizing = false;
+    });
   }
 
   @override
@@ -43,83 +68,102 @@ class _ScanState extends State<Scan> {
       ), // Shall
       home: Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
           title: const Text('Image to Text Converter'),
         ),
-        body: Center(
-            child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            image != null
-                ? Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Center(
+              child: ListView(
+            // mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              image != null
+                  ? Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Image.file(
+                        image!,
+                        width: 200,
+                        height: 200,
+                      ),
+                    )
+                  : const Text(
+                      'No image selected',
+                      textAlign: TextAlign.center,
                     ),
-                    child: Image.file(
-                      image!,
-                      width: 200,
-                      height: 200,
-                    ),
-                  )
-                : const Text('No image selected'),
-            const SizedBox(height: 20.0),
-            TextButton(
-              style: TextButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              onPressed: () {
-                pickImage(ImageSource.gallery);
-              },
-              child: DottedBorder(
-                borderType: BorderType.RRect,
-                radius: const Radius.circular(20),
-                dashPattern: const [10, 10],
-                color: Colors.grey,
-                strokeWidth: 2,
-                child: Card(
-                  margin: const EdgeInsets.all(20),
-                  color: Colors.amber,
+              const SizedBox(height: 20.0),
+              textRecognizing
+                  ? const CircularProgressIndicator()
+                  : Text(recognizedText),
+              const SizedBox(height: 20.0),
+              TextButton(
+                style: TextButton.styleFrom(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const SizedBox(
-                    height: 200.0,
-                    width: 200.0,
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.image_search_rounded,
-                              size: 50.0, color: Colors.black),
-                          Text("Upload Image Here"),
-                        ],
+                ),
+                onPressed: () {
+                  pickImage(ImageSource.gallery);
+                },
+                child: DottedBorder(
+                  borderType: BorderType.RRect,
+                  radius: const Radius.circular(20),
+                  dashPattern: const [10, 10],
+                  color: Colors.grey,
+                  strokeWidth: 2,
+                  child: Card(
+                    margin: const EdgeInsets.all(20),
+                    color: Colors.amber,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const SizedBox(
+                      height: 200.0,
+                      width: 200.0,
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.image_search_rounded,
+                                size: 50.0, color: Colors.black),
+                            Text("Upload Image Here"),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 20.0),
-            const Text('OR'),
-            const SizedBox(height: 20.0),
-            ElevatedButton(
-              onPressed: () {
-                // debugPrint('Scan');
-                // Navigator.pop(context);
-                pickImage(ImageSource.camera);
-              },
-              child: const Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.camera_alt),
-                  SizedBox(width: 10.0),
-                  Text('Capture Image'),
-                ],
+              const SizedBox(height: 20.0),
+              const Text(
+                'OR',
+                textAlign: TextAlign.center,
               ),
-            ),
-          ],
-        )),
+              const SizedBox(height: 20.0),
+              ElevatedButton(
+                onPressed: () {
+                  // debugPrint('Scan');
+                  // Navigator.pop(context);
+                  pickImage(ImageSource.camera);
+                },
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.camera_alt),
+                    SizedBox(width: 10.0),
+                    Text('Capture Image'),
+                  ],
+                ),
+              ),
+            ],
+          )),
+        ),
       ),
     );
   }
