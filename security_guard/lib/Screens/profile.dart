@@ -1,4 +1,5 @@
 import 'package:capstone_proj/screens/registration_screens/change_password.dart';
+
 import 'package:flutter/material.dart';
 
 class Profile extends StatelessWidget {
@@ -6,6 +7,7 @@ class Profile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const top = 150.0 - 50;
     return MaterialApp(
       // TODO Theme shall be the same as the parent, to be edited later
       themeMode: ThemeMode.system,
@@ -18,19 +20,46 @@ class Profile extends StatelessWidget {
       ), // Shall be the same as the parent, to be edited later
       home: Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
           title: const Text('Profile'),
         ),
         body: SingleChildScrollView(
           child: Center(
             child: Column(
               children: [
-                const SizedBox(height: 30),
-                const CircleAvatar(
-                    radius: 50,
-                    child: CircleAvatar(
-                      radius: 45,
-                      backgroundImage: AssetImage("images/ProfilePic.png"),
-                    )),
+                Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Container(
+                      color: Colors.grey[300],
+                      child: Image.asset(
+                        'images/ProfilePic.png',
+                        width: double.infinity,
+                        height: 150,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    const Positioned(
+                      top: top,
+                      left: 10.0,
+                      child: CircleAvatar(
+                          radius: 50,
+                          child: CircleAvatar(
+                            radius: 45,
+                            backgroundImage:
+                                AssetImage("images/ProfilePic.png"),
+                          )),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 40),
+                // Profile Picture
+
                 const SizedBox(height: 10),
                 Card(
                   child: Column(
