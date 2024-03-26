@@ -10,8 +10,61 @@ class Chat extends StatefulWidget {
 
 class _ChatState extends State<Chat> {
   final messageTextController = TextEditingController();
+  String messageText = '';
   @override
   Widget build(BuildContext context) {
+    List<MessageBubble> messages = [
+      const MessageBubble(
+        sender: 'me',
+        text: 'Hello',
+        isMe: true,
+      ),
+      const MessageBubble(
+        sender: 'you',
+        text: 'Hi',
+        isMe: false,
+      ),
+      const MessageBubble(
+        sender: 'me',
+        text: 'How are you?',
+        isMe: true,
+      ),
+      const MessageBubble(
+        sender: 'you',
+        text: 'I am fine, thank you.',
+        isMe: false,
+      ),
+      const MessageBubble(
+        sender: 'me',
+        text: 'Good to hear that.',
+        isMe: true,
+      ),
+      const MessageBubble(
+        sender: 'you',
+        text: 'How about you?',
+        isMe: false,
+      ),
+      const MessageBubble(
+        sender: 'me',
+        text: 'I am doing great.',
+        isMe: true,
+      ),
+      const MessageBubble(
+        sender: 'you',
+        text: 'That is good to hear.',
+        isMe: false,
+      ),
+      const MessageBubble(
+        sender: 'me',
+        text: 'I have to go now.',
+        isMe: true,
+      ),
+      const MessageBubble(
+        sender: 'you',
+        text: 'Okay, see you later.',
+        isMe: false,
+      ),
+    ];
     return Scaffold(
       // appBar: AppBar(
       //   leading: null,
@@ -46,61 +99,10 @@ class _ChatState extends State<Chat> {
                 horizontal: 10.0,
                 vertical: 20.0,
               ),
-              children: const [
+              children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    MessageBubble(
-                      sender: 'me',
-                      text: 'Hello',
-                      isMe: true,
-                    ),
-                    MessageBubble(
-                      sender: 'you',
-                      text: 'Hi',
-                      isMe: false,
-                    ),
-                    MessageBubble(
-                      sender: 'me',
-                      text: 'How are you?',
-                      isMe: true,
-                    ),
-                    MessageBubble(
-                      sender: 'you',
-                      text: 'I am fine, thank you.',
-                      isMe: false,
-                    ),
-                    MessageBubble(
-                      sender: 'me',
-                      text: 'Good to hear that.',
-                      isMe: true,
-                    ),
-                    MessageBubble(
-                      sender: 'you',
-                      text: 'How about you?',
-                      isMe: false,
-                    ),
-                    MessageBubble(
-                      sender: 'me',
-                      text: 'I am doing great.',
-                      isMe: true,
-                    ),
-                    MessageBubble(
-                      sender: 'you',
-                      text: 'That is good to hear.',
-                      isMe: false,
-                    ),
-                    MessageBubble(
-                      sender: 'me',
-                      text: 'I have to go now.',
-                      isMe: true,
-                    ),
-                    MessageBubble(
-                      sender: 'you',
-                      text: 'Okay, see you later.',
-                      isMe: false,
-                    ),
-                  ],
+                  children: messages,
                 ),
               ],
             ),
@@ -114,15 +116,25 @@ class _ChatState extends State<Chat> {
                   child: TextField(
                     controller: messageTextController,
                     onChanged: (value) {
-                      //Do something with the user input.
+                      //
+                      // Edit the Message Text
+                      //
+                      messageText = value;
                     },
                     decoration: kMessageTextFieldDecoration,
                   ),
                 ),
                 TextButton(
                   onPressed: () {
+                    // Clear the text field
                     messageTextController.clear();
-                    //Implement send functionality.
+                    setState(() {
+                      messages.add(MessageBubble(
+                        sender: 'me',
+                        text: messageText,
+                        isMe: true,
+                      ));
+                    });
                   },
                   child: const Text(
                     'Send',
