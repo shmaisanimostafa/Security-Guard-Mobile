@@ -101,13 +101,22 @@ class _ScanState extends State<Scan> {
               ),
             ),
             const SizedBox(height: 20.0),
+            const Text('OR'),
+            const SizedBox(height: 20.0),
             ElevatedButton(
               onPressed: () {
                 // debugPrint('Scan');
                 // Navigator.pop(context);
                 pickImage(ImageSource.camera);
               },
-              child: const Text('Capture Image'),
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.camera_alt),
+                  SizedBox(width: 10.0),
+                  Text('Capture Image'),
+                ],
+              ),
             ),
           ],
         )),
