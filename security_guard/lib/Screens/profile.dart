@@ -149,7 +149,9 @@ class Profile extends StatelessWidget {
                               children: [
                                 Text(
                                   'Facebook: ',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                  style: TextStyle(
+                                      color: Color.fromARGB(255, 52, 38, 255),
+                                      fontWeight: FontWeight.bold),
                                 ),
                                 SizedBox(width: 8),
                                 Text('Shmaisanimostafa'),
@@ -159,7 +161,45 @@ class Profile extends StatelessWidget {
                               children: [
                                 Text(
                                   'Twitter: ',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                  style: TextStyle(
+                                      color: Colors.blue,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(width: 8),
+                                Text('Shmaisanimostafa'),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  'Github: ',
+                                  style: TextStyle(
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(width: 8),
+                                Text('Shmaisanimostafa'),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  'Mestadon: ',
+                                  style: TextStyle(
+                                      color: Colors.deepPurple,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(width: 8),
+                                Text('Shmaisanimostafa'),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  'Instagram: ',
+                                  style: TextStyle(
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.bold),
                                 ),
                                 SizedBox(width: 8),
                                 Text('Shmaisanimostafa'),
