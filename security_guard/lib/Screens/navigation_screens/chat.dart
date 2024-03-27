@@ -66,22 +66,10 @@ class _ChatState extends State<Chat> {
       ),
     ];
     return Scaffold(
-      // appBar: AppBar(
-      //   leading: null,
-      //   actions: <Widget>[
-      //     IconButton(
-      //         icon: const Icon(Icons.close),
-      //         onPressed: () {
-      //           //Implement logout functionality
-      //         }),
-      //   ],
-      //   title: const Text('⚡️Chat'),
-      //    backgroundColor: Colors.lightBlueAccent,
-      // ),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          FloatingActionButton(
+          FloatingActionButton.small(
             onPressed: () {
               // Add your onPressed code here!
             },
@@ -95,6 +83,7 @@ class _ChatState extends State<Chat> {
         children: [
           Expanded(
             child: ListView(
+              reverse: true,
               padding: const EdgeInsets.symmetric(
                 horizontal: 10.0,
                 vertical: 20.0,
