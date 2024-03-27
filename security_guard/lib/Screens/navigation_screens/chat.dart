@@ -1,4 +1,5 @@
 import 'package:capstone_proj/constants.dart';
+import 'package:capstone_proj/screens/ai_chat_screen.dart';
 import 'package:flutter/material.dart';
 
 class Chat extends StatefulWidget {
@@ -70,8 +71,19 @@ class _ChatState extends State<Chat> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton.small(
+            //Open Chat with AI Screen, Generative AI
             onPressed: () {
-              // Add your onPressed code here!
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                builder: (context) => SingleChildScrollView(
+                  child: Container(
+                    padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).viewInsets.bottom),
+                    child: const AskAIScreen(),
+                  ),
+                ),
+              );
             },
             child: const Icon(Icons.star),
             // backgroundColor: Colors.lightBlueAccent,
