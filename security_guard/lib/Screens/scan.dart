@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:dotted_border/dotted_border.dart';
+import 'package:capstone_proj/components.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:image_picker/image_picker.dart';
@@ -112,33 +112,11 @@ class _ScanState extends State<Scan> {
                   onPressed: () {
                     pickImage(ImageSource.gallery);
                   },
-                  child: DottedBorder(
-                    borderType: BorderType.RRect,
-                    radius: const Radius.circular(20),
-                    dashPattern: const [10, 10],
-                    color: Colors.grey,
-                    strokeWidth: 2,
-                    child: Card(
-                      margin: const EdgeInsets.all(20),
-                      color: Colors.amber,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: const SizedBox(
-                        height: 200.0,
-                        width: 200.0,
-                        child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.image_search_rounded,
-                                  size: 50.0, color: Colors.black),
-                              Text("Upload Image Here"),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
+                  child: const UploadBox(
+                    boxText: 'Upload Image Here',
+                    backColor: Colors.amber,
+                    dotColor: Colors.grey,
+                    icon: Icons.image_search_rounded,
                   ),
                 ),
                 const SizedBox(height: 20.0),

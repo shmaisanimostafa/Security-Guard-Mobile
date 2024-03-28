@@ -11,7 +11,6 @@ class AskAIScreen extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(20.0),
         decoration: const BoxDecoration(
-          // color: Colors.white,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(20.0),
             topRight: Radius.circular(20.0),
@@ -46,23 +45,14 @@ class AskAIScreen extends StatelessWidget {
             const SizedBox(height: 10.0),
             TextButton(
               onPressed: () {
-                // Provider.of<TaskData>(context, listen: false)
-                //     .addTask(newTaskTitle);
                 Navigator.pop(context);
               },
-              // style: ButtonStyle(
-              //   backgroundColor:
-              //       MaterialStateProperty.all(Colors.lightBlueAccent),
-              // ),
               child: const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.star),
                   Text(
                     'Generate',
-                    // style: TextStyle(
-                    //   color: Colors.white,
-                    // ),
                   ),
                 ],
               ),
