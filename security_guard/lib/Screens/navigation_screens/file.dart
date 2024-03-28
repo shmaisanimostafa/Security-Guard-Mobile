@@ -1,4 +1,4 @@
-import 'package:capstone_proj/components.dart';
+import 'package:capstone_proj/components/UploadBox.dart';
 import 'package:flutter/material.dart';
 
 class UploadFileScreen extends StatefulWidget {

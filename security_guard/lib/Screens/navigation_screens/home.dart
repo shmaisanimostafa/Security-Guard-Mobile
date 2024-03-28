@@ -1,4 +1,5 @@
-import 'package:capstone_proj/components.dart';
+import 'package:capstone_proj/components/article_card.dart';
+import 'package:capstone_proj/components/intro_card.dart';
 import 'package:capstone_proj/screens/registration_screens/log_in.dart';
 import 'package:flutter/material.dart';
 

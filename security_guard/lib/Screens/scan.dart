@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:capstone_proj/components.dart';
+import 'package:capstone_proj/components/UploadBox.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:image_picker/image_picker.dart';
