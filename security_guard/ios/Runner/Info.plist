@@ -51,7 +51,10 @@
 		<string>To upload text photo</string>
 		<key>NSMicrophoneUsageDescription</key>
 		<string>To use the camera and microphone</string>
+		<key>NSSpeechRecognitionUsageDescription</key>
+		<string>To convert speech to text</string>
 		<key>UIStatusBarHidden</key>
+		
 		<false/>
 	</dict>
 </plist>

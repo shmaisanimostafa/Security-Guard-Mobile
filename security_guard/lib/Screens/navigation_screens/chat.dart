@@ -1,5 +1,7 @@
+import 'package:capstone_proj/components/message_bubble.dart';
 import 'package:capstone_proj/constants.dart';
 import 'package:capstone_proj/screens/ai_chat_screen.dart';
+import 'package:capstone_proj/screens/speech_to_text.dart';
 import 'package:flutter/material.dart';
 
 class Chat extends StatefulWidget {
@@ -142,57 +144,20 @@ class _ChatState extends State<Chat> {
                     style: kSendButtonTextStyle,
                   ),
                 ),
+                IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return const SpeechScreen();
+                        },
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.mic),
+                )
               ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class MessageBubble extends StatelessWidget {
-  const MessageBubble(
-      {super.key,
-      required this.sender,
-      required this.text,
-      required this.isMe});
-
-  final String sender;
-  final String text;
-  final bool isMe;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Column(
-        crossAxisAlignment:
-            isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-        children: [
-          Text(sender,
-              style: TextStyle(
-                  fontSize: 12.0, color: isMe ? Colors.white : Colors.yellow)),
-          Material(
-            borderRadius: isMe
-                ? const BorderRadius.only(
-                    topLeft: Radius.circular(30.0),
-                    bottomLeft: Radius.circular(30.0),
-                    bottomRight: Radius.circular(30.0))
-                : const BorderRadius.only(
-                    topRight: Radius.circular(30.0),
-                    bottomLeft: Radius.circular(30.0),
-                    bottomRight: Radius.circular(30.0)),
-            elevation: 5.0,
-            color: isMe ? Colors.yellow : Colors.white,
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-              child: Text(
-                text,
-                style: const TextStyle(
-                    fontSize: 15.0, color: Color.fromARGB(255, 0, 0, 0)),
-              ),
             ),
           ),
         ],
