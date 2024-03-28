@@ -20,6 +20,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   int currentPageIndex = 0;
+  bool isSignedIn = false;
   ThemeMode? currentThemeMode = ThemeMode.system;
   List<Widget> screens = [
     const Home(),
@@ -89,25 +90,41 @@ class _MyAppState extends State<MyApp> {
             //     });
             //   },
             // ),
-            TextButton(
-              style: TextButton.styleFrom(
-                shape: const CircleBorder(),
-                padding:
-                    const EdgeInsets.all(13), // Adjust the padding as needed
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) {
-                    return const Profile();
-                  }),
-                );
-              },
-              child: const CircleAvatar(
-                radius: 15.0,
-                backgroundImage: AssetImage('images/ProfilePic.png'),
-              ),
-            ),
+            isSignedIn
+                ? TextButton(
+                    style: TextButton.styleFrom(
+                      shape: const CircleBorder(),
+                      padding: const EdgeInsets.all(
+                          13), // Adjust the padding as needed
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) {
+                          return const Profile();
+                        }),
+                      );
+                    },
+                    child: const CircleAvatar(
+                      radius: 12.0,
+                      backgroundImage: AssetImage('images/ProfilePic.png'),
+                    ),
+                  )
+                : IconButton(
+                    icon: const Icon(Icons.login),
+                    onPressed: () {
+                      setState(() {
+                        isSignedIn = true;
+                      });
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) {
+                          return const RegisterScreen();
+                        }),
+                      );
+                    },
+                  ),
           ],
         ),
         drawer: Drawer(
