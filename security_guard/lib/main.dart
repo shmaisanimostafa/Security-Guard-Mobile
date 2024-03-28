@@ -188,11 +188,11 @@ class _MyAppState extends State<MyApp> {
                 child: const Icon(Icons.document_scanner),
                 onPressed: () {
                   Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) {
-                      return const Scan();
-                    }),
-                  );
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => Theme(
+                              data: Theme.of(context).copyWith(),
+                              child: const Scan())));
                 },
               ),
         //

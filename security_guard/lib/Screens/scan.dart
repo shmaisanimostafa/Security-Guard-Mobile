@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:capstone_proj/components/UploadBox.dart';
+import 'package:capstone_proj/components/upload_box.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:image_picker/image_picker.dart';
@@ -56,30 +56,20 @@ class _ScanState extends State<Scan> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      // TODO Theme shall be the same as the parent, to be edited later
-      themeMode: ThemeMode.system,
-      darkTheme: ThemeData.dark().copyWith(
-        textTheme: Theme.of(context).textTheme.apply(fontFamily: 'Anta'),
-      ),
-      theme: ThemeData(
-        textTheme: Theme.of(context).textTheme.apply(fontFamily: 'Anta'),
-        // colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.yellow),
-      ), // Shall
-      home: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          title: const Text('Image to Text Converter'),
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Center(
-              child: SingleChildScrollView(
+        title: const Text('Image to Text Converter'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Center(
+          child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -127,8 +117,6 @@ class _ScanState extends State<Scan> {
                 const SizedBox(height: 20.0),
                 ElevatedButton(
                   onPressed: () {
-                    // debugPrint('Scan');
-                    // Navigator.pop(context);
                     pickImage(ImageSource.camera);
                   },
                   child: const Row(
@@ -142,7 +130,7 @@ class _ScanState extends State<Scan> {
                 ),
               ],
             ),
-          )),
+          ),
         ),
       ),
     );
