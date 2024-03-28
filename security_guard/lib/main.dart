@@ -21,6 +21,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   int currentPageIndex = 0;
   bool isSignedIn = false;
+  bool isNotified = true;
   ThemeMode? currentThemeMode = ThemeMode.system;
   List<Widget> screens = [
     const Home(),
@@ -69,11 +70,14 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Security Guard'),
           actions: [
             IconButton(
-              icon: const Badge(
-                key: Key('notification_badge'),
-                child: Icon(Icons.notifications),
+              icon: Badge(
+                isLabelVisible: isNotified,
+                child: const Icon(Icons.notifications),
               ),
               onPressed: () {
+                setState(() {
+                  isNotified = !isNotified;
+                });
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) {
@@ -98,6 +102,9 @@ class _MyAppState extends State<MyApp> {
                           13), // Adjust the padding as needed
                     ),
                     onPressed: () {
+                      setState(() {
+                        isSignedIn = false;
+                      });
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) {
