@@ -26,7 +26,7 @@ class _MyAppState extends State<MyApp> {
   List<Widget> screens = [
     const Home(),
     const Link(),
-    const FileUploadScreen(),
+    const UploadFileScreen(),
     const Chat(),
   ];
 
