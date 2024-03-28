@@ -112,6 +112,7 @@ class _ChatState extends State<Chat> {
           ),
           Container(
             decoration: kMessageContainerDecoration,
+            padding: const EdgeInsets.only(right: 5.0),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[

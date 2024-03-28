@@ -18,7 +18,7 @@ class _SpeechScreenState extends State<SpeechScreen> {
       },
       textStyle: const TextStyle(
         color: Colors.blue,
-        fontSize: 32.0,
+        fontSize: 20.0,
         fontWeight: FontWeight.bold,
       ),
     ),
@@ -28,7 +28,7 @@ class _SpeechScreenState extends State<SpeechScreen> {
       },
       textStyle: const TextStyle(
         color: Colors.blue,
-        fontSize: 32.0,
+        fontSize: 20.0,
         fontWeight: FontWeight.bold,
       ),
     ),
@@ -38,7 +38,7 @@ class _SpeechScreenState extends State<SpeechScreen> {
       },
       textStyle: const TextStyle(
         color: Colors.green,
-        fontSize: 32.0,
+        fontSize: 20.0,
         fontWeight: FontWeight.bold,
       ),
     ),
@@ -48,7 +48,7 @@ class _SpeechScreenState extends State<SpeechScreen> {
       },
       textStyle: const TextStyle(
         color: Colors.red,
-        fontSize: 32.0,
+        fontSize: 20.0,
         fontWeight: FontWeight.bold,
       ),
     ),
@@ -58,7 +58,7 @@ class _SpeechScreenState extends State<SpeechScreen> {
       },
       textStyle: const TextStyle(
         color: Colors.yellow,
-        fontSize: 32.0,
+        fontSize: 20.0,
         fontWeight: FontWeight.bold,
       ),
     ),
@@ -125,17 +125,25 @@ class _SpeechScreenState extends State<SpeechScreen> {
       ),
       body: SingleChildScrollView(
         reverse: true,
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 150.0),
-          child: TextHighlight(
-            text: _text,
-            words: _highLights,
-            textStyle: const TextStyle(
-              fontSize: 32.0,
-              color: Colors.black,
-              fontWeight: FontWeight.w400,
+        child: Column(
+          children: [
+            _isListening
+                ? const Text('Listening...')
+                : const Text('Not Listening...'),
+            const SizedBox(height: 20.0),
+            Container(
+              padding: const EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 150.0),
+              child: TextHighlight(
+                text: _text,
+                words: _highLights,
+                textStyle: const TextStyle(
+                  fontSize: 20.0,
+                  color: Colors.black,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
