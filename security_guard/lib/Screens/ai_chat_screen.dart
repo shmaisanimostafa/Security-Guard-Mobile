@@ -7,7 +7,7 @@ class AskAIScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // String newTaskTitle = '';
     return Container(
-      color: const Color(0xff757575),
+      // color: const Color(0xff757575),
       child: Container(
         padding: const EdgeInsets.all(20.0),
         decoration: const BoxDecoration(
@@ -54,11 +54,17 @@ class AskAIScreen extends StatelessWidget {
               //   backgroundColor:
               //       MaterialStateProperty.all(Colors.lightBlueAccent),
               // ),
-              child: const Text(
-                'Add',
-                // style: TextStyle(
-                //   color: Colors.white,
-                // ),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.star),
+                  Text(
+                    'Generate',
+                    // style: TextStyle(
+                    //   color: Colors.white,
+                    // ),
+                  ),
+                ],
               ),
             ),
           ],
