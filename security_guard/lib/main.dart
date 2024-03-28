@@ -67,7 +67,17 @@ class _MyAppState extends State<MyApp> {
               );
             },
           ),
-          title: const Text('Security Guard'),
+          title: Row(
+            children: [
+              Image.asset(
+                'images/LogoMini.png',
+                fit: BoxFit.contain,
+                height: 32,
+              ),
+              const SizedBox(width: 10),
+              const Text('Security Guard'),
+            ],
+          ),
           actions: [
             IconButton(
               icon: Badge(
