@@ -1,3 +1,4 @@
+import 'package:capstone_proj/screens/response_safe_screen.dart';
 import 'package:flutter/material.dart';
 
 class Link extends StatelessWidget {
@@ -27,7 +28,15 @@ class Link extends StatelessWidget {
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  // Add your onPressed code here!
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ResponseSafeScreen(
+                        link: 'https://www.google.com',
+                        message: 'This is a safe link',
+                      ),
+                    ),
+                  );
                 },
                 child: const Text('Submit'),
               ),
