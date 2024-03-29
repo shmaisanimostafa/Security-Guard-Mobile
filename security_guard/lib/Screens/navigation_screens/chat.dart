@@ -3,6 +3,8 @@ import 'package:capstone_proj/constants.dart';
 import 'package:capstone_proj/screens/ai_chat_screen.dart';
 import 'package:capstone_proj/screens/speech_to_text.dart';
 import 'package:flutter/material.dart';
+import 'package:capstone_proj/models/messages.dart';
+import 'package:provider/provider.dart';
 
 class Chat extends StatefulWidget {
   const Chat({super.key});
@@ -14,58 +16,6 @@ class Chat extends StatefulWidget {
 class _ChatState extends State<Chat> {
   final messageTextController = TextEditingController();
   String messageText = '';
-  List<MessageBubble> messages = [
-    const MessageBubble(
-      sender: 'me',
-      text: 'Hello',
-      isMe: true,
-    ),
-    const MessageBubble(
-      sender: 'you',
-      text: 'Hi',
-      isMe: false,
-    ),
-    const MessageBubble(
-      sender: 'me',
-      text: 'How are you?',
-      isMe: true,
-    ),
-    const MessageBubble(
-      sender: 'you',
-      text: 'I am fine, thank you.',
-      isMe: false,
-    ),
-    const MessageBubble(
-      sender: 'me',
-      text: 'Good to hear that.',
-      isMe: true,
-    ),
-    const MessageBubble(
-      sender: 'you',
-      text: 'How about you?',
-      isMe: false,
-    ),
-    const MessageBubble(
-      sender: 'me',
-      text: 'I am doing great.',
-      isMe: true,
-    ),
-    const MessageBubble(
-      sender: 'you',
-      text: 'That is good to hear.',
-      isMe: false,
-    ),
-    const MessageBubble(
-      sender: 'me',
-      text: 'I have to go now.',
-      isMe: true,
-    ),
-    const MessageBubble(
-      sender: 'you',
-      text: 'Okay, see you later.',
-      isMe: false,
-    ),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +56,7 @@ class _ChatState extends State<Chat> {
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: messages,
+                  children: Provider.of<Messages>(context).messages,
                 ),
               ],
             ),
@@ -130,7 +80,8 @@ class _ChatState extends State<Chat> {
                   onPressed: () {
                     messageTextController.clear();
                     setState(() {
-                      messages.add(MessageBubble(
+                      Provider.of<Messages>(context, listen: false)
+                          .addMessage(MessageBubble(
                         sender: 'me',
                         text: messageText,
                         isMe: true,

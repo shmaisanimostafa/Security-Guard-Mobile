@@ -1,11 +1,13 @@
+import 'package:capstone_proj/models/messages.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AskAIScreen extends StatelessWidget {
   const AskAIScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // String newTaskTitle = '';
+    String question = '';
     return Container(
       // color: const Color(0xff757575),
       child: Container(
@@ -39,12 +41,19 @@ class AskAIScreen extends StatelessWidget {
               autofocus: true,
               textAlign: TextAlign.center,
               onChanged: (newText) {
-                // newTaskTitle = newText;
+                question = newText;
               },
             ),
             const SizedBox(height: 10.0),
             TextButton(
               onPressed: () {
+                try {
+                  Provider.of<Messages>(context, listen: false)
+                      .addMessageAI(question);
+                } on Exception catch (e) {
+                  debugPrint(e.toString());
+                }
+
                 Navigator.pop(context);
               },
               child: const Row(
