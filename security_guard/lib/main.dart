@@ -38,8 +38,11 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => Messages(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<Messages>(create: (context) => Messages()),
+        Provider<bool>.value(value: isSignedIn),
+      ],
       child: MaterialApp(
         // routes: {
         //   '/home': (context) => const Home(),
@@ -117,7 +120,7 @@ class _MyAppState extends State<MyApp> {
                       ),
                       onPressed: () {
                         setState(() {
-                          isSignedIn = false;
+                          // isSignedIn = false;
                         });
                         Navigator.push(
                           context,

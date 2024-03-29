@@ -1,7 +1,8 @@
 import 'package:capstone_proj/components/article_card.dart';
+import 'package:capstone_proj/components/intro_buttons.dart';
 import 'package:capstone_proj/components/intro_card.dart';
-import 'package:capstone_proj/screens/registration_screens/log_in.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -13,28 +14,34 @@ class Home extends StatelessWidget {
       child: Center(
         child: ListView(
           children: [
-            const IntroCard(),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                FilledButton(onPressed: () {}, child: const Text('Scan File')),
-                FilledButton(onPressed: () {}, child: const Text('Scan Link')),
-                FilledButton(
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                      return const LogInScreen();
-                    }));
-                  },
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.teal),
+            Provider.of<bool>(context) == true
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'Welcome back',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        ' Mostafa Shmaisani !',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
+                    ],
+                  )
+                : const Column(
+                    children: [
+                      IntroCard(),
+                      SizedBox(height: 10),
+                      IntroButtons(),
+                    ],
                   ),
-                  child: const Text('Sign Up',
-                      style: TextStyle(color: Colors.white)),
-                ),
-              ],
-            ),
             const SizedBox(height: 10),
             const Divider(),
             const ArticleCard(
