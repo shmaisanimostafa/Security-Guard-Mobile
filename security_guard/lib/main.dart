@@ -74,15 +74,20 @@ class _MyAppState extends State<MyApp> {
                 );
               },
             ),
-            title: Row(
+            title: const Row(
               children: [
-                Image.asset(
-                  'images/LogoMini.png',
-                  fit: BoxFit.contain,
-                  height: 32,
+                // Image.asset(
+                //   'images/LogoMini.png',
+                //   fit: BoxFit.contain,
+                //   height: 32,
+                // ),
+                Icon(
+                  Icons.military_tech_sharp,
+                  color: Color(0xFFFFD700),
+                  size: 32,
                 ),
-                const SizedBox(width: 10),
-                const Text('Security Guard'),
+                SizedBox(width: 10),
+                Text('Security Guard'),
               ],
             ),
             actions: [
@@ -95,12 +100,12 @@ class _MyAppState extends State<MyApp> {
                   setState(() {
                     isNotified = !isNotified;
                   });
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) {
-                      return const RegisterScreen();
-                    }),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) {
+                  //     return const RegisterScreen();
+                  //   }),
+                  // );
                 },
               ),
               // IconButton(
