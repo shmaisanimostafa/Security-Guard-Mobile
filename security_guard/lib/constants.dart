@@ -37,3 +37,39 @@ const kArticleCardTitleStyle = TextStyle(
   fontSize: 17,
   fontWeight: FontWeight.bold,
 );
+
+const Icon kHomeOut = Icon(
+  Icons.home_outlined,
+);
+const Icon kHomeFilled = Icon(
+  Icons.home,
+);
+
+const Icon kLinkOut = Icon(
+  Icons.link_outlined,
+);
+
+const Icon kLinkFilled = Icon(
+  Icons.link,
+);
+const Icon kScanOut = Icon(
+  Icons.document_scanner_outlined,
+);
+
+const Icon kScanFilled = Icon(
+  Icons.document_scanner,
+);
+const Icon kFileOut = Icon(
+  Icons.file_present_outlined,
+);
+
+const Icon kFileFilled = Icon(
+  Icons.file_present_rounded,
+);
+const Icon kChatOut = Icon(
+  Icons.chat_outlined,
+);
+
+const Icon kChatFilled = Icon(
+  Icons.chat,
+);

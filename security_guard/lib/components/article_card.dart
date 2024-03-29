@@ -1,7 +1,5 @@
-import 'package:capstone_proj/constants.dart';
 import 'package:capstone_proj/screens/article.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class ArticleCard extends StatelessWidget {
   const ArticleCard(
@@ -53,7 +51,7 @@ class ArticleCard extends StatelessWidget {
                       Text(
                         author,
                       ),
-                      SizedBox(width: 5),
+                      const SizedBox(width: 5),
                       Icon(
                         size: 15,
                         Icons.verified,
@@ -67,10 +65,7 @@ class ArticleCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    date,
-                    maxLines: 2,
-                  ),
+                  Text(date, style: Theme.of(context).textTheme.bodySmall),
                   IconButton(
                       onPressed: () {
                         Navigator.push(

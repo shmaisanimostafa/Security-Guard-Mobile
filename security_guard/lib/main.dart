@@ -1,3 +1,4 @@
+import 'package:capstone_proj/constants.dart';
 import 'package:capstone_proj/models/messages.dart';
 import 'package:capstone_proj/screens/navigation_screens/chat.dart';
 import 'package:capstone_proj/screens/navigation_screens/file.dart';
@@ -31,6 +32,33 @@ class _MyAppState extends State<MyApp> {
     const UploadFileScreen(),
     const Chat(),
   ];
+//
+// Navigation Icons
+//
+  Icon homeIcon = kHomeFilled;
+  Icon linkIcon = kLinkOut;
+  Icon scanIcon = kScanOut;
+  Icon chatIcon = kChatOut;
+  Icon fileIcon = kFileOut;
+
+  void resetIcons(int index) {
+    homeIcon = kHomeOut;
+    linkIcon = kLinkOut;
+    scanIcon = kScanOut;
+    chatIcon = kChatOut;
+    fileIcon = kFileOut;
+    if (index == 0) {
+      homeIcon = kHomeFilled;
+    } else if (index == 1) {
+      linkIcon = kLinkFilled;
+    } else if (index == 2) {
+      fileIcon = kFileFilled;
+    } else if (index == 3) {
+      chatIcon = kChatFilled;
+    } else {
+      scanIcon = kScanFilled;
+    }
+  }
 
   void setCurrentPageIndex(int index) {
     currentPageIndex = index;
@@ -76,16 +104,6 @@ class _MyAppState extends State<MyApp> {
             ),
             title: const Row(
               children: [
-                // Image.asset(
-                //   'images/LogoMini.png',
-                //   fit: BoxFit.contain,
-                //   height: 32,
-                // ),
-                // Icon(
-                //   Icons.military_tech_sharp,
-                //   color: Color(0xFFFFD700),
-                //   size: 32,
-                // ),
                 SizedBox(width: 10),
                 Text('Security Guard'),
               ],
@@ -193,8 +211,11 @@ class _MyAppState extends State<MyApp> {
               ? null
               : FloatingActionButton(
                   shape: const CircleBorder(),
-                  child: const Icon(Icons.document_scanner),
+                  child: scanIcon,
                   onPressed: () {
+                    setState(() {
+                      resetIcons(4);
+                    });
                     Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -207,21 +228,21 @@ class _MyAppState extends State<MyApp> {
           // The bottom navigation bar
           //
           bottomNavigationBar: NavigationBar(
-            destinations: const [
+            destinations: [
               NavigationDestination(
-                icon: Icon(Icons.home),
+                icon: homeIcon,
                 label: 'Home',
               ),
               NavigationDestination(
-                icon: Icon(Icons.link),
+                icon: linkIcon,
                 label: 'Link',
               ),
               NavigationDestination(
-                icon: Icon(Icons.file_open),
+                icon: fileIcon,
                 label: 'File',
               ),
               NavigationDestination(
-                icon: Icon(Icons.chat),
+                icon: chatIcon,
                 label: 'Chat',
               ),
             ],
@@ -237,6 +258,7 @@ class _MyAppState extends State<MyApp> {
             onDestinationSelected: (int index) {
               setState(() {
                 currentPageIndex = index;
+                resetIcons(index);
               });
             },
           ),
