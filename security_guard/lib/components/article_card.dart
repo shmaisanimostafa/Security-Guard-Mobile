@@ -34,7 +34,7 @@ class ArticleCard extends StatelessWidget {
               Container(height: 5),
               Text(
                 title,
-                style: kArticleCardTitleStyle,
+                style: Theme.of(context).textTheme.titleMedium,
               ),
               Container(height: 5),
               Row(
@@ -49,7 +49,7 @@ class ArticleCard extends StatelessWidget {
                   ),
                 ],
               ),
-              Container(height: 10),
+              Container(height: 5),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
