@@ -55,6 +55,21 @@ class Profile extends StatelessWidget {
                                 AssetImage("images/ProfilePic.png"),
                           )),
                     ),
+                    Positioned(
+                      top: 150.0,
+                      right: 150.0,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            'Mostafa Shmaisani',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 20),
+                          ),
+                          Icon(Icons.verified, color: Colors.blue.shade700)
+                        ],
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 40),
@@ -66,11 +81,11 @@ class Profile extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       const ListTile(
-                        title: Text(
-                          'Mostafa Shmaisani',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 20),
-                        ),
+                        // title: Text(
+                        //   'Mostafa Shmaisani',
+                        //   style: TextStyle(
+                        //       fontWeight: FontWeight.bold, fontSize: 20),
+                        // ),
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
