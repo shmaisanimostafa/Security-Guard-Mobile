@@ -103,7 +103,7 @@ class _ScanState extends State<Scan> {
                     pickImage(ImageSource.gallery);
                   },
                   child: const UploadBox(
-                    boxText: 'Upload Image Here',
+                    boxText: 'Upload Image',
                     backColor: Colors.amber,
                     dotColor: Colors.grey,
                     icon: Icons.image_search_rounded,
@@ -115,19 +115,36 @@ class _ScanState extends State<Scan> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20.0),
-                ElevatedButton(
+                TextButton(
+                  style: TextButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
                   onPressed: () {
                     pickImage(ImageSource.camera);
                   },
-                  child: const Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.camera_alt),
-                      SizedBox(width: 10.0),
-                      Text('Capture Image'),
-                    ],
+                  child: const UploadBox(
+                    boxText: 'Capture Image',
+                    backColor: Colors.red,
+                    dotColor: Colors.grey,
+                    icon: Icons.camera_enhance,
                   ),
                 ),
+                // const SizedBox(height: 20.0),
+                // ElevatedButton(
+                //   onPressed: () {
+                //     pickImage(ImageSource.camera);
+                //   },
+                //   child: const Row(
+                //     mainAxisSize: MainAxisSize.min,
+                //     children: [
+                //       Icon(Icons.camera_alt),
+                //       SizedBox(width: 10.0),
+                //       Text('Capture Image'),
+                //     ],
+                //   ),
+                // ),
               ],
             ),
           ),

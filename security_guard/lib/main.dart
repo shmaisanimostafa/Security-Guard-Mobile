@@ -81,11 +81,11 @@ class _MyAppState extends State<MyApp> {
                 //   fit: BoxFit.contain,
                 //   height: 32,
                 // ),
-                Icon(
-                  Icons.military_tech_sharp,
-                  color: Color(0xFFFFD700),
-                  size: 32,
-                ),
+                // Icon(
+                //   Icons.military_tech_sharp,
+                //   color: Color(0xFFFFD700),
+                //   size: 32,
+                // ),
                 SizedBox(width: 10),
                 Text('Security Guard'),
               ],
@@ -100,28 +100,13 @@ class _MyAppState extends State<MyApp> {
                   setState(() {
                     isNotified = !isNotified;
                   });
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) {
-                  //     return const RegisterScreen();
-                  //   }),
-                  // );
                 },
               ),
-              // IconButton(
-              //   icon: const Icon(Icons.more_vert),
-              //   onPressed: () {
-              //     setState(() {
-              //       currentThemeMode = 2;
-              //     });
-              //   },
-              // ),
               isSignedIn
                   ? TextButton(
                       style: TextButton.styleFrom(
                         shape: const CircleBorder(),
-                        padding: const EdgeInsets.all(
-                            13), // Adjust the padding as needed
+                        padding: const EdgeInsets.all(13),
                       ),
                       onPressed: () {
                         setState(() {
