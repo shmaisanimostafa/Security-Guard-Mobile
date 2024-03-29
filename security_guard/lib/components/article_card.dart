@@ -1,6 +1,7 @@
 import 'package:capstone_proj/constants.dart';
 import 'package:capstone_proj/screens/article.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class ArticleCard extends StatelessWidget {
   const ArticleCard(
@@ -20,11 +21,14 @@ class ArticleCard extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Image.asset(
-          imageUrl,
-          height: 100,
-          width: 100,
-          fit: BoxFit.cover,
+        ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: Image.asset(
+            imageUrl,
+            height: 100,
+            width: 100,
+            fit: BoxFit.cover,
+          ),
         ),
         Container(width: 20),
         Expanded(
@@ -44,8 +48,18 @@ class ArticleCard extends StatelessWidget {
                     backgroundImage: AssetImage('images/ProfilePic.png'),
                   ),
                   const SizedBox(width: 5),
-                  Text(
-                    author,
+                  Row(
+                    children: [
+                      Text(
+                        author,
+                      ),
+                      SizedBox(width: 5),
+                      Icon(
+                        size: 15,
+                        Icons.verified,
+                        color: Colors.blue.shade700,
+                      )
+                    ],
                   ),
                 ],
               ),
