@@ -73,3 +73,11 @@ const Icon kChatOut = Icon(
 const Icon kChatFilled = Icon(
   Icons.chat,
 );
+
+const Icon kNotificationFilled = Icon(
+  Icons.notifications,
+);
+
+const Icon kNotificationOut = Icon(
+  Icons.notifications_outlined,
+);

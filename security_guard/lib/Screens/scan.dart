@@ -58,12 +58,6 @@ class _ScanState extends State<Scan> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // leading: IconButton(
-        //   icon: const Icon(Icons.arrow_back),
-        //   onPressed: () {
-        //     Navigator.pop(context);
-        //   },
-        // ),
         title: const Text('Image to Text Converter'),
       ),
       body: Padding(
@@ -104,7 +98,7 @@ class _ScanState extends State<Scan> {
                   },
                   child: const UploadBox(
                     boxText: 'Upload Image',
-                    backColor: Colors.amber,
+                    backColor: Colors.amberAccent,
                     dotColor: Colors.grey,
                     icon: Icons.image_search_rounded,
                   ),
@@ -126,7 +120,7 @@ class _ScanState extends State<Scan> {
                   },
                   child: const UploadBox(
                     boxText: 'Capture Image',
-                    backColor: Colors.red,
+                    backColor: Colors.redAccent,
                     dotColor: Colors.grey,
                     icon: Icons.camera_enhance,
                   ),

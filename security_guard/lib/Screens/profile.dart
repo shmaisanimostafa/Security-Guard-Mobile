@@ -10,14 +10,14 @@ class Profile extends StatelessWidget {
     const top = 150.0 - 50;
     return MaterialApp(
       // TODO Theme shall be the same as the parent, to be edited later
-      themeMode: ThemeMode.system,
-      darkTheme: ThemeData.dark().copyWith(
-        textTheme: Theme.of(context).textTheme.apply(fontFamily: 'Anta'),
-      ),
-      theme: ThemeData(
-        textTheme: Theme.of(context).textTheme.apply(fontFamily: 'Anta'),
-        // colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.yellow),
-      ), // Shall be the same as the parent, to be edited later
+      // themeMode: ThemeMode.system,
+      // darkTheme: ThemeData.dark().copyWith(
+      //   textTheme: Theme.of(context).textTheme.apply(fontFamily: 'Anta'),
+      // ),
+      // theme: ThemeData(
+      //   textTheme: Theme.of(context).textTheme.apply(fontFamily: 'Anta'),
+      //   // colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.yellow),
+      // ), // Shall be the same as the parent, to be edited later
       home: Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -57,7 +57,7 @@ class Profile extends StatelessWidget {
                     ),
                     Positioned(
                       top: 150.0,
-                      right: 150.0,
+                      left: 150.0,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

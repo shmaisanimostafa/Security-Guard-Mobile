@@ -40,6 +40,7 @@ class _MyAppState extends State<MyApp> {
   Icon scanIcon = kScanOut;
   Icon chatIcon = kChatOut;
   Icon fileIcon = kFileOut;
+  Icon notificationIcon = kNotificationFilled;
 
   void resetIcons(int index) {
     homeIcon = kHomeOut;
@@ -72,17 +73,11 @@ class _MyAppState extends State<MyApp> {
         Provider<bool>.value(value: isSignedIn),
       ],
       child: MaterialApp(
-        // routes: {
-        //   '/home': (context) => const Home(),
-        //   '/link': (context) => const Link(),
-        //   '/file': (context) => const File(),
-        //   '/profile': (context) => const Profile(),
-        //   '/scan': (context) => const Scan(),
-        // },
         //
         // Them mode: Light, Dark, System
         //
         themeMode: currentThemeMode,
+        // Applying Anta font
         darkTheme: ThemeData.dark().copyWith(
           textTheme: Theme.of(context).textTheme.apply(fontFamily: 'Anta'),
         ),
@@ -112,11 +107,13 @@ class _MyAppState extends State<MyApp> {
               IconButton(
                 icon: Badge(
                   isLabelVisible: isNotified,
-                  child: const Icon(Icons.notifications),
+                  child: const Icon(Icons.notifications_none_outlined),
                 ),
                 onPressed: () {
                   setState(() {
                     isNotified = !isNotified;
+                    notificationIcon =
+                        isNotified ? kNotificationFilled : kNotificationOut;
                   });
                 },
               ),
