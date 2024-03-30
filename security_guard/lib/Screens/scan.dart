@@ -1,8 +1,9 @@
 import 'dart:io';
 import 'package:capstone_proj/components/upload_box.dart';
 import 'package:capstone_proj/functions/link_regex.dart';
+import 'package:capstone_proj/functions/pick_image.dart';
+import 'package:capstone_proj/functions/text_recognition.dart';
 import 'package:flutter/material.dart';
-import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:image_picker/image_picker.dart';
 
 class Scan extends StatefulWidget {
@@ -23,36 +24,18 @@ class _ScanState extends State<Scan> {
 //
 // Image picker method
 //
-  Future pickImage(ImageSource source) async {
-    try {
-      final image = await ImagePicker().pickImage(source: source);
-      if (image == null) return;
-      final imageTemporary = File(image.path);
+  void pickAndRecognizeImage(ImageSource source) async {
+    final imageFile = await pickImage(source);
+    if (imageFile != null) {
       textRecognizing = true;
       setState(() {
-        this.image = imageTemporary;
+        image = imageFile;
       });
-      recognizeText(this.image!);
-    } on Exception catch (e) {
-      recognizedText = 'Error: $e';
+      recognizedText = await recognizeText(image!);
+      setState(() {
+        textRecognizing = false;
+      });
     }
-  }
-
-  Future recognizeText(File image) async {
-    final inputImage = InputImage.fromFile(image);
-    final textDetector = TextRecognizer();
-    final RecognizedText recognizedTextTemp =
-        await textDetector.processImage(inputImage);
-    await textDetector.close();
-    recognizedText = '';
-    for (TextBlock block in recognizedTextTemp.blocks) {
-      for (TextLine line in block.lines) {
-        recognizedText += '${line.text} ';
-      }
-    }
-    setState(() {
-      textRecognizing = false;
-    });
   }
 
   @override
@@ -75,8 +58,8 @@ class _ScanState extends State<Scan> {
                         ),
                         child: Image.file(
                           image!,
-                          width: 200,
-                          height: 200,
+                          width: 400,
+                          height: 400,
                           fit: BoxFit.cover,
                         ),
                       )
@@ -110,7 +93,7 @@ class _ScanState extends State<Scan> {
                     ),
                   ),
                   onPressed: () {
-                    pickImage(ImageSource.gallery);
+                    pickAndRecognizeImage(ImageSource.gallery);
                   },
                   child: const UploadBox(
                     boxText: 'Upload Image',
@@ -132,7 +115,7 @@ class _ScanState extends State<Scan> {
                     ),
                   ),
                   onPressed: () {
-                    pickImage(ImageSource.camera);
+                    pickAndRecognizeImage(ImageSource.camera);
                   },
                   child: const UploadBox(
                     boxText: 'Capture Image',
