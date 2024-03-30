@@ -1,17 +1,18 @@
-import 'package:capstone_proj/constants.dart';
-import 'package:capstone_proj/models/messages.dart';
+import 'package:capstone_proj/screens/registration_screens/register.dart';
 import 'package:capstone_proj/screens/navigation_screens/chat.dart';
 import 'package:capstone_proj/screens/navigation_screens/file.dart';
 import 'package:capstone_proj/screens/navigation_screens/home.dart';
 import 'package:capstone_proj/screens/navigation_screens/link.dart';
 import 'package:capstone_proj/screens/profile.dart';
-import 'package:capstone_proj/screens/registration_screens/register.dart';
-import 'package:flutter/material.dart';
+import 'package:capstone_proj/models/messages.dart';
 import 'package:capstone_proj/screens/scan.dart';
+import 'package:capstone_proj/constants.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:feedback/feedback.dart';
 
 void main() {
-  runApp(const MaterialApp(home: MyApp()));
+  runApp(const MaterialApp(home: BetterFeedback(child: MyApp())));
 }
 
 class MyApp extends StatefulWidget {
@@ -25,6 +26,7 @@ class _MyAppState extends State<MyApp> {
   int currentPageIndex = 0;
   bool isSignedIn = false;
   bool isNotified = true;
+  bool isColored = false;
   ThemeMode? currentThemeMode = ThemeMode.system;
   List<Widget> screens = [
     const Home(),
@@ -80,10 +82,15 @@ class _MyAppState extends State<MyApp> {
         // Applying Anta font
         darkTheme: ThemeData.dark().copyWith(
           textTheme: Theme.of(context).textTheme.apply(fontFamily: 'Anta'),
+          colorScheme: isColored
+              ? ColorScheme.fromSwatch(primarySwatch: Colors.yellow)
+              : null,
         ),
         theme: ThemeData(
           textTheme: Theme.of(context).textTheme.apply(fontFamily: 'Anta'),
-          // colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.yellow),
+          colorScheme: isColored
+              ? ColorScheme.fromSwatch(primarySwatch: Colors.yellow)
+              : null,
         ),
         home: Scaffold(
           appBar: AppBar(
@@ -104,6 +111,13 @@ class _MyAppState extends State<MyApp> {
               ],
             ),
             actions: [
+              IconButton(
+                  onPressed: () {
+                    setState(() {
+                      isColored = !isColored;
+                    });
+                  },
+                  icon: const Icon(Icons.color_lens)),
               IconButton(
                 icon: Badge(
                   isLabelVisible: isNotified,
