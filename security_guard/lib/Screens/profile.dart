@@ -56,8 +56,8 @@ class Profile extends StatelessWidget {
                           )),
                     ),
                     Positioned(
-                      top: 150.0,
-                      left: 150.0,
+                      top: 160.0,
+                      left: 130.0,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

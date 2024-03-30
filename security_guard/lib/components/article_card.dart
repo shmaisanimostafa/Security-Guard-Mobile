@@ -23,22 +23,23 @@ class ArticleCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           child: Image.asset(
             imageUrl,
-            height: 110,
-            width: 110,
+            height: 100,
+            width: 100,
             fit: BoxFit.cover,
           ),
         ),
         Container(width: 20),
         Expanded(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            // mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Container(height: 5),
+              // Container(height: 3.0),
               Text(
+                softWrap: true,
                 title,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
-              Container(height: 5),
               Row(
                 children: [
                   const CircleAvatar(
@@ -61,7 +62,6 @@ class ArticleCard extends StatelessWidget {
                   ),
                 ],
               ),
-              Container(height: 5),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:capstone_proj/components/upload_box.dart';
+import 'package:capstone_proj/functions/link_regex.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:image_picker/image_picker.dart';
@@ -76,6 +77,7 @@ class _ScanState extends State<Scan> {
                           image!,
                           width: 200,
                           height: 200,
+                          fit: BoxFit.cover,
                         ),
                       )
                     : const Text(
@@ -85,7 +87,21 @@ class _ScanState extends State<Scan> {
                 const SizedBox(height: 20.0),
                 textRecognizing
                     ? const CircularProgressIndicator()
-                    : Text(recognizedText),
+                    : Column(
+                        children: [
+                          Text(recognizedText),
+                          const SizedBox(height: 20.0),
+                          Text(
+                            extractLink(recognizedText),
+                            style: const TextStyle(
+                              color: Colors.blue,
+                              decoration: TextDecoration.underline,
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
                 const SizedBox(height: 20.0),
                 TextButton(
                   style: TextButton.styleFrom(

@@ -107,7 +107,7 @@ class _MyAppState extends State<MyApp> {
               IconButton(
                 icon: Badge(
                   isLabelVisible: isNotified,
-                  child: const Icon(Icons.notifications_none_outlined),
+                  child: notificationIcon,
                 ),
                 onPressed: () {
                   setState(() {
@@ -157,43 +157,82 @@ class _MyAppState extends State<MyApp> {
             ],
           ),
           drawer: Drawer(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+            child: ListView(
+              // mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Expanded(
-                  flex: 9,
-                  child: Center(
-                    child: DropdownMenu(
-                      enableSearch: false,
-                      helperText: 'Select a theme mode',
-                      label: const Text('Theme Mode'),
-                      dropdownMenuEntries: const <DropdownMenuEntry<ThemeMode>>[
-                        DropdownMenuEntry(
-                          value: ThemeMode.light,
-                          label: 'Light',
-                        ),
-                        DropdownMenuEntry(
-                          value: ThemeMode.dark,
-                          label: 'Dark',
-                        ),
-                        DropdownMenuEntry(
-                          value: ThemeMode.system,
-                          label: 'System',
-                        ),
-                      ],
-                      onSelected: (value) {
-                        setState(
-                          () {
-                            currentThemeMode = value;
-                          },
+                const DrawerHeader(
+                  child: Text('Security Guard'),
+                ),
+                Text('Settings', textAlign: TextAlign.center),
+                ListTile(
+                  title: const Text('Theme Mode'),
+                  // subtitle: const Text("getThemeModeLabel"),
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Select a theme mode'),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              ListTile(
+                                title: const Text('Light'),
+                                onTap: () {
+                                  setState(() {
+                                    currentThemeMode = ThemeMode.light;
+                                  });
+                                  Navigator.pop(context);
+                                },
+                              ),
+                              ListTile(
+                                title: const Text('Dark'),
+                                onTap: () {
+                                  setState(() {
+                                    currentThemeMode = ThemeMode.dark;
+                                  });
+                                  Navigator.pop(context);
+                                },
+                              ),
+                              ListTile(
+                                title: const Text('System'),
+                                onTap: () {
+                                  setState(() {
+                                    currentThemeMode = ThemeMode.system;
+                                  });
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ],
+                          ),
                         );
                       },
-                    ),
-                  ),
+                    );
+                  },
                 ),
-                const Expanded(
-                  flex: 1,
-                  child: Text('Developed by Mostafa Shmaisani'),
+                ListTile(
+                  title: const Text('About'),
+                  onTap: () {
+                    showAboutDialog(
+                      // children: const [
+                      //   Text('Developed by Mostafa Shmaisani'),
+                      // ],
+                      context: context,
+                      applicationName: 'Security Guard',
+                      applicationVersion: '1.0.0',
+                      applicationIcon: const Image(
+                        image: AssetImage('images/Logo.png'),
+                        width: 50,
+                        height: 50,
+                      ),
+                      applicationLegalese:
+                          '© ${DateTime.now().year} Mostafa Shmaisani',
+                    );
+                  },
+                ),
+                const Text(
+                  'Developed by Mostafa Shmaisani',
+                  textAlign: TextAlign.center,
                 ),
               ],
             ),
