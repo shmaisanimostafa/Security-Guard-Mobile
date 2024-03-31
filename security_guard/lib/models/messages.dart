@@ -60,9 +60,13 @@ class Messages extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addMessageAI(String question) {
-    final message =
-        MessageBubble(sender: 'me, AI', text: question, isMe: true, isAI: true);
+  void addMessageAI(String question) async {
+    final message = MessageBubble(
+      sender: 'me, AI',
+      text: question,
+      isMe: true,
+      isAI: true,
+    );
 
     messages.add(message);
     notifyListeners();

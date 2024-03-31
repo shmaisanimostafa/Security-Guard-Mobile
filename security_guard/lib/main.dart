@@ -82,6 +82,7 @@ class _MyAppState extends State<MyApp> {
         // darkTheme: ThemeData.dark.copyWith(
         // Applying Anta font
         darkTheme: ThemeData.dark().copyWith(
+          // textTheme: 'Anta',
           // textTheme: Theme.of(context).textTheme.apply(fontFamily: 'Anta'),
           colorScheme: isColored
               ? ColorScheme.fromSwatch(primarySwatch: Colors.yellow)
@@ -178,7 +179,7 @@ class _MyAppState extends State<MyApp> {
                 const DrawerHeader(
                   child: Text('Security Guard'),
                 ),
-                Text('Settings', textAlign: TextAlign.center),
+                const Text('Settings', textAlign: TextAlign.center),
                 ListTile(
                   title: const Text('Theme Mode'),
                   // subtitle: const Text("getThemeModeLabel"),
