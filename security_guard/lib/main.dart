@@ -79,15 +79,16 @@ class _MyAppState extends State<MyApp> {
         // Them mode: Light, Dark, System
         //
         themeMode: currentThemeMode,
+        // darkTheme: ThemeData.dark.copyWith(
         // Applying Anta font
         darkTheme: ThemeData.dark().copyWith(
-          textTheme: Theme.of(context).textTheme.apply(fontFamily: 'Anta'),
+          // textTheme: Theme.of(context).textTheme.apply(fontFamily: 'Anta'),
           colorScheme: isColored
               ? ColorScheme.fromSwatch(primarySwatch: Colors.yellow)
               : null,
         ),
         theme: ThemeData(
-          textTheme: Theme.of(context).textTheme.apply(fontFamily: 'Anta'),
+          // textTheme: Theme.of(context).textTheme.apply(fontFamily: 'Anta'),
           colorScheme: isColored
               ? ColorScheme.fromSwatch(primarySwatch: Colors.yellow)
               : null,

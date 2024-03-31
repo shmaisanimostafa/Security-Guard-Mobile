@@ -57,6 +57,7 @@ class _ScanState extends State<Scan> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Image.file(
+                          
                           image!,
                           width: 400,
                           height: 400,
