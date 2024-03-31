@@ -63,6 +63,7 @@ class _SpeechScreenState extends State<SpeechScreen> {
       ),
     ),
   };
+
   final SpeechToText _speech = SpeechToText();
   bool _isListening = false;
   String _text = 'Press the button and start speaking';
@@ -104,7 +105,7 @@ class _SpeechScreenState extends State<SpeechScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromRGBO(255, 196, 0, 0.498),
+      // backgroundColor: const Color.fromRGBO(255, 196, 0, 0.498),
       appBar: AppBar(
         title: Text('Confidence: ${_confidence * 100.0}%'),
       ),
@@ -120,7 +121,7 @@ class _SpeechScreenState extends State<SpeechScreen> {
           onPressed: () {
             _listen();
           },
-          child: Icon(_isListening ? Icons.mic : Icons.mic_none),
+          child: Icon(_isListening ? Icons.mic : Icons.mic_off),
         ),
       ),
       body: SingleChildScrollView(

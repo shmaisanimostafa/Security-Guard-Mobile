@@ -62,7 +62,7 @@ class MessageBubble extends StatelessWidget {
                           // Colors.redAccent,
                         ]
                       : isMe
-                          ? [Colors.yellow, Colors.yellowAccent]
+                          ? [Colors.amber, Colors.amberAccent]
                           : [Colors.white, Colors.white70],
                 ),
               ),

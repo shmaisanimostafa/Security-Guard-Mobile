@@ -1,18 +1,30 @@
+import 'dart:io';
+import 'package:feedback/feedback.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
+import 'dart:typed_data';
 import 'package:capstone_proj/screens/registration_screens/register.dart';
 import 'package:capstone_proj/screens/navigation_screens/chat.dart';
 import 'package:capstone_proj/screens/navigation_screens/file.dart';
 import 'package:capstone_proj/screens/navigation_screens/home.dart';
 import 'package:capstone_proj/screens/navigation_screens/link.dart';
 import 'package:capstone_proj/screens/profile.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:capstone_proj/models/messages.dart';
 import 'package:capstone_proj/screens/scan.dart';
 import 'package:capstone_proj/constants.dart';
-import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:feedback/feedback.dart';
 
 void main() {
   runApp(const MaterialApp(home: BetterFeedback(child: MyApp())));
+}
+
+Future<String> writeImageToStorage(Uint8List feedbackScreenshot) async {
+  final Directory output = await getTemporaryDirectory();
+  final String screenshotFilePath = '${output.path}/feedback.png';
+  final File screenshotFile = File(screenshotFilePath);
+  await screenshotFile.writeAsBytes(feedbackScreenshot);
+  return screenshotFilePath;
 }
 
 class MyApp extends StatefulWidget {
@@ -85,7 +97,7 @@ class _MyAppState extends State<MyApp> {
           // textTheme: 'Anta',
           // textTheme: Theme.of(context).textTheme.apply(fontFamily: 'Anta'),
           colorScheme: isColored
-              ? ColorScheme.fromSwatch(primarySwatch: Colors.yellow)
+              ? const ColorScheme.dark().copyWith(primary: Colors.yellow)
               : null,
         ),
         theme: ThemeData(
@@ -113,6 +125,24 @@ class _MyAppState extends State<MyApp> {
               ],
             ),
             actions: [
+              IconButton(
+                  onPressed: () {
+                    BetterFeedback.of(context).show((feedback) async {
+                      // draft an email and send to developer
+                      final screenshotFilePath =
+                          await writeImageToStorage(feedback.screenshot);
+
+                      final Email email = Email(
+                        body: feedback.text,
+                        subject: 'App Feedback',
+                        recipients: ['shmaisanimostafa@gmail.com'],
+                        attachmentPaths: [screenshotFilePath],
+                        isHTML: false,
+                      );
+                      await FlutterEmailSender.send(email);
+                    });
+                  },
+                  icon: const Icon(Icons.bug_report_outlined)),
               IconButton(
                   onPressed: () {
                     setState(() {
