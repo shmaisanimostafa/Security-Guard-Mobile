@@ -38,7 +38,7 @@ class _ChatState extends State<Chat> {
                 ),
               );
             },
-            child: const Icon(Icons.star),
+            child: const Icon(Icons.auto_awesome_outlined),
             // backgroundColor: Colors.lightBlueAccent,
           ),
           const SizedBox(height: 40.0),

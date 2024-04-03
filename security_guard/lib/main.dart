@@ -1,14 +1,14 @@
-import 'dart:io';
 import 'package:feedback/feedback.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_email_sender/flutter_email_sender.dart';
-import 'dart:typed_data';
 import 'package:capstone_proj/screens/registration_screens/register.dart';
 import 'package:capstone_proj/screens/navigation_screens/chat.dart';
 import 'package:capstone_proj/screens/navigation_screens/file.dart';
 import 'package:capstone_proj/screens/navigation_screens/home.dart';
 import 'package:capstone_proj/screens/navigation_screens/link.dart';
 import 'package:capstone_proj/screens/profile.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
+import 'dart:typed_data';
+import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:capstone_proj/models/messages.dart';
 import 'package:capstone_proj/screens/scan.dart';
@@ -19,6 +19,13 @@ void main() {
   runApp(const MaterialApp(home: BetterFeedback(child: MyApp())));
 }
 
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
 Future<String> writeImageToStorage(Uint8List feedbackScreenshot) async {
   final Directory output = await getTemporaryDirectory();
   final String screenshotFilePath = '${output.path}/feedback.png';
@@ -27,18 +34,10 @@ Future<String> writeImageToStorage(Uint8List feedbackScreenshot) async {
   return screenshotFilePath;
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
 class _MyAppState extends State<MyApp> {
   int currentPageIndex = 0;
   bool isSignedIn = false;
   bool isNotified = true;
-  bool isColored = false;
   ThemeMode? currentThemeMode = ThemeMode.system;
   List<Widget> screens = [
     const Home(),
@@ -55,6 +54,12 @@ class _MyAppState extends State<MyApp> {
   Icon chatIcon = kChatOut;
   Icon fileIcon = kFileOut;
   Icon notificationIcon = kNotificationFilled;
+
+//
+// Color Scheme
+//
+  bool isColored = false;
+  MaterialColor schemeColor = Colors.amber;
 
   void resetIcons(int index) {
     homeIcon = kHomeOut;
@@ -79,6 +84,28 @@ class _MyAppState extends State<MyApp> {
     currentPageIndex = index;
   }
 
+  void submitFeedback(BuildContext context) async {
+    try {
+      BetterFeedback.of(context).show((feedback) async {
+        // draft an email and send to developer
+        final screenshotFilePath =
+            await writeImageToStorage(feedback.screenshot);
+
+        final Email email = Email(
+          body: feedback.text,
+          subject: 'App Feedback',
+          recipients: ['shmaisanimostafa@gmail.com'],
+          attachmentPaths: [screenshotFilePath],
+          isHTML: false,
+        );
+        // debugPrint(feedback.text);
+        await FlutterEmailSender.send(email);
+      });
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -97,13 +124,13 @@ class _MyAppState extends State<MyApp> {
           // textTheme: 'Anta',
           // textTheme: Theme.of(context).textTheme.apply(fontFamily: 'Anta'),
           colorScheme: isColored
-              ? const ColorScheme.dark().copyWith(primary: Colors.yellow)
+              ? const ColorScheme.dark().copyWith(primary: schemeColor)
               : null,
         ),
         theme: ThemeData(
           // textTheme: Theme.of(context).textTheme.apply(fontFamily: 'Anta'),
           colorScheme: isColored
-              ? ColorScheme.fromSwatch(primarySwatch: Colors.yellow)
+              ? ColorScheme.fromSwatch(primarySwatch: schemeColor)
               : null,
         ),
         home: Scaffold(
@@ -127,29 +154,16 @@ class _MyAppState extends State<MyApp> {
             actions: [
               IconButton(
                   onPressed: () {
-                    BetterFeedback.of(context).show((feedback) async {
-                      // draft an email and send to developer
-                      final screenshotFilePath =
-                          await writeImageToStorage(feedback.screenshot);
-
-                      final Email email = Email(
-                        body: feedback.text,
-                        subject: 'App Feedback',
-                        recipients: ['shmaisanimostafa@gmail.com'],
-                        attachmentPaths: [screenshotFilePath],
-                        isHTML: false,
-                      );
-                      await FlutterEmailSender.send(email);
-                    });
+                    submitFeedback(context);
                   },
                   icon: const Icon(Icons.bug_report_outlined)),
-              IconButton(
-                  onPressed: () {
-                    setState(() {
-                      isColored = !isColored;
-                    });
-                  },
-                  icon: const Icon(Icons.color_lens)),
+              // IconButton(
+              //     onPressed: () {
+              //       setState(() {
+              //         isColored = !isColored;
+              //       });
+              //     },
+              //     icon: const Icon(Icons.color_lens)),
               IconButton(
                 icon: Badge(
                   isLabelVisible: isNotified,
@@ -211,7 +225,13 @@ class _MyAppState extends State<MyApp> {
                 ),
                 const Text('Settings', textAlign: TextAlign.center),
                 ListTile(
-                  title: const Text('Theme Mode'),
+                  title: const Row(
+                    children: [
+                      Icon(Icons.dark_mode_outlined),
+                      SizedBox(width: 10),
+                      Text('Theme Mode'),
+                    ],
+                  ),
                   // subtitle: const Text("getThemeModeLabel"),
                   onTap: () {
                     showDialog(
@@ -223,7 +243,13 @@ class _MyAppState extends State<MyApp> {
                             mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
                               ListTile(
-                                title: const Text('Light'),
+                                title: const Row(
+                                  children: [
+                                    Icon(Icons.wb_sunny_outlined),
+                                    SizedBox(width: 10),
+                                    Text('Light Mode'),
+                                  ],
+                                ),
                                 onTap: () {
                                   setState(() {
                                     currentThemeMode = ThemeMode.light;
@@ -232,7 +258,13 @@ class _MyAppState extends State<MyApp> {
                                 },
                               ),
                               ListTile(
-                                title: const Text('Dark'),
+                                title: const Row(
+                                  children: [
+                                    Icon(Icons.nightlight_round),
+                                    SizedBox(width: 10),
+                                    Text('Dark Mode'),
+                                  ],
+                                ),
                                 onTap: () {
                                   setState(() {
                                     currentThemeMode = ThemeMode.dark;
@@ -241,10 +273,131 @@ class _MyAppState extends State<MyApp> {
                                 },
                               ),
                               ListTile(
-                                title: const Text('System'),
+                                title: const Row(
+                                  children: [
+                                    Icon(Icons.auto_awesome_mosaic_outlined),
+                                    SizedBox(width: 10),
+                                    Text('System Mode'),
+                                  ],
+                                ),
                                 onTap: () {
                                   setState(() {
                                     currentThemeMode = ThemeMode.system;
+                                  });
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+                ListTile(
+                  title: const Row(
+                    children: [
+                      Icon(Icons.color_lens_outlined),
+                      SizedBox(width: 10),
+                      Text('Color Scheme'),
+                    ],
+                  ),
+                  // subtitle: const Text("getThemeModeLabel"),
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Select a color'),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              ListTile(
+                                title: const Row(
+                                  children: [
+                                    Icon(Icons.color_lens, color: Colors.amber),
+                                    SizedBox(width: 10),
+                                    Text('Amber'),
+                                  ],
+                                ),
+                                onTap: () {
+                                  setState(() {
+                                    isColored = true;
+                                    schemeColor = Colors.amber;
+                                  });
+                                  Navigator.pop(context);
+                                },
+                              ),
+                              ListTile(
+                                title: const Row(
+                                  children: [
+                                    Icon(Icons.color_lens, color: Colors.blue),
+                                    SizedBox(width: 10),
+                                    Text('Blue'),
+                                  ],
+                                ),
+                                onTap: () {
+                                  setState(() {
+                                    isColored = true;
+                                    schemeColor = Colors.blue;
+                                  });
+                                  Navigator.pop(context);
+                                },
+                              ),
+                              ListTile(
+                                title: const Row(
+                                  children: [
+                                    Icon(Icons.color_lens, color: Colors.red),
+                                    SizedBox(width: 10),
+                                    Text('Red'),
+                                  ],
+                                ),
+                                onTap: () {
+                                  setState(() {
+                                    isColored = true;
+                                    schemeColor = Colors.red;
+                                  });
+                                  Navigator.pop(context);
+                                },
+                              ),
+                              ListTile(
+                                title: const Row(
+                                  children: [
+                                    Icon(Icons.color_lens, color: Colors.green),
+                                    SizedBox(width: 10),
+                                    Text('Green'),
+                                  ],
+                                ),
+                                onTap: () {
+                                  setState(() {
+                                    isColored = true;
+                                    schemeColor = Colors.green;
+                                  });
+                                  Navigator.pop(context);
+                                },
+                              ),
+                              ListTile(
+                                title: const Row(
+                                  children: [
+                                    Icon(Icons.color_lens,
+                                        color: Colors.deepPurple),
+                                    SizedBox(width: 10),
+                                    Text('Purple'),
+                                  ],
+                                ),
+                                onTap: () {
+                                  setState(() {
+                                    isColored = true;
+                                    schemeColor = Colors.deepPurple;
+                                  });
+                                  Navigator.pop(context);
+                                },
+                              ),
+                              ListTile(
+                                title: const Text('Default'),
+                                onTap: () {
+                                  setState(() {
+                                    isColored = false;
                                   });
                                   Navigator.pop(context);
                                 },
