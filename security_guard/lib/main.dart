@@ -220,10 +220,15 @@ class _MyAppState extends State<MyApp> {
             child: ListView(
               // mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const DrawerHeader(
-                  child: Text('Security Guard'),
+                DrawerHeader(
+                  child: Text(
+                    'Security Guard',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  // padding: EdgeInsets.all(2),
                 ),
                 const Text('Settings', textAlign: TextAlign.center),
+                const Divider(),
                 ListTile(
                   title: const Row(
                     children: [
@@ -409,8 +414,29 @@ class _MyAppState extends State<MyApp> {
                     );
                   },
                 ),
+                const Divider(),
+                const Text('Others', textAlign: TextAlign.center),
+                const Divider(),
                 ListTile(
-                  title: const Text('About'),
+                  title: const Row(
+                    children: [
+                      Icon(Icons.bug_report_outlined),
+                      SizedBox(width: 10),
+                      Text('Feedback'),
+                    ],
+                  ),
+                  onTap: () {
+                    submitFeedback(context);
+                  },
+                ),
+                ListTile(
+                  title: const Row(
+                    children: [
+                      Icon(Icons.info_outline),
+                      SizedBox(width: 10),
+                      Text('About'),
+                    ],
+                  ),
                   onTap: () {
                     showAboutDialog(
                       // children: const [
@@ -429,6 +455,7 @@ class _MyAppState extends State<MyApp> {
                     );
                   },
                 ),
+                const Divider(),
                 const Text(
                   'Developed by Mostafa Shmaisani',
                   textAlign: TextAlign.center,
