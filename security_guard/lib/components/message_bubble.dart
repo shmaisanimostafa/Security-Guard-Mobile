@@ -72,7 +72,7 @@ class MessageBubble extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      text.toUpperCase(),
+                      isAI ? text.toUpperCase() : text,
                       style: TextStyle(
                           fontSize: 15.0,
                           color: !isAI
