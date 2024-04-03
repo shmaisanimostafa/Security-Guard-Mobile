@@ -148,11 +148,11 @@ class _MyAppState extends State<MyApp> {
               ],
             ),
             actions: [
-              IconButton(
-                  onPressed: () {
-                    submitFeedback(context);
-                  },
-                  icon: const Icon(Icons.bug_report_outlined)),
+              // IconButton(
+              //     onPressed: () {
+              //       submitFeedback(context);
+              //     },
+              //     icon: const Icon(Icons.bug_report_outlined)),
               // IconButton(
               //     onPressed: () {
               //       setState(() {
