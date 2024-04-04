@@ -39,7 +39,12 @@ class UploadBox extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(icon, size: 50.0, color: Colors.black),
-                Text(boxText),
+                Text(
+                  boxText,
+                  style: const TextStyle(
+                    color: Colors.black,
+                  ),
+                ),
               ],
             ),
           ),
