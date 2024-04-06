@@ -1,5 +1,7 @@
 import 'package:capstone_proj/components/message_bubble.dart';
 import 'package:capstone_proj/constants.dart';
+import 'package:capstone_proj/functions/message_api_handler.dart';
+import 'package:capstone_proj/models/message.dart';
 import 'package:capstone_proj/screens/ai_chat_screen.dart';
 import 'package:capstone_proj/screens/speech_to_text.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +18,27 @@ class Chat extends StatefulWidget {
 class _ChatState extends State<Chat> {
   final messageTextController = TextEditingController();
   String messageText = '';
+
+  //
+  //SECTION Intiate Empty Article in Articles Data
+  //
+  late List<Message> data = [];
+
+  MessageAPIHandler messageAPIHandler = MessageAPIHandler();
+
+  Future<void> getData() async {
+    data = await messageAPIHandler.getMessages();
+    setState(() {});
+  }
+
+  //
+  //SECTION Fetch Articles Data in the beginning of the Widget
+  //
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +61,7 @@ class _ChatState extends State<Chat> {
                 ),
               );
             },
-            child: const Icon(Icons.auto_awesome_outlined),
+            child: const Icon(Icons.auto_awesome_rounded),
             // backgroundColor: Colors.lightBlueAccent,
           ),
           const SizedBox(height: 40.0),
@@ -56,7 +79,14 @@ class _ChatState extends State<Chat> {
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: Provider.of<Messages>(context).messages,
+                  children: [
+                    for (Message message in data)
+                      MessageBubble(
+                        sender: message.sender,
+                        text: message.text,
+                        isMe: message.sender == 'Mostafa' ? true : false,
+                      ),
+                  ],
                 ),
               ],
             ),
@@ -78,6 +108,7 @@ class _ChatState extends State<Chat> {
                 ),
                 TextButton(
                   onPressed: () {
+                    getData();
                     messageTextController.clear();
                     setState(() {
                       Provider.of<Messages>(context, listen: false)

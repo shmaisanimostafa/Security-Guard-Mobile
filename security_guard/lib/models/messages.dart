@@ -1,7 +1,11 @@
 import 'package:capstone_proj/components/message_bubble.dart';
+
+import 'package:capstone_proj/models/message.dart';
 import 'package:flutter/material.dart';
 
 class Messages extends ChangeNotifier {
+  List<Message> data = [];
+
   List<MessageBubble> messages = [
     const MessageBubble(
       sender: 'me',

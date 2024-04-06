@@ -1,4 +1,4 @@
-import 'package:capstone_proj/screens/registration_screens/change_password.dart';
+import 'package:capstone_proj/screens/registration_screens/forgot_password.dart';
 import 'package:capstone_proj/screens/registration_screens/register.dart';
 import 'package:flutter/material.dart';
 
@@ -57,8 +57,7 @@ class LogInScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) {
-                      // TODO shall be forgot password screen
-                      return const ChangePasswordScreen();
+                      return const ForgotPasswordScreen();
                     }),
                   );
                 },

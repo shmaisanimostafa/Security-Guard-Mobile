@@ -1,4 +1,4 @@
-import 'package:capstone_proj/functions/api_handler.dart';
+import 'package:capstone_proj/functions/article_api_handler.dart';
 import 'package:capstone_proj/models/article.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +12,7 @@ class ArticleScreen extends StatefulWidget {
 }
 
 class _ArticleScreenState extends State<ArticleScreen> {
-  APIHandler apiHandler = APIHandler();
+  ArticleAPIHandler apiHandler = ArticleAPIHandler();
   late Article data = Article(
     id: 1,
     title: 'sample',

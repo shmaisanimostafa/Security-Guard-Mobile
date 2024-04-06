@@ -1,5 +1,5 @@
 import 'package:capstone_proj/components/article_card.dart';
-import 'package:capstone_proj/functions/api_handler.dart';
+import 'package:capstone_proj/functions/article_api_handler.dart';
 import 'package:capstone_proj/models/article.dart';
 import 'package:flutter/material.dart';
 
@@ -11,13 +11,11 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  APIHandler apiHandler = APIHandler();
+  ArticleAPIHandler apiHandler = ArticleAPIHandler();
   //
   //SECTION Intiate Empty Article in Articles Data
   //
-  late List<Article> data = [
-    Article(title: 'sample', body1: 'sample', body2: 'sample', id: 1)
-  ];
+  late List<Article> data = [];
 
   //
   //SECTION Fetch Articles Data
