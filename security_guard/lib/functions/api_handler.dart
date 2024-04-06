@@ -18,29 +18,14 @@ class APIHandler {
     } else {
       throw "Can't get articles.";
     }
-    // List<Article> data = [];
-    // final uri = Uri.parse(_baseUrl);
-    // try {
-    //   final response = await http.get(uri, headers: {
-    //     'Content-Type': 'application/json',
-    //     'Accept': 'application/json',
-    //   });
-    //   if (response.statusCode == 200) {
-    //     List<dynamic> body = jsonDecode(response.body);
-    //     List<Article> articles = body
-    //         .map(
-    //           (dynamic item) => Article.fromJson(item),
-    //         )
-    //         .toList();
-    //     print(response.body.toString());
-    //     return articles;
-    //   } else {
-    //     print(response.statusCode);
-    //     return [];
-    //   }
-    // } catch (e) {
-    //   print(e.toString());
-    //   return [];
-    // }
+  }
+
+  Future<Article> getArticle(int id) async {
+    final response = await http.get(Uri.parse("$_baseUrl/$id"));
+    if (response.statusCode == 200) {
+      return Article.fromJson(jsonDecode(response.body));
+    } else {
+      throw "Can't get article.";
+    }
   }
 }

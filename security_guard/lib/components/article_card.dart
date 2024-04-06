@@ -1,4 +1,4 @@
-import 'package:capstone_proj/screens/article.dart';
+import 'package:capstone_proj/screens/article_screen.dart';
 import 'package:flutter/material.dart';
 
 class ArticleCard extends StatelessWidget {
@@ -71,7 +71,9 @@ class ArticleCard extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) {
-                            return const Article();
+                            return const ArticleScreen(
+                              id: 1,
+                            );
                           }),
                         );
                       },

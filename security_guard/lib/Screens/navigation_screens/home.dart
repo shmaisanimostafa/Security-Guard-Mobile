@@ -13,7 +13,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   APIHandler apiHandler = APIHandler();
   late List<Article> data = [
-    Article(title: 'sample', body1: 'sample', body2: 'sample')
+    Article(title: 'sample', body1: 'sample', body2: 'sample', id: 1)
   ];
 
   void getData() async {
