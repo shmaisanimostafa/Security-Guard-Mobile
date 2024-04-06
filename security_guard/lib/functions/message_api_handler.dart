@@ -29,7 +29,7 @@ class MessageAPIHandler {
     }
   }
 
-  Future<Message> postMessage(Message message) async {
+  Future<Message> addMessage(Message message) async {
     final response = await http.post(
       Uri.parse(_baseUrl),
       headers: <String, String>{

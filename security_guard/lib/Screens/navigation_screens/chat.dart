@@ -31,6 +31,12 @@ class _ChatState extends State<Chat> {
     setState(() {});
   }
 
+  void addMessage(Message message) {
+    setState(() {
+      messageAPIHandler.addMessage(message);
+    });
+  }
+
   //
   //SECTION Fetch Articles Data in the beginning of the Widget
   //
@@ -108,15 +114,16 @@ class _ChatState extends State<Chat> {
                 ),
                 TextButton(
                   onPressed: () {
-                    getData();
                     messageTextController.clear();
+                    if (messageText != '') {
+                      messageAPIHandler.addMessage(
+                        Message(0,
+                            isAi: false, sender: 'Mostafa', text: messageText),
+                      );
+                    }
+                    messageText = '';
                     setState(() {
-                      Provider.of<Messages>(context, listen: false)
-                          .addMessage(MessageBubble(
-                        sender: 'me',
-                        text: messageText,
-                        isMe: true,
-                      ));
+                      getData();
                     });
                   },
                   child: const Text(

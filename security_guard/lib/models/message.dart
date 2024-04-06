@@ -1,21 +1,22 @@
 class Message {
-  final int id;
+  int id;
   final String text;
   final bool isAi;
   final String sender;
   // final DateTime timestamp;
 
-  Message({
+  Message(
+    this.id, {
     required this.isAi,
     required this.sender,
-    required this.id,
     required this.text,
     // required this.timestamp,
   });
 
   factory Message.fromJson(Map<String, dynamic> json) {
     return Message(
-      id: json['id'],
+      json['id'],
+      // id: json['id'],
       text: json['text'],
       isAi: json['isAi'],
       sender: json['sender'],
@@ -26,7 +27,7 @@ class Message {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
+      // 'id': id,
       'text': text,
       'isAi': isAi,
       'sender': sender,
