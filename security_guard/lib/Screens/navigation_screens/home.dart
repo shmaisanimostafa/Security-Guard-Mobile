@@ -18,26 +18,32 @@ class _HomeState extends State<Home> {
 
   void getData() async {
     data = await apiHandler.getArticles();
-    setState(() {
-      data = data;
-    });
-    print(data.length.toString());
+    setState(() {});
   }
 
   @override
   void initState() {
     super.initState();
-
     getData();
   }
 
   @override
   Widget build(BuildContext context) {
+    int articleCount = data.length;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Center(
           child: ListView(
         children: [
+          Row(
+            children: [
+              Text(
+                '$articleCount Articles Fetched!',
+                style:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
           MaterialButton(
               onPressed: () {
                 getData();
