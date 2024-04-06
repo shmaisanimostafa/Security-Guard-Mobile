@@ -41,10 +41,10 @@ class LogInScreen extends StatelessWidget {
               const SizedBox(height: 16),
               TextButton(
                 onPressed: () {
+                  //NOTE - Navigate to Register Screen
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) {
-                      // TODO shall be register screen
                       return const RegisterScreen();
                     }),
                   );

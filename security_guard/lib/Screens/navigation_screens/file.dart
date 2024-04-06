@@ -1,7 +1,7 @@
 import 'package:capstone_proj/components/upload_box.dart';
 import 'package:capstone_proj/functions/file_picker.dart';
-import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
 
 class UploadFileScreen extends StatefulWidget {
   const UploadFileScreen({super.key});

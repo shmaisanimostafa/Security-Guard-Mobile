@@ -6,11 +6,11 @@ Future<PlatformFile> pickFile() async {
   if (result != null) {
     PlatformFile file = result.files.first;
 
-    print(file.name);
-    print(file.bytes);
-    print(file.size);
-    print(file.extension);
-    print(file.path);
+    // print(file.name);
+    // print(file.bytes);
+    // print(file.size);
+    // print(file.extension);
+    // print(file.path);
     return file;
   } else {
     //
