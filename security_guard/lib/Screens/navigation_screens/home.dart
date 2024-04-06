@@ -12,15 +12,24 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   APIHandler apiHandler = APIHandler();
+  //
+  //SECTION Intiate Empty Article in Articles Data
+  //
   late List<Article> data = [
     Article(title: 'sample', body1: 'sample', body2: 'sample', id: 1)
   ];
 
+  //
+  //SECTION Fetch Articles Data
+  //
   void getData() async {
     data = await apiHandler.getArticles();
     setState(() {});
   }
 
+  //
+  //SECTION Fetch Articles Data in the beginning of the Widget
+  //
   @override
   void initState() {
     super.initState();
@@ -37,24 +46,28 @@ class _HomeState extends State<Home> {
         children: [
           Row(
             children: [
+              //SECTION - Return the number of articles fetched
               Text(
                 '$articleCount Articles Fetched!',
-                style:
-                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: Theme.of(context).textTheme.bodyLarge,
               ),
             ],
           ),
+          //SECTION - Button to Refresh the Articles
           MaterialButton(
-              onPressed: () {
-                getData();
-              },
-              child: const Text('Refresh')),
+            onPressed: () {
+              getData();
+            },
+            child: const Text('Refresh'),
+          ),
+          //SECTION - List of Articles
           ListView.builder(
             itemBuilder: (BuildContext context, int index) {
               return Column(
                 children: [
                   const Divider(),
                   ArticleCard(
+                    id: data[index].id,
                     title: data[index].title,
                     author: "Mostafa Shmaisani",
                     date: 'Sometime Feb 2023',
@@ -67,77 +80,7 @@ class _HomeState extends State<Home> {
             shrinkWrap: true,
           )
         ],
-      )
-          // ListView(
-          //   children: [
-          //     Provider.of<bool>(context) == true
-          //         ? Row(
-          //             mainAxisAlignment: MainAxisAlignment.center,
-          //             children: [
-          //               const Text(
-          //                 'Welcome back',
-          //                 style: TextStyle(
-          //                   fontSize: 20,
-          //                   fontWeight: FontWeight.bold,
-          //                 ),
-          //               ),
-          //               Text(
-          //                 ' Mostafa Shmaisani !',
-          //                 style: TextStyle(
-          //                   fontSize: 20,
-          //                   fontWeight: FontWeight.bold,
-          //                   color: Theme.of(context).primaryColor,
-          //                 ),
-          //               ),
-          //             ],
-          //           )
-          //         : const Column(
-          //             children: [
-          //               IntroCard(),
-          //               SizedBox(height: 10),
-          //               IntroButtons(),
-          //             ],
-          //           ),
-          //     const SizedBox(height: 10),
-          //     const Divider(),
-          //     const ArticleCard(
-          //       title: "Cryptography and Network Security",
-          //       author: "Mostafa Shmaisani",
-          //       date: 'Feb 14 2023',
-          //       imageUrl: 'images/ProfilePic.png',
-          //     ),
-          //     const Divider(),
-          //     const ArticleCard(
-          //       title: "Cryptography and Network Security",
-          //       author: "Mostafa Shmaisani",
-          //       date: 'Feb 14 2023',
-          //       imageUrl: 'images/ProfilePic.png',
-          //     ),
-          //     const Divider(),
-          //     const ArticleCard(
-          //       title: "Cryptography and Network Security",
-          //       author: "Mostafa Shmaisani",
-          //       date: 'Feb 14 2023',
-          //       imageUrl: 'images/ProfilePic.png',
-          //     ),
-          //     const Divider(),
-          //     const ArticleCard(
-          //       title: "Cryptography and Network Security",
-          //       author: "Mostafa Shmaisani",
-          //       date: 'Feb 14 2023',
-          //       imageUrl: 'images/ProfilePic.png',
-          //     ),
-          //     const Divider(),
-          //     const ArticleCard(
-          //       title: "Cryptography and Network Security",
-          //       author: "Mostafa Shmaisani",
-          //       date: 'Feb 14 2023',
-          //       imageUrl: 'images/ProfilePic.png',
-          //     ),
-          //     const Divider(),
-          //   ],
-          // ),
-          ),
+      )),
     );
   }
 }

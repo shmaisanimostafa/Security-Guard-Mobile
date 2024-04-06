@@ -7,8 +7,10 @@ class ArticleCard extends StatelessWidget {
       required this.title,
       required this.author,
       required this.date,
-      required this.imageUrl});
+      required this.imageUrl,
+      required this.id});
 
+  final int id;
   final String title;
   final String author;
   final String date;
@@ -71,8 +73,8 @@ class ArticleCard extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) {
-                            return const ArticleScreen(
-                              id: 1,
+                            return ArticleScreen(
+                              id: id,
                             );
                           }),
                         );
