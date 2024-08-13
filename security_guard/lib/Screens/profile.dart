@@ -1,4 +1,4 @@
-import 'package:capstone_proj/screens/registration_screens/change_password.dart';
+import 'package:capstone_proj/Screens/registration_screens/change_password.dart';
 
 import 'package:flutter/material.dart';
 

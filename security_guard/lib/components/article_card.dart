@@ -1,4 +1,4 @@
-import 'package:capstone_proj/screens/article_screen.dart';
+import 'package:capstone_proj/Screens/article_screen.dart';
 import 'package:flutter/material.dart';
 
 class ArticleCard extends StatelessWidget {

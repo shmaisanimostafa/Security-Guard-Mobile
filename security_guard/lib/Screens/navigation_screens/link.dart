@@ -1,4 +1,4 @@
-import 'package:capstone_proj/screens/response_safe_screen.dart';
+import 'package:capstone_proj/Screens/response_safe_screen.dart';
 import 'package:flutter/material.dart';
 
 class Link extends StatelessWidget {

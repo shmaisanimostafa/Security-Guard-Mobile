@@ -1,4 +1,4 @@
-import 'package:capstone_proj/screens/registration_screens/log_in.dart';
+import 'package:capstone_proj/Screens/registration_screens/log_in.dart';
 import 'package:flutter/material.dart';
 
 class IntroButtons extends StatelessWidget {
@@ -20,7 +20,7 @@ class IntroButtons extends StatelessWidget {
             }));
           },
           style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(Colors.teal),
+            backgroundColor: WidgetStateProperty.all(Colors.teal),
           ),
           child: const Text('Sign Up', style: TextStyle(color: Colors.white)),
         ),

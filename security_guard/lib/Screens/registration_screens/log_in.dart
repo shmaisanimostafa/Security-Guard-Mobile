@@ -1,5 +1,5 @@
-import 'package:capstone_proj/screens/registration_screens/forgot_password.dart';
-import 'package:capstone_proj/screens/registration_screens/register.dart';
+import 'package:capstone_proj/Screens/registration_screens/forgot_password.dart';
+import 'package:capstone_proj/Screens/registration_screens/register.dart';
 import 'package:flutter/material.dart';
 
 class LogInScreen extends StatelessWidget {

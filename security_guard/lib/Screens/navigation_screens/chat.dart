@@ -2,11 +2,9 @@ import 'package:capstone_proj/components/message_bubble.dart';
 import 'package:capstone_proj/constants.dart';
 import 'package:capstone_proj/functions/message_api_handler.dart';
 import 'package:capstone_proj/models/message.dart';
-import 'package:capstone_proj/screens/ai_chat_screen.dart';
-import 'package:capstone_proj/screens/speech_to_text.dart';
+import 'package:capstone_proj/Screens/ai_chat_screen.dart';
+import 'package:capstone_proj/Screens/speech_to_text.dart';
 import 'package:flutter/material.dart';
-import 'package:capstone_proj/models/messages.dart';
-import 'package:provider/provider.dart';
 
 class Chat extends StatefulWidget {
   const Chat({super.key});
