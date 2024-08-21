@@ -18,6 +18,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
     title: 'sample',
     body1: 'sample',
     body2: 'sample',
+    imageURL: 'images/ProfilePic.png',
   );
 
   void getData() async {
