@@ -1,12 +1,18 @@
-import 'package:capstone_proj/Screens/registration_screens/forgot_password.dart';
-import 'package:capstone_proj/Screens/registration_screens/register.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:capstone_proj/models/auth_provider.dart';
+import 'package:capstone_proj/Screens/initial_screen_my_app.dart';
+import 'package:capstone_proj/Screens/registration_screens/register.dart';
+import 'package:capstone_proj/Screens/registration_screens/forgot_password.dart';
 
 class LogInScreen extends StatelessWidget {
   const LogInScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final _usernameController = TextEditingController();
+    final _passwordController = TextEditingController();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Log In'),
@@ -19,15 +25,17 @@ class LogInScreen extends StatelessWidget {
             children: [
               Image.asset('images/Logo.png', height: 200),
               const SizedBox(height: 16),
-              const TextField(
-                decoration: InputDecoration(
-                  labelText: 'Email',
+              TextField(
+                controller: _usernameController,
+                decoration: const InputDecoration(
+                  labelText: 'Username',
                   border: OutlineInputBorder(),
                 ),
               ),
               const SizedBox(height: 16),
-              const TextField(
-                decoration: InputDecoration(
+              TextField(
+                controller: _passwordController,
+                decoration: const InputDecoration(
                   labelText: 'Password',
                   border: OutlineInputBorder(),
                 ),
@@ -35,18 +43,38 @@ class LogInScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () async {
+                  final username = _usernameController.text;
+                  final password = _passwordController.text;
+
+                  if (username.isEmpty || password.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Please enter both username and password')),
+                    );
+                    return;
+                  }
+
+                  try {
+                    await Provider.of<AuthProvider>(context, listen: false).login(username, password);
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => const MyApp()),
+                    );
+                    print(AuthProvider().isAuthenticated);
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Login failed: ${e.toString()}')),
+                    );
+                  }
+                },
                 child: const Text('Login'),
               ),
               const SizedBox(height: 16),
               TextButton(
                 onPressed: () {
-                  //NOTE - Navigate to Register Screen
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) {
-                      return const RegisterScreen();
-                    }),
+                    MaterialPageRoute(builder: (context) => const RegisterScreen()),
                   );
                 },
                 child: const Text('Create Account'),
@@ -56,9 +84,7 @@ class LogInScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) {
-                      return const ForgotPasswordScreen();
-                    }),
+                    MaterialPageRoute(builder: (context) => const ForgotPasswordScreen()),
                   );
                 },
                 child: const Text('Forgot Password?'),

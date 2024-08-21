@@ -18,22 +18,51 @@ class AuthService {
       }),
     );
 
-    return json.decode(response.body);
+    print('Register Response status: ${response.statusCode}');
+    print('Register Response body: ${response.body}');
+
+    try {
+      final responseData = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        return responseData;
+      } else {
+        return {'Message': responseData['Message'] ?? 'Registration failed'};
+      }
+    } catch (e) {
+      print('Error decoding response: $e');
+      return {'Message': 'Unexpected error occurred'};
+    }
   }
 
-  // Login a user and receive a JWT token
-  Future<Map<String, dynamic>> login(String username, String password) async {
-    final response = await http.post(
-      Uri.parse('$_baseUrl/api/auth/login'),
-      headers: {'Content-Type': 'application/json'},
-      body: json.encode({
-        'username': username,
-        'password': password,
-      }),
-    );
+Future<Map<String, dynamic>> login(String username, String password) async {
+  final response = await http.post(
+    Uri.parse('$_baseUrl/api/Auth/login'),
+    headers: {'Content-Type': 'application/json'},
+    body: jsonEncode({'Username': username, 'Password': password}),
+  );
 
-    return json.decode(response.body);
+  print('Response status: ${response.statusCode}');
+  print('Response body: ${response.body}');
+
+  if (response.statusCode == 200) {
+    try {
+      return jsonDecode(response.body);
+    } catch (e) {
+      // Handle JSON decoding error
+      return {'Message': 'Unexpected error occurred'};
+    }
+  } else {
+    // Handle different status codes here if needed
+    try {
+      final errorResponse = jsonDecode(response.body);
+      return {'Message': errorResponse['Message'] ?? 'Login failed'};
+    } catch (e) {
+      return {'Message': 'Unexpected error occurred'};
+    }
   }
+}
+
+
 
   // Refresh the JWT token
   Future<Map<String, dynamic>> refreshToken(String token) async {

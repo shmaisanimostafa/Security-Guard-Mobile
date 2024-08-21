@@ -1,6 +1,7 @@
-import 'package:capstone_proj/Screens/registration_screens/change_password.dart';
-
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:capstone_proj/models/auth_provider.dart'; // Import AuthProvider
+import 'package:capstone_proj/Screens/registration_screens/change_password.dart';
 
 class Profile extends StatelessWidget {
   const Profile({super.key});
@@ -8,6 +9,7 @@ class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const top = 150.0 - 50;
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -71,11 +73,6 @@ class Profile extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     const ListTile(
-                      // title: Text(
-                      //   'Mostafa Shmaisani',
-                      //   style: TextStyle(
-                      //       fontWeight: FontWeight.bold, fontSize: 20),
-                      // ),
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -189,7 +186,7 @@ class Profile extends StatelessWidget {
                           Row(
                             children: [
                               Text(
-                                'Mestadon: ',
+                                'Mastodon: ',
                                 style: TextStyle(
                                     color: Colors.deepPurple,
                                     fontWeight: FontWeight.bold),
@@ -229,11 +226,15 @@ class Profile extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 10),
+              // Log Out Button
               FilledButton(
-                  onPressed: () {
-                    // Navigator.pop(context);
-                  },
-                  child: const Text('Log Out')),
+                onPressed: () {
+                  final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                  authProvider.logout(); // Call logout method
+                  Navigator.popUntil(context, ModalRoute.withName('/')); // Navigate to initial route
+                },
+                child: const Text('Log Out'),
+              ),
               const SizedBox(height: 40),
             ],
           ),
