@@ -16,7 +16,7 @@ class Article {
     return Article(
       id: json['id'],
       title: json['title'],
-      body1: json['body1'],
+      body1: json['content'],
       body2: json['body2'],
     );
   }
