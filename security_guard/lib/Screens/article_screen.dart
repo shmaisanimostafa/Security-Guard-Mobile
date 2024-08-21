@@ -15,9 +15,9 @@ class _ArticleScreenState extends State<ArticleScreen> {
   ArticleAPIHandler apiHandler = ArticleAPIHandler();
   late Article data = Article(
     id: 1,
-    title: 'sample',
-    body1: 'sample',
-    body2: 'sample',
+    title: 'Getting Title',
+    body1: 'Getting the Content',
+    body2: 'Getting the Content',
     imageURL: 'images/ProfilePic.png',
   );
 
@@ -83,8 +83,8 @@ class _ArticleScreenState extends State<ArticleScreen> {
             const SizedBox(height: 15.0),
             ClipRRect(
               borderRadius: BorderRadius.circular(10),
-              child: Image.asset(
-                'images/ProfilePic.png',
+              child: Image.network(
+                data.imageURL,
                 // height: 200,
                 // fit: BoxFit.fill,
               ),
