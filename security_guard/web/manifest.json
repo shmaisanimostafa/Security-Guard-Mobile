@@ -1,6 +1,6 @@
 {
-    "name": "capstone_proj",
-    "short_name": "capstone_proj",
+    "name": "security_guard",
+    "short_name": "security_guard",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
