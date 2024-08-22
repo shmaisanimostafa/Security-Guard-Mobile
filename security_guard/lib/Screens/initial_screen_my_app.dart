@@ -104,6 +104,11 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
 
+      // Ensure user data is fetched
+  if (authProvider.isAuthenticated && authProvider.userData == null) {
+    authProvider.fetchUserData();
+  }
+
     return MaterialApp(
       themeMode: currentThemeMode,
       darkTheme: ThemeData.dark().copyWith(
@@ -160,10 +165,13 @@ class _MyAppState extends State<MyApp> {
                         MaterialPageRoute(builder: (context) => const Profile()),
                       );
                     },
-                    child: const CircleAvatar(
-                      radius: 12.0,
-                      backgroundImage: AssetImage('images/ProfilePic.png'),
-                    ),
+                    child: CircleAvatar(
+                    radius: 12.0,
+                    backgroundImage:
+                    authProvider.profileImageUrl != null
+                        ? NetworkImage(authProvider.profileImageUrl!)
+                        : AssetImage('images/ProfilePic.png') as ImageProvider,
+                  ),
                   )
                 : IconButton(
                     icon: const Icon(Icons.login),

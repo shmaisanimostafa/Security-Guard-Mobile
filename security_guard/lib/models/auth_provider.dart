@@ -48,6 +48,11 @@ class AuthProvider with ChangeNotifier {
   }
 }
 
+//Get the profile image URL from the user data
+  String get profileImageUrl {
+    return userData!['imageURL']; // Adjust the key according to your API response
+  }
+
 
   Future<void> register(String username, String email, String password, String confirmPassword) async {
     try {
