@@ -32,6 +32,7 @@ class _ChatState extends State<Chat> {
   void addMessage(Message message) {
     setState(() {
       messageAPIHandler.addMessage(message);
+      
     });
   }
 

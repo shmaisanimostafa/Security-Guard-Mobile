@@ -1,3 +1,4 @@
+import 'package:capstone_proj/Screens/prediction_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:feedback/feedback.dart';
@@ -12,6 +13,7 @@ import 'package:capstone_proj/Screens/navigation_screens/chat.dart';
 import 'package:capstone_proj/Screens/navigation_screens/file.dart';
 import 'package:capstone_proj/Screens/navigation_screens/home.dart';
 import 'package:capstone_proj/Screens/navigation_screens/link.dart';
+
 import 'package:capstone_proj/Screens/profile.dart';
 import 'package:capstone_proj/constants.dart';
 import 'package:capstone_proj/models/auth_provider.dart'; // Import the AuthProvider
@@ -40,6 +42,7 @@ class _MyAppState extends State<MyApp> {
     const Link(),
     const UploadFileScreen(),
     const Chat(),
+    PredictionScreen(),
   ];
 
   // Navigation Icons
@@ -167,9 +170,8 @@ class _MyAppState extends State<MyApp> {
                     },
                     child: CircleAvatar(
                     radius: 12.0,
-                    backgroundImage:
-                    authProvider.profileImageUrl != null
-                        ? NetworkImage(authProvider.profileImageUrl!)
+                    backgroundImage: authProvider.profileImageUrl != null
+                        ? NetworkImage(authProvider.profileImageUrl)
                         : AssetImage('images/ProfilePic.png') as ImageProvider,
                   ),
                   )
@@ -455,9 +457,14 @@ class _MyAppState extends State<MyApp> {
               icon: fileIcon,
               label: 'File',
             ),
+
             NavigationDestination(
               icon: chatIcon,
               label: 'Chat',
+            ),
+                         NavigationDestination(
+              icon: fileIcon,
+              label: 'Prediction',
             ),
           ],
           labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,

@@ -19,7 +19,7 @@ class Article {
       id: json['id'],
       title: json['title'],
       body1: json['content'],
-      body2: json['body2'],
+      body2: json['summary'],
       imageURL: json['imageURL']
     );
   }

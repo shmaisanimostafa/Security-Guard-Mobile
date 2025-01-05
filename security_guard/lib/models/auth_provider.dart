@@ -50,6 +50,9 @@ class AuthProvider with ChangeNotifier {
 
 //Get the profile image URL from the user data
   String get profileImageUrl {
+    if (userData == null) {
+      return '';
+    }
     return userData!['imageURL']; // Adjust the key according to your API response
   }
 
