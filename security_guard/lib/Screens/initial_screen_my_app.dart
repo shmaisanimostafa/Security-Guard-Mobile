@@ -1,3 +1,4 @@
+import 'package:capstone_proj/Screens/mongo_message_screen.dart';
 import 'package:capstone_proj/Screens/prediction_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -9,7 +10,6 @@ import 'package:path_provider/path_provider.dart';
 // import 'package:capstone_proj/models/messages.dart';
 import 'package:capstone_proj/Screens/scan.dart';
 import 'package:capstone_proj/Screens/registration_screens/register.dart';
-import 'package:capstone_proj/Screens/navigation_screens/chat.dart';
 import 'package:capstone_proj/Screens/navigation_screens/file.dart';
 import 'package:capstone_proj/Screens/navigation_screens/home.dart';
 import 'package:capstone_proj/Screens/navigation_screens/link.dart';
@@ -41,7 +41,7 @@ class _MyAppState extends State<MyApp> {
     const Home(),
     const Link(),
     const UploadFileScreen(),
-    const Chat(),
+     MongoChatScreen(),
     PredictionScreen(),
   ];
 

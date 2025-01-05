@@ -1,0 +1,123 @@
+import 'package:capstone_proj/models/mongo_message.dart';
+import 'package:http/http.dart' as http;
+import 'package:signalr_netcore/signalr_client.dart';
+import 'dart:convert';
+
+class MongoMessageAPIHandler {
+  final String _baseUrl = "https://localhost:7244/api/MongoMessages"; // MongoDB API URL
+  final String _signalRUrl = "http://localhost:7244/chatHub"; // SignalR Hub URL
+
+  late HubConnection hubConnection;
+
+  Future<void> initializeSignalR(Function(MongoMessage) onNewMessage) async {
+    hubConnection = HubConnectionBuilder().withUrl(_signalRUrl).build();
+
+    hubConnection.onclose((error) {
+      print("SignalR connection closed: $error");
+    } as ClosedCallback);
+
+    hubConnection.on('ReceiveMessage', (arguments) {
+      final newMessage = MongoMessage.fromJson(arguments![0] as Map<String, dynamic>);
+      onNewMessage(newMessage); // Call the passed callback
+    });
+
+    await hubConnection.start();
+    print("SignalR connected successfully.");
+  }
+
+  // Fetch All MongoMessages
+  Future<List<MongoMessage>> getMessages() async {
+    final response = await http.get(Uri.parse(_baseUrl));
+    if (response.statusCode == 200) {
+      List<dynamic> body = jsonDecode(response.body);
+      return body.map((dynamic item) => MongoMessage.fromJson(item)).toList();
+    } else {
+      throw Exception("Can't get messages.");
+    }
+  }
+
+  // Fetch Single MongoMessage
+  Future<MongoMessage> getMessage(String id) async {
+    final response = await http.get(Uri.parse("$_baseUrl/$id"));
+    if (response.statusCode == 200) {
+      return MongoMessage.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception("Can't get message.");
+    }
+  }
+
+  // Add MongoMessage
+  Future<MongoMessage> addMessage(MongoMessage message) async {
+    final response = await http.post(
+      Uri.parse(_baseUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(message.toJson()),
+    );
+
+    if (response.statusCode == 201) {
+      final newMessage = MongoMessage.fromJson(jsonDecode(response.body));
+
+      // Notify SignalR Hub
+      await hubConnection.invoke(
+        "SendMessage",
+        args: [newMessage.sender, newMessage.receiver, newMessage.content],
+      );
+
+      return newMessage;
+    } else {
+      throw Exception("Can't post message.");
+    }
+  }
+
+  // Update MongoMessage
+  Future<void> updateMessage(String id, MongoMessage updatedMessage) async {
+    final response = await http.put(
+      Uri.parse("$_baseUrl/$id"),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(updatedMessage.toJson()),
+    );
+
+    if (response.statusCode == 204) {
+      // Notify SignalR Hub
+      await hubConnection.invoke(
+        "UpdateMessage",
+        args: [updatedMessage.toJson()],
+      );
+    } else {
+      throw Exception("Can't update message.");
+    }
+  }
+
+  // Delete MongoMessage
+  Future<void> deleteMessage(String id) async {
+    final response = await http.delete(Uri.parse("$_baseUrl/$id"));
+
+    if (response.statusCode == 204) {
+      // Notify SignalR Hub
+      await hubConnection.invoke(
+        "DeleteMessage",
+        args: [id],
+      );
+    } else {
+      throw Exception("Can't delete message.");
+    }
+  }
+
+  // Listen for Real-Time SignalR Messages
+  void onNewMessage(Function(MongoMessage) callback) {
+    hubConnection.on('ReceiveMessage', (arguments) {
+      final newMessage = MongoMessage.fromJson(arguments![0] as Map<String, dynamic>);
+      callback(newMessage);
+    });
+  }
+
+  // Dispose SignalR Hub Connection
+  Future<void> dispose() async {
+    await hubConnection.stop();
+    print("SignalR connection stopped.");
+  }
+}

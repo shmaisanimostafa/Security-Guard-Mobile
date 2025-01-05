@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+
+const String signalRHubUrl = 'https://localhost:7244/chatHub';
+
+
 const kSendButtonTextStyle = TextStyle(
   // color: Colors.lightBlueAccent,
   fontWeight: FontWeight.bold,
