@@ -1,9 +1,10 @@
 import 'package:capstone_proj/models/message.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:capstone_proj/constants.dart';
 
 class MessageAPIHandler {
-  final String _baseUrl = "https://localhost:7244/api/Messages";
+  final String _baseUrl = apiBaseUrl + "/api/Messages";
 
   Future<List<Message>> getMessages() async {
     final response = await http.get(Uri.parse(_baseUrl));

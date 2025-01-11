@@ -4,7 +4,7 @@ import 'package:google_generative_ai/google_generative_ai.dart';
 
 Future<String> geminiGenerate(String prompt) async {
   // Access your API key as an environment variable (see "Set up your API key" above)
-  const apiKey = 'AIzaSyAF6af3QUa2Kvu9UaUyMtusmajXiSrw5lQ';
+  const apiKey = 'AIzaSyDPefbZZWl_wcxGwIZploQgwU_3jFvWq04';
   // Platform.environment[];
   // if (apiKey == null) {
   //   debugPrint('No \$API_KEY environment variable');

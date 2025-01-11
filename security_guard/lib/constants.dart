@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 
-const String signalRHubUrl = 'https://localhost:7244/chatHub';
+const String signalRHubUrl = apiBaseUrl + '/chatHub';
+const String apiBaseUrl = "https://security-guard-api-container-app.blueocean-cf790c41.australiaeast.azurecontainerapps.io/";
 
 
 const kSendButtonTextStyle = TextStyle(

@@ -170,9 +170,10 @@ class _MyAppState extends State<MyApp> {
                     },
                     child: CircleAvatar(
                     radius: 12.0,
-                    backgroundImage: authProvider.profileImageUrl != null
-                        ? NetworkImage(authProvider.profileImageUrl)
-                        : AssetImage('images/ProfilePic.png') as ImageProvider,
+                    backgroundImage: 
+                    // authProvider.profileImageUrl != null ? 
+                    NetworkImage(authProvider.profileImageUrl),
+                        // : AssetImage('images/ProfilePic.png') as ImageProvider,
                   ),
                   )
                 : IconButton(

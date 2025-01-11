@@ -13,13 +13,25 @@ class ArticleScreen extends StatefulWidget {
 
 class _ArticleScreenState extends State<ArticleScreen> {
   ArticleAPIHandler apiHandler = ArticleAPIHandler();
-  late Article data = Article(
-    id: 1,
-    title: 'Getting Title',
-    body1: 'Getting the Content',
-    body2: 'Getting the Content',
-    imageURL: 'images/ProfilePic.png',
-  );
+late Article data = Article(
+  id: 1,
+  rating: 0, // Default value for rating
+  readCount: 0, // Default value for read count
+  likeCount: 0, // Default value for like count
+  disLikeCount: 0, // Default value for dislike count
+  content: 'Getting the Content',
+  summary: 'Getting the Summary',
+  isFeatured: false, // Default value for featured status
+  sourceURL: 'https://example.com', // Placeholder source URL
+  title: 'Getting Title',
+  imageURL: 'images/ProfilePic.png',
+  publishDate: DateTime.now(), // Current date and time
+  authorId: '12345', // Placeholder author ID
+  // author: null, // No author data
+  comments: [], // No comments
+  articleTags: [], // No article tags
+);
+
 
   void getData() async {
     data = await apiHandler.getArticle(widget.id);
@@ -79,7 +91,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
               ),
             ),
             const SizedBox(height: 15.0),
-            Text(data.body1),
+            Text(data.content),
             const SizedBox(height: 15.0),
             ClipRRect(
               borderRadius: BorderRadius.circular(10),
@@ -90,7 +102,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
               ),
             ),
             const SizedBox(height: 15.0),
-            Text(data.body2),
+            Text(data.content),
             const SizedBox(height: 15.0),
           ],
         ),

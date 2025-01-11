@@ -120,11 +120,11 @@ class RegisterScreen extends StatelessWidget {
             const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () async {
-                final firstName = _firstNameController.text;
-                final lastName = _lastNameController.text;
+                // final firstName = _firstNameController.text;
+                // final lastName = _lastNameController.text;
                 final username = _usernameController.text;
                 final email = _emailController.text;
-                final phone = _phoneController.text;
+                // final phone = _phoneController.text;
                 final password = _passwordController.text;
                 final confirmPassword = _confirmPasswordController.text;
 

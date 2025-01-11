@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'package:capstone_proj/models/article.dart';
 import 'package:http/http.dart' as http;
+import 'package:capstone_proj/constants.dart';
 
 class ArticleAPIHandler {
-  final String _baseUrl = "https://localhost:7244/api/Articles";
-
+  final String _baseUrl = apiBaseUrl + "/api/Articles";
+ 
   Future<List<Article>> getArticles() async {
     final response = await http.get(Uri.parse(_baseUrl));
     if (response.statusCode == 200) {

@@ -28,18 +28,26 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
   }
 
   Future<void> _initializeSignalR() async {
-    await messageAPIHandler.initializeSignalR((newMessage) {
-      setState(() {
-        messages.insert(0, newMessage); // Add to the top of the list
+    try {
+      await messageAPIHandler.initializeSignalR((newMessage) {
+        setState(() {
+          messages.insert(0, newMessage); // Add to the top of the list
+        });
       });
-    });
+    } catch (e) {
+      print("Error initializing SignalR: $e");
+    }
   }
 
   Future<void> _fetchMessages() async {
-    final fetchedMessages = await messageAPIHandler.getMessages();
-    setState(() {
-      messages = fetchedMessages;
-    });
+    try {
+      final fetchedMessages = await messageAPIHandler.getMessages();
+      setState(() {
+        messages = fetchedMessages;
+      });
+    } catch (e) {
+      print("Error fetching messages: $e");
+    }
   }
 
   Future<void> _sendMessage(String text) async {

@@ -1,11 +1,12 @@
+import 'package:capstone_proj/constants.dart';
 import 'package:capstone_proj/models/mongo_message.dart';
 import 'package:http/http.dart' as http;
 import 'package:signalr_netcore/signalr_client.dart';
 import 'dart:convert';
 
 class MongoMessageAPIHandler {
-  final String _baseUrl = "https://localhost:7244/api/MongoMessages"; // MongoDB API URL
-  final String _signalRUrl = "http://localhost:7244/chatHub"; // SignalR Hub URL
+  final String _baseUrl = apiBaseUrl + "/api/MongoMessages"; // MongoDB API URL
+  final String _signalRUrl = apiBaseUrl + "/chatHub"; // SignalR Hub URL
 
   late HubConnection hubConnection;
 
@@ -59,11 +60,15 @@ class MongoMessageAPIHandler {
     if (response.statusCode == 201) {
       final newMessage = MongoMessage.fromJson(jsonDecode(response.body));
 
-      // Notify SignalR Hub
-      await hubConnection.invoke(
-        "SendMessage",
-        args: [newMessage.sender, newMessage.receiver, newMessage.content],
-      );
+      // Ensure the connection is established before sending the message
+      if (hubConnection.state == HubConnectionState.Connected) {
+        await hubConnection.invoke(
+          "SendMessage",
+          args: [newMessage.sender, newMessage.receiver, newMessage.content],
+        );
+      } else {
+        print("SignalR connection is not in the 'Connected' state.");
+      }
 
       return newMessage;
     } else {
@@ -82,11 +87,15 @@ class MongoMessageAPIHandler {
     );
 
     if (response.statusCode == 204) {
-      // Notify SignalR Hub
-      await hubConnection.invoke(
-        "UpdateMessage",
-        args: [updatedMessage.toJson()],
-      );
+      // Ensure the connection is established before sending the message
+      if (hubConnection.state == HubConnectionState.Connected) {
+        await hubConnection.invoke(
+          "UpdateMessage",
+          args: [updatedMessage.toJson()],
+        );
+      } else {
+        print("SignalR connection is not in the 'Connected' state.");
+      }
     } else {
       throw Exception("Can't update message.");
     }
@@ -97,11 +106,15 @@ class MongoMessageAPIHandler {
     final response = await http.delete(Uri.parse("$_baseUrl/$id"));
 
     if (response.statusCode == 204) {
-      // Notify SignalR Hub
-      await hubConnection.invoke(
-        "DeleteMessage",
-        args: [id],
-      );
+      // Ensure the connection is established before sending the message
+      if (hubConnection.state == HubConnectionState.Connected) {
+        await hubConnection.invoke(
+          "DeleteMessage",
+          args: [id],
+        );
+      } else {
+        print("SignalR connection is not in the 'Connected' state.");
+      }
     } else {
       throw Exception("Can't delete message.");
     }

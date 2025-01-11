@@ -65,12 +65,15 @@ class _HomeState extends State<Home> {
                 children: [
                   const Divider(),
                   ArticleCard(
-                    id: data[index].id,
-                    title: data[index].title,
-                    author: "Mostafa Shmaisani",
-                    date: 'Sometime Feb 2023',
-                    imageUrl: data[index].imageURL,
-                  ),
+                     id: data[index].id,
+  title: data[index].title,
+  author: "Mostafa Shmaisani",
+  date: data[index].publishDate.toString(),
+  // ignore: unnecessary_null_comparison
+  imageUrl: data[index].imageURL != null && data[index].imageURL.isNotEmpty
+      ? data[index].imageURL
+      : 'images/Logo.png',
+),
                 ],
               );
             },

@@ -1,9 +1,10 @@
 import 'dart:convert';
+import 'package:capstone_proj/constants.dart';
 import 'package:http/http.dart' as http;
 
 class AuthService {
   // Define the base URL for the API
-  static const String _baseUrl = 'https://localhost:7244';
+  static const String _baseUrl = apiBaseUrl;
 
   // Register a new user
   Future<Map<String, dynamic>> register(String username, String email, String password, String confirmPassword) async {
