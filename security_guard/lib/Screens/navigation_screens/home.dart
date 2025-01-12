@@ -59,26 +59,28 @@ class _HomeState extends State<Home> {
             child: const Text('Refresh'),
           ),
           //SECTION - List of Articles
-          ListView.builder(
-            itemBuilder: (BuildContext context, int index) {
-              return Column(
-                children: [
-                  const Divider(),
-                  ArticleCard(
-                     id: data[index].id,
-  title: data[index].title,
-  author: "Mostafa Shmaisani",
-  date: data[index].publishDate.toString(),
-  // ignore: unnecessary_null_comparison
-  imageUrl: data[index].imageURL != null && data[index].imageURL.isNotEmpty
-      ? data[index].imageURL
-      : 'images/Logo.png',
-),
-                ],
-              );
-            },
-            itemCount: data.length,
-            shrinkWrap: true,
+          Expanded(
+            child: ListView.builder(
+              itemBuilder: (BuildContext context, int index) {
+                return Column(
+                  children: [
+                    const Divider(),
+                    ArticleCard(
+                       id: data[index].id,
+              title: data[index].title,
+              author: "Mostafa Shmaisani",
+              date: data[index].publishDate.toString(),
+              // ignore: unnecessary_null_comparison
+              imageUrl: data[index].imageURL != null && data[index].imageURL.isNotEmpty
+                  ? data[index].imageURL
+                  : 'images/Logo.png',
+            ),
+                  ],
+                );
+              },
+              itemCount: data.length,
+              shrinkWrap: true,
+            ),
           )
         ],
       )),
