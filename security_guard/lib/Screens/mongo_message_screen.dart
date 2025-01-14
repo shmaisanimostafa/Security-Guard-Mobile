@@ -23,6 +23,8 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
 
   List<MongoMessage> messages = [];
   String messageText = '';
+  bool _isSending = false; // Track whether a message is being sent
+  bool _isLoading = true; // Track whether messages are being loaded
 
   @override
   void initState() {
@@ -54,16 +56,28 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
 
   Future<void> _fetchMessages() async {
     try {
+      setState(() {
+        _isLoading = true; // Show loading animation
+      });
+
       final fetchedMessages = await messageAPIHandler.getMessages();
       setState(() {
         messages = fetchedMessages;
       });
     } catch (e) {
       print("Error fetching messages: $e");
+    } finally {
+      setState(() {
+        _isLoading = false; // Hide loading animation
+      });
     }
   }
 
   Future<void> _sendMessage(String text) async {
+    setState(() {
+      _isSending = true; // Show sending animation
+    });
+
     final newMessage = MongoMessage(
       sender: 'Mostafa',
       receiver: 'receiver',
@@ -90,6 +104,10 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
       messageText = '';
     } catch (e) {
       print("Error sending message: $e");
+    } finally {
+      setState(() {
+        _isSending = false; // Hide sending animation
+      });
     }
   }
 
@@ -127,26 +145,34 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
       body: Column(
         children: [
           Expanded(
-            child: ListView(
-              reverse: true,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 10.0,
-                vertical: 20.0,
-              ),
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    for (MongoMessage message in messages)
-                      MessageBubble(
-                        sender: message.sender,
-                        text: message.content,
-                        isMe: message.sender == 'Mostafa',
+            child: _isLoading
+                ? const Center(
+                    child: CircularProgressIndicator(), // Show loading animation
+                  )
+                : ListView(
+                    reverse: true,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10.0,
+                      vertical: 20.0,
+                    ),
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          for (MongoMessage message in messages)
+                            MessageBubble(
+                              sender: message.sender,
+                              text: message.content,
+                              isMe: message.sender == 'Mostafa',
+                            ),
+                          if (_isSending)
+                            const Center(
+                              child: CircularProgressIndicator(), // Show sending animation
+                            ),
+                        ],
                       ),
-                  ],
-                ),
-              ],
-            ),
+                    ],
+                  ),
           ),
           Container(
             decoration: kMessageContainerDecoration,
@@ -165,14 +191,16 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
                 ),
                 TextButton(
                   onPressed: () async {
-                    if (messageText.isNotEmpty) {
+                    if (messageText.isNotEmpty && !_isSending) {
                       await _sendMessage(messageText);
                     }
                   },
-                  child: const Text(
-                    'Send',
-                    style: kSendButtonTextStyle,
-                  ),
+                  child: _isSending
+                      ? const CircularProgressIndicator() // Show sending animation
+                      : const Text(
+                          'Send',
+                          style: kSendButtonTextStyle,
+                        ),
                 ),
                 IconButton(
                   onPressed: () {
