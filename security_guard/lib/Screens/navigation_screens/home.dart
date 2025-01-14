@@ -84,8 +84,7 @@ Widget build(BuildContext context) {
                               authorName: data[index].author.name,
                               isVerified: data[index].author.isVerified,
                               date: data[index].publishDate.toString(),
-                              imageUrl: data[index].imageURL != null &&
-                                      data[index].imageURL.isNotEmpty
+                              imageUrl: data[index].imageURL.isNotEmpty
                                   ? data[index].imageURL
                                   : 'images/Logo.png',
                             ),

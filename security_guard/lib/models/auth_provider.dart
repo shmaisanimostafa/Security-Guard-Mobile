@@ -8,14 +8,19 @@ class AuthProvider with ChangeNotifier {
   String? _token;
 
   AuthProvider() {
-    _loadToken();
+    _initialize();
   }
 
   String? get token => _token;
 
   bool get isAuthenticated => _token != null;
 
-  Future<void> _loadToken() async {
+  Future<void> _initialize() async {
+    await loadToken(); // Use the public method
+  }
+
+  // Public method to load the token
+  Future<void> loadToken() async {
     try {
       _token = await _storage.read(key: 'jwt_token');
       print('Loaded token: $_token');
@@ -30,32 +35,31 @@ class AuthProvider with ChangeNotifier {
   Map<String, dynamic>? get userData => _userData;
 
   Future<void> fetchUserData() async {
-  if (_token == null) {
-    print('Token is not available');
-    return;
-  }
-
-  try {
-    final data = await _authService.getUserData(_token!);
-    if (data.containsKey('Message')) {
-      print('Error fetching user data: ${data['Message']}');
-    } else {
-      _userData = data;
-      notifyListeners();
+    if (_token == null) {
+      print('Token is not available');
+      return;
     }
-  } catch (e) {
-    print('Error fetching user data: $e');
-  }
-}
 
-//Get the profile image URL from the user data
+    try {
+      final data = await _authService.getUserData(_token!);
+      if (data.containsKey('Message')) {
+        print('Error fetching user data: ${data['Message']}');
+      } else {
+        _userData = data;
+        notifyListeners();
+      }
+    } catch (e) {
+      print('Error fetching user data: $e');
+    }
+  }
+
+  // Get the profile image URL from the user data
   String get profileImageUrl {
     if (userData == null) {
       return '';
     }
     return userData!['imageURL']; // Adjust the key according to your API response
   }
-
 
   Future<void> register(String username, String email, String password, String confirmPassword) async {
     try {

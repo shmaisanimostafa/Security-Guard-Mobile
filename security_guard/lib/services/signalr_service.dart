@@ -1,67 +1,129 @@
-import 'package:capstone_proj/constants.dart';
+import 'dart:async';
+
+import 'package:capstone_proj/models/auth_provider.dart';
 import 'package:signalr_netcore/signalr_client.dart';
+import 'package:capstone_proj/constants.dart';
 
 class SignalRService {
-  static final hubConnection = HubConnectionBuilder()
-      .withUrl(signalRHubUrl)
-      .build();
+  final AuthProvider authProvider;
 
-static Future<void> startConnection({Function(String, String)? onMessageReceived}) async {
-  hubConnection.onclose((error) {
-    print("SignalR connection closed: $error");
-    _reconnect(onMessageReceived: onMessageReceived);
-  } as ClosedCallback);
-  await hubConnection.start();
-}
+  SignalRService(this.authProvider);
 
-static Future<void> _reconnect({Function(String, String)? onMessageReceived}) async {
-  const maxAttempts = 5;
-  int attempts = 0;
+  late HubConnection hubConnection;
+  final Completer<void> _connectionCompleter = Completer<void>(); // Tracks connection status
 
-  while (hubConnection.state != HubConnectionState.Connected && attempts < maxAttempts) {
-    attempts++;
-    print("Attempting to reconnect... ($attempts/$maxAttempts)");
-    await Future.delayed(const Duration(seconds: 2));
+  Future<void> startConnection({Function(String, String)? onMessageReceived}) async {
+    // Ensure the token is loaded
+    if (authProvider.token == null) {
+      print('Token is not available. Loading token...');
+      await authProvider.loadToken();
+    }
+
+    if (authProvider.token == null) {
+      throw Exception('No token available');
+    }
+
+    hubConnection = HubConnectionBuilder()
+        .withUrl(
+          signalRHubUrl,
+          options: HttpConnectionOptions(
+            accessTokenFactory: () async {
+              final token = authProvider.token;
+              if (token == null) {
+                throw Exception('No token available');
+              }
+              print('Using token: $token');
+              return token;
+            },
+            // logging: (level, message) => print('SignalR Log: $level - $message'),
+            requestTimeout: 20000, // Increased timeout
+          ),
+        )
+        .build();
+
+    // Define the onclose callback with the correct signature
+    void _onCloseCallback({Exception? error}) {
+      print("SignalR connection closed: $error");
+      _reconnect(onMessageReceived: onMessageReceived);
+    }
+
+    // Set the onclose callback
+    hubConnection.onclose(_onCloseCallback);
+
+    // Set up the message listener
+    hubConnection.on('ReceiveMessage', (arguments) {
+      print('Received message: $arguments');
+      if (onMessageReceived != null) {
+        final message = arguments?[0] as dynamic;
+        final user = message['Sender'];
+        final content = message['Content'];
+        onMessageReceived(user, content);
+      }
+    });
+
     try {
       await hubConnection.start();
-      print("Reconnected to SignalR.");
-      if (onMessageReceived != null) {
-        hubConnection.on('ReceiveMessage', (arguments) {
-          final user = arguments![0] as String;
-          final message = arguments[1] as String;
-          onMessageReceived(user, message);
-        });
-      }
-      break;
+      print('SignalR Connected!');
+      _connectionCompleter.complete(); // Signal that the connection is ready
     } catch (e) {
-      print("Reconnect attempt failed: $e");
+      print('Failed to start SignalR connection: $e');
+      _connectionCompleter.completeError(e); // Signal that the connection failed
     }
   }
 
-  if (hubConnection.state != HubConnectionState.Connected) {
-    print("Failed to reconnect to SignalR after $maxAttempts attempts.");
+  Future<void> _reconnect({Function(String, String)? onMessageReceived}) async {
+    const maxAttempts = 5;
+    int attempts = 0;
+
+    while (hubConnection.state != HubConnectionState.Connected && attempts < maxAttempts) {
+      attempts++;
+      print("Attempting to reconnect... ($attempts/$maxAttempts)");
+      await Future.delayed(const Duration(seconds: 2));
+      try {
+        await hubConnection.start();
+        print("Reconnected to SignalR.");
+        if (onMessageReceived != null) {
+          hubConnection.on('ReceiveMessage', (arguments) {
+            final message = arguments?[0] as dynamic;
+            final user = message['Sender'];
+            final content = message['Content'];
+            onMessageReceived(user, content);
+          });
+        }
+        break;
+      } catch (e) {
+        print("Reconnect attempt failed: $e");
+      }
+    }
+
+    if (hubConnection.state != HubConnectionState.Connected) {
+      print("Failed to reconnect to SignalR after $maxAttempts attempts.");
+    }
   }
-}
 
+  Future<void> sendMessage(String user, String message) async {
+    // Wait for the connection to be ready
+    if (!_connectionCompleter.isCompleted) {
+      print('Waiting for SignalR connection to be ready...');
+      await _connectionCompleter.future;
+    }
 
+    if (hubConnection.state != HubConnectionState.Connected) {
+      print("SignalR connection is not active. Unable to send message.");
+      return;
+    }
 
-static Future<void> sendMessage(String user, String message) async {
-  if (hubConnection.state == HubConnectionState.Connected) {
     try {
-      await hubConnection.invoke('SendMessage', args: [user, message]);
+      await hubConnection.invoke('SendMessage', args: [user, 'receiver', message]);
     } catch (e) {
       print("Error sending message: $e");
     }
-  } else {
-    print("SignalR connection is not active. Unable to send message.");
   }
-}
 
-static Future<void> stopConnection() async {
-  if (hubConnection.state == HubConnectionState.Connected) {
-    await hubConnection.stop();
-    print("SignalR connection stopped.");
+  Future<void> stopConnection() async {
+    if (hubConnection.state == HubConnectionState.Connected) {
+      await hubConnection.stop();
+      print("SignalR connection stopped.");
+    }
   }
-}
-
 }

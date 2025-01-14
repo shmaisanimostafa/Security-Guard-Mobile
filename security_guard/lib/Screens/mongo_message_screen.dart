@@ -1,10 +1,12 @@
+import 'package:capstone_proj/models/auth_provider.dart';
+import 'package:flutter/material.dart';
+import 'package:capstone_proj/services/signalr_service.dart'; // Import the SignalRService
 import 'package:capstone_proj/components/message_bubble.dart';
 import 'package:capstone_proj/constants.dart';
 import 'package:capstone_proj/functions/mongo_message_api_handler.dart';
 import 'package:capstone_proj/models/mongo_message.dart';
 import 'package:capstone_proj/Screens/ai_chat_screen.dart';
 import 'package:capstone_proj/Screens/speech_to_text.dart';
-import 'package:flutter/material.dart';
 
 class MongoChatScreen extends StatefulWidget {
   const MongoChatScreen({super.key});
@@ -16,6 +18,8 @@ class MongoChatScreen extends StatefulWidget {
 class _MongoChatScreenState extends State<MongoChatScreen> {
   final TextEditingController messageTextController = TextEditingController();
   final MongoMessageAPIHandler messageAPIHandler = MongoMessageAPIHandler();
+  late SignalRService signalRService;
+  late AuthProvider authProvider;
 
   List<MongoMessage> messages = [];
   String messageText = '';
@@ -23,15 +27,24 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
   @override
   void initState() {
     super.initState();
+    authProvider = AuthProvider(); // Initialize AuthProvider
+    signalRService = SignalRService(authProvider); // Pass AuthProvider to SignalRService
     _initializeSignalR();
     _fetchMessages();
   }
 
   Future<void> _initializeSignalR() async {
     try {
-      await messageAPIHandler.initializeSignalR((newMessage) {
+      await signalRService.startConnection(onMessageReceived: (user, message) {
         setState(() {
-          messages.insert(0, newMessage); // Add to the top of the list
+          messages.insert(0, MongoMessage(
+            sender: user,
+            receiver: 'receiver',
+            content: message,
+            isAi: false,
+            timestamp: DateTime.now(),
+            isRead: false,
+          ));
         });
       });
     } catch (e) {
@@ -70,6 +83,9 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
         messages[0] = addedMessage; // Update the message with the one from the server
       });
 
+      // Send the message via SignalR
+      await signalRService.sendMessage('Mostafa', text);
+
       messageTextController.clear();
       messageText = '';
     } catch (e) {
@@ -79,7 +95,7 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
 
   @override
   void dispose() {
-    messageAPIHandler.dispose();
+    signalRService.stopConnection();
     super.dispose();
   }
 
