@@ -13,10 +13,16 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   ArticleAPIHandler apiHandler = ArticleAPIHandler();
   late List<Article> data = [];
+  bool isLoading = true; // Add a loading state
 
   void getData() async {
+    setState(() {
+      isLoading = true; // Start loading
+    });
     data = await apiHandler.getArticles();
-    setState(() {});
+    setState(() {
+      isLoading = false; // Stop loading after data is fetched
+    });
   }
 
   @override
@@ -49,28 +55,32 @@ class _HomeState extends State<Home> {
                   },
                   child: const Text('Refresh'),
                 ),
-                ListView.builder(
-                  physics: NeverScrollableScrollPhysics(), // Disable scrolling for the inner ListView
-                  shrinkWrap: true, // Allow the ListView to take up only the space it needs
-                  itemBuilder: (BuildContext context, int index) {
-                    return Column(
-                      children: [
-                        const Divider(),
-                        ArticleCard(
-                          id: data[index].id,
-                          title: data[index].title,
-                          authorName: data[index].author.name,
-                          isVerified: data[index].author.isVerified,
-                          date: data[index].publishDate.toString(),
-                          imageUrl: data[index].imageURL != null && data[index].imageURL.isNotEmpty
-                              ? data[index].imageURL
-                              : 'images/Logo.png',
-                        ),
-                      ],
-                    );
-                  },
-                  itemCount: data.length,
-                ),
+                // Show loading indicator or article list
+                isLoading
+                    ? const CircularProgressIndicator() // Loading spinner
+                    : ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Column(
+                            children: [
+                              const Divider(),
+                              ArticleCard(
+                                id: data[index].id,
+                                title: data[index].title,
+                                authorName: data[index].author.name,
+                                isVerified: data[index].author.isVerified,
+                                date: data[index].publishDate.toString(),
+                                imageUrl: data[index].imageURL != null &&
+                                        data[index].imageURL.isNotEmpty
+                                    ? data[index].imageURL
+                                    : 'images/Logo.png',
+                              ),
+                            ],
+                          );
+                        },
+                        itemCount: data.length,
+                      ),
               ],
             ),
           ),
