@@ -1,18 +1,20 @@
 import 'package:capstone_proj/Screens/article_screen.dart';
 import 'package:flutter/material.dart';
-
 class ArticleCard extends StatelessWidget {
-  const ArticleCard(
-      {super.key,
-      required this.title,
-      required this.author,
-      required this.date,
-      required this.imageUrl,
-      required this.id});
+  const ArticleCard({
+    super.key,
+    required this.title,
+    required this.authorName,
+    required this.isVerified,
+    required this.date,
+    required this.imageUrl,
+    required this.id,
+  });
 
   final int id;
   final String title;
-  final String author;
+  final String authorName;
+  final bool isVerified;
   final String date;
   final String imageUrl;
 
@@ -30,17 +32,15 @@ class ArticleCard extends StatelessWidget {
             fit: BoxFit.cover,
           ),
         ),
-        Container(width: 20),
+        const SizedBox(width: 20),
         Expanded(
           child: Column(
-            // mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Container(height: 3.0),
               Text(
-                softWrap: true,
                 title,
                 style: Theme.of(context).textTheme.titleMedium,
+                softWrap: true,
               ),
               Row(
                 children: [
@@ -51,15 +51,15 @@ class ArticleCard extends StatelessWidget {
                   const SizedBox(width: 5),
                   Row(
                     children: [
-                      Text(
-                        author,
-                      ),
-                      const SizedBox(width: 5),
-                      Icon(
-                        size: 15,
-                        Icons.verified,
-                        color: Colors.blue.shade700,
-                      )
+                      Text(authorName),
+                      if (isVerified)
+                        const SizedBox(width: 5),
+                      if (isVerified)
+                        Icon(
+                          Icons.verified,
+                          size: 15,
+                          color: Colors.blue.shade700,
+                        ),
                     ],
                   ),
                 ],
@@ -69,17 +69,18 @@ class ArticleCard extends StatelessWidget {
                 children: [
                   Text(date, style: Theme.of(context).textTheme.bodySmall),
                   IconButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) {
-                            return ArticleScreen(
-                              id: id,
-                            );
-                          }),
-                        );
-                      },
-                      icon: const Icon(Icons.arrow_forward)),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return ArticleScreen(id: id);
+                          },
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.arrow_forward),
+                  ),
                 ],
               ),
             ],

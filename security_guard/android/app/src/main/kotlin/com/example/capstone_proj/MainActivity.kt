@@ -1,4 +1,4 @@
-package com.example.capstone_proj
+package com.securityguard.mobile
 
 import io.flutter.embedding.android.FlutterActivity
 

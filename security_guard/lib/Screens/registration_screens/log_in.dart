@@ -10,8 +10,8 @@ class LogInScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _usernameController = TextEditingController();
-    final _passwordController = TextEditingController();
+    final usernameController = TextEditingController();
+    final passwordController = TextEditingController();
 
     return Scaffold(
       appBar: AppBar(
@@ -26,7 +26,7 @@ class LogInScreen extends StatelessWidget {
               Image.asset('images/Logo.png', height: 200),
               const SizedBox(height: 16),
               TextField(
-                controller: _usernameController,
+                controller: usernameController,
                 decoration: const InputDecoration(
                   labelText: 'Username',
                   border: OutlineInputBorder(),
@@ -34,7 +34,7 @@ class LogInScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               TextField(
-                controller: _passwordController,
+                controller: passwordController,
                 decoration: const InputDecoration(
                   labelText: 'Password',
                   border: OutlineInputBorder(),
@@ -44,8 +44,8 @@ class LogInScreen extends StatelessWidget {
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () async {
-                  final username = _usernameController.text;
-                  final password = _passwordController.text;
+                  final username = usernameController.text;
+                  final password = passwordController.text;
 
                   if (username.isEmpty || password.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(

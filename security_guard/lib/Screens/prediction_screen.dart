@@ -2,6 +2,8 @@ import 'package:capstone_proj/models/fast_api_service.dart';
 import 'package:flutter/material.dart';
 
 class PredictionScreen extends StatefulWidget {
+  const PredictionScreen({super.key});
+
   @override
   _PredictionScreenState createState() => _PredictionScreenState();
 }

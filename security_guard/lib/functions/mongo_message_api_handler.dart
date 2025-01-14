@@ -5,8 +5,8 @@ import 'package:signalr_netcore/signalr_client.dart';
 import 'dart:convert';
 
 class MongoMessageAPIHandler {
-  final String _baseUrl = apiBaseUrl + "/api/MongoMessages"; // MongoDB API URL
-  final String _signalRUrl = apiBaseUrl + "/chatHub"; // SignalR Hub URL
+  final String _baseUrl = "$apiBaseUrl/api/MongoMessages"; // MongoDB API URL
+  final String _signalRUrl = "$apiBaseUrl/chatHub"; // SignalR Hub URL
 
   late HubConnection hubConnection;
 

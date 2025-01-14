@@ -13,29 +13,40 @@ class ArticleScreen extends StatefulWidget {
 
 class _ArticleScreenState extends State<ArticleScreen> {
   ArticleAPIHandler apiHandler = ArticleAPIHandler();
-late Article data = Article(
-  id: 1,
-  rating: 0, // Default value for rating
-  readCount: 0, // Default value for read count
-  likeCount: 0, // Default value for like count
-  disLikeCount: 0, // Default value for dislike count
-  content: 'Getting the Content',
-  summary: 'Getting the Summary',
-  isFeatured: false, // Default value for featured status
-  sourceURL: 'https://example.com', // Placeholder source URL
-  title: 'Getting Title',
-  imageURL: 'images/ProfilePic.png',
-  publishDate: DateTime.now(), // Current date and time
-  authorId: '12345', // Placeholder author ID
-  // author: null, // No author data
-  comments: [], // No comments
-  articleTags: [], // No article tags
-);
-
+  late Article data = Article(
+    id: 1,
+    rating: 0,
+    readCount: 0,
+    likeCount: 0,
+    disLikeCount: 0,
+    content: 'Loading content...',
+    summary: 'Loading summary...',
+    isFeatured: false,
+    sourceURL: 'https://example.com',
+    title: 'Loading title...',
+    imageURL: 'images/Logo.png',
+    publishDate: DateTime.now(),
+    author: Author(
+      name: 'Loading name...',
+      isVerified: false,
+      firstName: 'Loading first name...',
+      lastName: 'Loading last name...',
+      imageURL: 'images/ProfilePic.png',
+    ),
+    comments: [],
+    articleTags: [],
+  );
 
   void getData() async {
-    data = await apiHandler.getArticle(widget.id);
-    setState(() {});
+    try {
+      final fetchedData = await apiHandler.getArticle(widget.id);
+      setState(() {
+        data = fetchedData;
+      });
+    } catch (e) {
+      // Handle error (e.g., show a message to the user)
+      print(e);
+    }
   }
 
   @override
@@ -60,49 +71,57 @@ late Article data = Article(
               ),
             ),
             const SizedBox(height: 15.0),
-            const Padding(
-              padding: EdgeInsets.only(left: 5.0),
-              child: Row(
-                children: [
-                  CircleAvatar(
-                    radius: 15.0,
-                    backgroundImage: AssetImage('images/ProfilePic.png'),
-                  ),
-                  SizedBox(width: 5),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Text(
-                            'Mostafa Shmaisani',
+            Row(
+              children: [
+                CircleAvatar(
+                  radius: 15.0,
+                  backgroundImage: NetworkImage(data.author.imageURL.isNotEmpty
+                      ? data.author.imageURL
+                      : 'images/ProfilePic.png'),
+                ),
+                const SizedBox(width: 10),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          data.author.name,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        if (data.author.isVerified) ...[
+                          const SizedBox(width: 5),
+                          const Icon(
+                            Icons.verified,
+                            size: 15,
+                            color: Colors.blue,
                           ),
-                          SizedBox(width: 5.0),
-                          Icon(Icons.verified, size: 15, color: Colors.blue),
                         ],
-                      ),
-                      Text(
-                        'Feb 23 - 2023',
-                        maxLines: 2,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                      ],
+                    ),
+                    Text(
+                      '${data.publishDate.day}-${data.publishDate.month}-${data.publishDate.year}',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
+                ),
+              ],
             ),
-            const SizedBox(height: 15.0),
-            Text(data.content),
             const SizedBox(height: 15.0),
             ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: Image.network(
-                data.imageURL,
-                // height: 200,
-                // fit: BoxFit.fill,
+                data.imageURL.isNotEmpty
+                    ? data.imageURL
+                    : 'images/Logo.png', // Fallback for missing image
+                fit: BoxFit.cover,
               ),
             ),
             const SizedBox(height: 15.0),
-            Text(data.content),
+            Text(
+              data.content,
+              style: const TextStyle(fontSize: 16),
+            ),
             const SizedBox(height: 15.0),
           ],
         ),

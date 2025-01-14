@@ -12,22 +12,13 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   ArticleAPIHandler apiHandler = ArticleAPIHandler();
-  //
-  //SECTION Intiate Empty Article in Articles Data
-  //
   late List<Article> data = [];
 
-  //
-  //SECTION Fetch Articles Data
-  //
   void getData() async {
     data = await apiHandler.getArticles();
     setState(() {});
   }
 
-  //
-  //SECTION Fetch Articles Data in the beginning of the Widget
-  //
   @override
   void initState() {
     super.initState();
@@ -37,53 +28,54 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     int articleCount = data.length;
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Center(
-          child: ListView(
-        children: [
-          Row(
-            children: [
-              //SECTION - Return the number of articles fetched
-              Text(
-                '$articleCount Articles Fetched!',
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-            ],
-          ),
-          //SECTION - Button to Refresh the Articles
-          MaterialButton(
-            onPressed: () {
-              getData();
-            },
-            child: const Text('Refresh'),
-          ),
-          //SECTION - List of Articles
-          Expanded(
-            child: ListView.builder(
-              itemBuilder: (BuildContext context, int index) {
-                return Column(
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SingleChildScrollView(
+          child: Center(
+            child: Column(
+              children: [
+                Row(
                   children: [
-                    const Divider(),
-                    ArticleCard(
-                       id: data[index].id,
-              title: data[index].title,
-              author: "Mostafa Shmaisani",
-              date: data[index].publishDate.toString(),
-              // ignore: unnecessary_null_comparison
-              imageUrl: data[index].imageURL != null && data[index].imageURL.isNotEmpty
-                  ? data[index].imageURL
-                  : 'images/Logo.png',
-            ),
+                    Text(
+                      '$articleCount Articles Fetched!',
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
                   ],
-                );
-              },
-              itemCount: data.length,
-              shrinkWrap: true,
+                ),
+                MaterialButton(
+                  onPressed: () {
+                    getData();
+                  },
+                  child: const Text('Refresh'),
+                ),
+                ListView.builder(
+                  physics: NeverScrollableScrollPhysics(), // Disable scrolling for the inner ListView
+                  shrinkWrap: true, // Allow the ListView to take up only the space it needs
+                  itemBuilder: (BuildContext context, int index) {
+                    return Column(
+                      children: [
+                        const Divider(),
+                        ArticleCard(
+                          id: data[index].id,
+                          title: data[index].title,
+                          authorName: data[index].author.name,
+                          isVerified: data[index].author.isVerified,
+                          date: data[index].publishDate.toString(),
+                          imageUrl: data[index].imageURL != null && data[index].imageURL.isNotEmpty
+                              ? data[index].imageURL
+                              : 'images/Logo.png',
+                        ),
+                      ],
+                    );
+                  },
+                  itemCount: data.length,
+                ),
+              ],
             ),
-          )
-        ],
-      )),
+          ),
+        ),
+      ),
     );
   }
 }

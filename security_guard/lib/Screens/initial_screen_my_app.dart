@@ -143,19 +143,19 @@ class _MyAppState extends State<MyApp> {
             ],
           ),
           actions: [
-            IconButton(
-              icon: Badge(
-                isLabelVisible: isNotified,
-                child: notificationIcon,
-              ),
-              onPressed: () {
-                setState(() {
-                  isNotified = !isNotified;
-                  notificationIcon =
-                      isNotified ? kNotificationFilled : kNotificationOut;
-                });
-              },
-            ),
+            // IconButton(
+            //   icon: Badge(
+            //     isLabelVisible: isNotified,
+            //     child: notificationIcon,
+            //   ),
+            //   onPressed: () {
+            //     setState(() {
+            //       isNotified = !isNotified;
+            //       notificationIcon =
+            //           isNotified ? kNotificationFilled : kNotificationOut;
+            //     });
+            //   },
+            // ),
             authProvider.isAuthenticated
                 ? TextButton(
                     style: TextButton.styleFrom(

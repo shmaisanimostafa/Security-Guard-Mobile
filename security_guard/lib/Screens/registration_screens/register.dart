@@ -9,13 +9,13 @@ class RegisterScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _firstNameController = TextEditingController();
-    final _lastNameController = TextEditingController();
-    final _usernameController = TextEditingController();
-    final _emailController = TextEditingController();
-    final _phoneController = TextEditingController();
-    final _passwordController = TextEditingController();
-    final _confirmPasswordController = TextEditingController();
+    final firstNameController = TextEditingController();
+    final lastNameController = TextEditingController();
+    final usernameController = TextEditingController();
+    final emailController = TextEditingController();
+    final phoneController = TextEditingController();
+    final passwordController = TextEditingController();
+    final confirmPasswordController = TextEditingController();
 
     return Scaffold(
       appBar: AppBar(
@@ -35,7 +35,7 @@ class RegisterScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: TextField(
-                    controller: _firstNameController,
+                    controller: firstNameController,
                     decoration: const InputDecoration(
                       labelText: 'First Name',
                     ),
@@ -44,7 +44,7 @@ class RegisterScreen extends StatelessWidget {
                 SizedBox(width: 16.0),
                 Expanded(
                   child: TextField(
-                    controller: _lastNameController,
+                    controller: lastNameController,
                     decoration: const InputDecoration(
                       labelText: 'Last Name',
                     ),
@@ -57,7 +57,7 @@ class RegisterScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: TextField(
-                    controller: _passwordController,
+                    controller: passwordController,
                     decoration: const InputDecoration(
                       labelText: 'Password',
                     ),
@@ -67,7 +67,7 @@ class RegisterScreen extends StatelessWidget {
                 SizedBox(width: 16.0),
                 Expanded(
                   child: TextField(
-                    controller: _confirmPasswordController,
+                    controller: confirmPasswordController,
                     decoration: const InputDecoration(
                       labelText: 'Confirm Password',
                     ),
@@ -78,21 +78,21 @@ class RegisterScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16.0),
             TextField(
-              controller: _usernameController,
+              controller: usernameController,
               decoration: const InputDecoration(
                 labelText: 'Username',
               ),
             ),
             const SizedBox(height: 16.0),
             TextField(
-              controller: _emailController,
+              controller: emailController,
               decoration: const InputDecoration(
                 labelText: 'Email',
               ),
             ),
             const SizedBox(height: 16.0),
             TextField(
-              controller: _phoneController,
+              controller: phoneController,
               decoration: const InputDecoration(
                 labelText: 'Phone',
               ),
@@ -122,11 +122,11 @@ class RegisterScreen extends StatelessWidget {
               onPressed: () async {
                 // final firstName = _firstNameController.text;
                 // final lastName = _lastNameController.text;
-                final username = _usernameController.text;
-                final email = _emailController.text;
+                final username = usernameController.text;
+                final email = emailController.text;
                 // final phone = _phoneController.text;
-                final password = _passwordController.text;
-                final confirmPassword = _confirmPasswordController.text;
+                final password = passwordController.text;
+                final confirmPassword = confirmPasswordController.text;
 
                 if (password != confirmPassword) {
                   ScaffoldMessenger.of(context).showSnackBar(

@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:capstone_proj/constants.dart';
 
 class MessageAPIHandler {
-  final String _baseUrl = apiBaseUrl + "/api/Messages";
+  final String _baseUrl = "$apiBaseUrl/api/Messages";
 
   Future<List<Message>> getMessages() async {
     final response = await http.get(Uri.parse(_baseUrl));

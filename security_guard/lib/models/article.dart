@@ -2,6 +2,41 @@
 import 'comment.dart';
 import 'article_tag.dart';
 // import 'user.dart';
+class Author {
+  final String name;
+  final bool isVerified;
+  final String firstName;
+  final String lastName;
+  final String imageURL;
+
+  Author({
+    required this.name,
+    required this.isVerified,
+    required this.firstName,
+    required this.lastName,
+    required this.imageURL,
+  });
+
+  factory Author.fromJson(Map<String, dynamic> json) {
+    return Author(
+      name: json['name'],
+      isVerified: json['isVerified'],
+      firstName: json['firstName'],
+      lastName: json['lastName'],
+      imageURL: json['imageURL'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'isVerified': isVerified,
+      'firstName': firstName,
+      'lastName': lastName,
+      'imageURL': imageURL,
+    };
+  }
+}
 
 class Article {
   final int id;
@@ -16,8 +51,7 @@ class Article {
   final String title;
   final String imageURL;
   final DateTime publishDate;
-  final String authorId;
-  // final User? author;
+  final Author author; // Updated to include Author
   final List<Comment> comments;
   final List<ArticleTag> articleTags;
 
@@ -34,8 +68,7 @@ class Article {
     required this.title,
     required this.imageURL,
     required this.publishDate,
-    required this.authorId,
-    // this.author,
+    required this.author,
     this.comments = const [],
     this.articleTags = const [],
   });
@@ -54,8 +87,7 @@ class Article {
       title: json['title'],
       imageURL: json['imageURL'],
       publishDate: DateTime.parse(json['publishDate']),
-      authorId: json['authorId'],
-      // author: json['author'] != null ? User.fromJson(json['author']) : null,
+      author: Author.fromJson(json['author']),
       comments: (json['comments'] as List<dynamic>?)
               ?.map((comment) => Comment.fromJson(comment))
               .toList() ??
@@ -81,10 +113,10 @@ class Article {
       'title': title,
       'imageURL': imageURL,
       'publishDate': publishDate.toIso8601String(),
-      'authorId': authorId,
-      // 'author': author?.toJson(),
+      'author': author.toJson(),
       'comments': comments.map((comment) => comment.toJson()).toList(),
       'articleTags': articleTags.map((tag) => tag.toJson()).toList(),
     };
   }
 }
+
