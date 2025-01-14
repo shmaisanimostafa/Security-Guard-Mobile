@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:capstone_proj/models/auth_provider.dart'; // Import AuthProvider
+import 'package:capstone_proj/providers/auth_provider.dart'; // Import AuthProvider
 import 'package:capstone_proj/Screens/registration_screens/change_password.dart';
 
 class Profile extends StatelessWidget {

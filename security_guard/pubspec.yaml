@@ -31,6 +31,7 @@ dependencies:
   signalr_netcore: ^1.4.0
   flutter_plugin_android_lifecycle: ^2.0.24
   shimmer: ^2.0.0
+  # lottie: ^3.3.1
 
 flutter_native_splash:
   color: "#ffffff"

@@ -16,7 +16,7 @@ import 'package:capstone_proj/Screens/navigation_screens/link.dart';
 
 import 'package:capstone_proj/Screens/profile.dart';
 import 'package:capstone_proj/constants.dart';
-import 'package:capstone_proj/models/auth_provider.dart'; // Import the AuthProvider
+import 'package:capstone_proj/providers/auth_provider.dart'; // Import the AuthProvider
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});

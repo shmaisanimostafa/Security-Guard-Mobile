@@ -1,4 +1,4 @@
-import 'package:capstone_proj/models/auth_provider.dart';
+import 'package:capstone_proj/providers/auth_provider.dart';
 import 'package:feedback/feedback.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
