@@ -74,22 +74,22 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  Future<void> login(String username, String password) async {
-    try {
-      final response = await _authService.login(username, password);
-      print('Login response: $response');
-      if (response.containsKey('token')) {
-        _token = response['token']; // Ensure this key matches your API response
-        await _storage.write(key: 'jwt_token', value: _token!);
-        print('Token saved: $_token');
-        notifyListeners();
-      } else {
-        throw Exception(response['Message'] ?? 'Login failed');
-      }
-    } catch (e) {
-      print('Error during login: $e');
+ Future<void> login(String username, String password) async {
+  try {
+    final response = await _authService.login(username, password);
+    print('Login response: $response');
+    if (response.containsKey('token')) {
+      _token = response['token']; // Ensure this key matches your API response
+      await _storage.write(key: 'jwt_token', value: _token!);
+      print('Token saved: $_token');
+      notifyListeners(); // Notify listeners after successful login
+    } else {
+      throw Exception(response['Message'] ?? 'Login failed');
     }
+  } catch (e) {
+    print('Error during login: $e');
   }
+}
 
   Future<void> logout() async {
     try {
