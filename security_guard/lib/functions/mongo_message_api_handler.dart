@@ -1,13 +1,16 @@
 import 'package:capstone_proj/constants.dart';
 import 'package:capstone_proj/models/mongo_message.dart';
+import 'package:capstone_proj/providers/auth_provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
 import 'package:signalr_netcore/signalr_client.dart';
 
 class MongoMessageAPIHandler {
   final String _baseUrl = "$apiBaseUrl/api/MongoMessages"; // MongoDB API URL
   final String _signalRUrl = "$apiBaseUrl/chatHub"; // SignalR Hub URL
+  final AuthProvider authProvider; // Add AuthProvider as a dependency
+
+  MongoMessageAPIHandler({required this.authProvider}); // Constructor
 
   late HubConnection hubConnection;
 
@@ -74,6 +77,46 @@ class MongoMessageAPIHandler {
       return newMessage;
     } else {
       throw Exception("Can't post message.");
+    }
+  }
+
+  // Add AI-Generated Message
+  Future<MongoMessage> addMongoMessageAI(String question) async {
+    // Create a new MongoMessage for the AI response
+    final aiMessage = MongoMessage(
+      sender: authProvider.userData?['username'], // Sender is set to the current user
+      receiver: 'AI', // Receiver is set to 'AI'
+      content: question, // The AI-generated question or response
+      isAi: true, // Mark the message as AI-generated
+      timestamp: DateTime.now(),
+      isRead: false,
+    );
+
+    // Send the AI message to the MongoDB API
+    final response = await http.post(
+      Uri.parse(_baseUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(aiMessage.toJson()),
+    );
+
+    if (response.statusCode == 201) {
+      final newMessage = MongoMessage.fromJson(jsonDecode(response.body));
+
+      // Ensure the connection is established before sending the message
+      if (hubConnection.state == HubConnectionState.Connected) {
+        await hubConnection.invoke(
+          "SendMessage",
+          args: [newMessage.sender, newMessage.receiver, newMessage.content],
+        );
+      } else {
+        print("SignalR connection is not in the 'Connected' state.");
+      }
+
+      return newMessage;
+    } else {
+      throw Exception("Can't post AI message.");
     }
   }
 

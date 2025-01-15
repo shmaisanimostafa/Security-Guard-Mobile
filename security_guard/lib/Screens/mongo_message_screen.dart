@@ -1,14 +1,9 @@
-import 'package:capstone_proj/Screens/registration_screens/log_in.dart';
 import 'package:flutter/material.dart';
-import 'package:capstone_proj/providers/auth_provider.dart';
 import 'package:capstone_proj/services/signalr_service.dart';
-import 'package:capstone_proj/components/message_bubble.dart';
-import 'package:capstone_proj/constants.dart';
-import 'package:capstone_proj/functions/mongo_message_api_handler.dart';
-import 'package:capstone_proj/models/mongo_message.dart';
-import 'package:capstone_proj/Screens/ai_chat_screen.dart';
-import 'package:capstone_proj/Screens/speech_to_text.dart';
-// import 'package:capstone_proj/Screens/login_screen.dart'; // Import your login screen
+import 'package:capstone_proj/components/message_bubble.dart'; // Import the MessageBubble widget
+import 'package:capstone_proj/constants.dart'; // Import your constants
+import 'package:capstone_proj/Screens/ai_chat_screen.dart'; // Import AI chat screen
+import 'package:capstone_proj/Screens/speech_to_text.dart'; // Import speech-to-text screen
 
 class MongoChatScreen extends StatefulWidget {
   const MongoChatScreen({super.key});
@@ -19,52 +14,33 @@ class MongoChatScreen extends StatefulWidget {
 
 class _MongoChatScreenState extends State<MongoChatScreen> {
   final TextEditingController messageTextController = TextEditingController();
-  final MongoMessageAPIHandler messageAPIHandler = MongoMessageAPIHandler();
-  late SignalRService signalRService;
-  late AuthProvider authProvider;
+  final SignalRService signalRService = SignalRService();
 
-  List<MongoMessage> messages = [];
-  String messageText = '';
-  bool _isSending = false; // Track whether a message is being sent
-  bool _isLoading = true; // Track whether messages are being loaded
+  List<Map<String, dynamic>> messages = [];
+  bool _isLoading = true;
+  bool _isSending = false; // Track if a message is being sent
+
+  // Scroll controller for ListView
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    authProvider = AuthProvider(); // Initialize AuthProvider
-    signalRService = SignalRService(authProvider); // Pass AuthProvider to SignalRService
-    _checkAuthentication();
-  }
-
-  Future<void> _checkAuthentication() async {
-    await authProvider.loadToken(); // Ensure the token is loaded
-    if (!authProvider.isAuthenticated) {
-      // Redirect to login screen if not authenticated
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => LogInScreen()),
-        );
-      });
-    } else {
-      _initializeSignalR();
+    _initializeSignalR().then((_) {
       _fetchMessages();
-    }
+    });
   }
 
   Future<void> _initializeSignalR() async {
     try {
-      await signalRService.startConnection(onMessageReceived: (user, message) {
+      await signalRService.connect();
+      signalRService.onMessageReceived = (message) {
         setState(() {
-          messages.insert(0, MongoMessage(
-            sender: user,
-            receiver: 'receiver',
-            content: message,
-            isAi: false,
-            timestamp: DateTime.now(),
-            isRead: false,
-          ));
+          messages.add(message); // Add new message to the end of the list
         });
-      });
+        // Scroll to the bottom when a new message is received
+        _scrollToBottom();
+      };
     } catch (e) {
       print("Error initializing SignalR: $e");
     }
@@ -73,66 +49,74 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
   Future<void> _fetchMessages() async {
     try {
       setState(() {
-        _isLoading = true; // Show loading animation
+        _isLoading = true; // Show loading indicator
       });
 
-      final fetchedMessages = await messageAPIHandler.getMessages();
+      final fetchedMessages = await signalRService.getMessageHistory();
       setState(() {
-        messages = fetchedMessages;
+        messages = List<Map<String, dynamic>>.from(fetchedMessages.reversed); // Reverse the fetched messages
       });
+      // Scroll to the bottom after fetching messages
+      _scrollToBottom();
     } catch (e) {
       print("Error fetching messages: $e");
     } finally {
       setState(() {
-        _isLoading = false; // Hide loading animation
+        _isLoading = false; // Hide loading indicator
       });
     }
   }
 
   Future<void> _sendMessage(String text) async {
+    if (text.isEmpty) return;
+
     setState(() {
-      _isSending = true; // Show sending animation
+      _isSending = true; // Show sending indicator
     });
 
-    final newMessage = MongoMessage(
-      sender: 'Mostafa',
-      receiver: 'receiver',
-      content: text,
-      isAi: false,
-      timestamp: DateTime.now(),
-      isRead: false,
-    );
+    final newMessage = {
+      "sender": "User1", // Replace with the actual sender
+      "receiver": "Group1", // Replace with the actual receiver
+      "content": text,
+      "timestamp": DateTime.now().toIso8601String(),
+      "isAi": false,
+    };
 
     setState(() {
-      messages.insert(0, newMessage); // Add to the top of the list immediately
+      messages.add(newMessage); // Add the message to the end of the list
     });
 
     try {
-      final addedMessage = await messageAPIHandler.addMessage(newMessage);
-      setState(() {
-        messages[0] = addedMessage; // Update the message with the one from the server
-      });
-
-      // Wait for the SignalR connection to be ready
-      await signalRService.isConnectionReady;
-
-      // Send the message via SignalR
-      await signalRService.sendMessage('Mostafa', text);
-
+      await signalRService.sendMessage("User1", "Group1", text, false);
       messageTextController.clear();
-      messageText = '';
+      // Scroll to the bottom after sending a message
+      _scrollToBottom();
     } catch (e) {
       print("Error sending message: $e");
     } finally {
       setState(() {
-        _isSending = false; // Hide sending animation
+        _isSending = false; // Hide sending indicator
       });
     }
   }
 
+  // Scroll to the bottom of the ListView
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
+
   @override
   void dispose() {
-    signalRService.stopConnection();
+    signalRService.disconnect();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -143,6 +127,7 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton.small(
+            // Open Chat with AI Screen
             onPressed: () {
               showModalBottomSheet(
                 context: context,
@@ -165,11 +150,10 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
         children: [
           Expanded(
             child: _isLoading
-                ? const Center(
-                    child: CircularProgressIndicator(), // Show loading animation
-                  )
+                ? const Center(child: CircularProgressIndicator())
                 : ListView(
-                    reverse: true,
+                    reverse: false, // Set reverse to false
+                    controller: _scrollController, // Attach the scroll controller
                     padding: const EdgeInsets.symmetric(
                       horizontal: 10.0,
                       vertical: 20.0,
@@ -178,15 +162,15 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          for (MongoMessage message in messages)
+                          for (var message in messages)
                             MessageBubble(
-                              sender: message.sender,
-                              text: message.content,
-                              isMe: message.sender == 'Mostafa',
+                              sender: message["sender"],
+                              text: message["content"],
+                              isMe: message["sender"] == "User1", // Replace with the actual sender
                             ),
                           if (_isSending)
                             const Center(
-                              child: CircularProgressIndicator(), // Show sending animation
+                              child: CircularProgressIndicator(), // Show sending indicator
                             ),
                         ],
                       ),
@@ -202,24 +186,19 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
                 Expanded(
                   child: TextField(
                     controller: messageTextController,
-                    onChanged: (value) {
-                      messageText = value;
-                    },
                     decoration: kMessageTextFieldDecoration,
                   ),
                 ),
                 TextButton(
-                  onPressed: () async {
-                    if (messageText.isNotEmpty && !_isSending) {
-                      await _sendMessage(messageText);
+                  onPressed: () {
+                    if (messageTextController.text.isNotEmpty) {
+                      _sendMessage(messageTextController.text);
                     }
                   },
-                  child: _isSending
-                      ? const CircularProgressIndicator() // Show sending animation
-                      : const Text(
-                          'Send',
-                          style: kSendButtonTextStyle,
-                        ),
+                  child: const Text(
+                    'Send',
+                    style: kSendButtonTextStyle,
+                  ),
                 ),
                 IconButton(
                   onPressed: () {
