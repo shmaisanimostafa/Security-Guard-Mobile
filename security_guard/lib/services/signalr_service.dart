@@ -11,7 +11,12 @@ class SignalRService {
   Future<void> connect() async {
     try {
       _hubConnection = HubConnectionBuilder()
-          .withUrl(signalRHubUrl)
+          .withUrl(signalRHubUrl,
+          options: HttpConnectionOptions(
+              // logging: (level, message) => print(message), // Optional logging
+              requestTimeout: 20000, // Increase timeout to 10 seconds
+            ),
+          ) .withAutomaticReconnect()
           .build();
 
       await _hubConnection.start();
