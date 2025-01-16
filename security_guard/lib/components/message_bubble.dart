@@ -8,12 +8,14 @@ class MessageBubble extends StatelessWidget {
     required this.text,
     required this.isMe,
     this.isAI = false,
+    this.isRead = false, // Add isRead parameter
   });
 
   final String sender;
   final String text;
   final bool isMe;
   final bool isAI;
+  final bool isRead; // Add isRead property
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +61,6 @@ class MessageBubble extends StatelessWidget {
                           const Color(0xff4100E0),
                           const Color(0xff1CDAC5),
                           const Color(0xffF2DD22),
-                          // Colors.redAccent,
                         ]
                       : isMe
                           ? [Colors.amber, Colors.amberAccent]
@@ -79,7 +80,7 @@ class MessageBubble extends StatelessWidget {
                               ? const Color.fromARGB(255, 0, 0, 0)
                               : Colors.white),
                     ),
-                    //ANCHOR - Where the AI response
+                    // ANCHOR - Where the AI response
                     if (isAI)
                       FutureBuilder<String>(
                         future: geminiGenerate(text),
@@ -111,6 +112,16 @@ class MessageBubble extends StatelessWidget {
               ),
             ),
           ),
+          // Add read receipt for user messages
+          if (isMe && !isAI)
+            Padding(
+              padding: const EdgeInsets.only(top: 4.0),
+              child: Icon(
+                Icons.done_all,
+                size: 12,
+                color: isRead ? Colors.blue : Colors.grey,
+              ),
+            ),
         ],
       ),
     );

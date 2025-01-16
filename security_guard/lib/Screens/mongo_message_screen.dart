@@ -29,6 +29,15 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
     _initializeSignalR().then((_) {
       _fetchMessages();
     });
+
+    // Mark messages as read when the screen is opened
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      for (var message in messages) {
+        if (message["receiver"] == "User1" && !message["isRead"]) {
+          signalRService.markMessageAsRead(message["id"]);
+        }
+      }
+    });
   }
 
   Future<void> _initializeSignalR() async {
@@ -41,6 +50,14 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
         });
         // Scroll to the bottom when a new message is received
         _scrollToBottom();
+      };
+
+      signalRService.onMessageRead = (messageId) {
+        print("Message read: $messageId");
+        setState(() {
+          var message = messages.firstWhere((msg) => msg["id"] == messageId);
+          message["isRead"] = true;
+        });
       };
     } catch (e) {
       print("Error initializing SignalR: $e");
@@ -81,6 +98,7 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
       "content": text,
       "timestamp": DateTime.now().toIso8601String(),
       "isAi": false,
+      "isRead": false,
     };
 
     setState(() {
@@ -168,6 +186,7 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
                               sender: message["sender"],
                               text: message["content"],
                               isMe: message["sender"] == "User1", // Replace with the actual sender
+                              isRead: message["isRead"],
                             ),
                           if (_isSending)
                             const Center(

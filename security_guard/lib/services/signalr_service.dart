@@ -7,6 +7,7 @@ class SignalRService {
 
   // Callbacks
   Function(Map<String, dynamic>)? onMessageReceived;
+  Function(String)? onMessageRead;
 
   Future<void> connect() async {
     try {
@@ -14,7 +15,7 @@ class SignalRService {
           .withUrl(
             signalRHubUrl,
             options: HttpConnectionOptions(
-              requestTimeout: 30000, // Increase timeout to 20 seconds
+              requestTimeout: 30000, // Increase timeout to 30 seconds
             ),
           )
           .withAutomaticReconnect(retryDelays: [2000, 5000, 10000, 30000]) // Retry reconnection with delays
@@ -23,7 +24,6 @@ class SignalRService {
       // _hubConnection.onclose((error) {
       //   print("SignalR connection closed: $error");
       //   _isConnected = false;
-      //   // Attempt to reconnect
       //   _reconnect();
       // });
 
@@ -51,11 +51,18 @@ class SignalRService {
         }
       });
 
+      // Handle MessageRead event
+      _hubConnection.on("MessageRead", (messageId) {
+        print("Message read: $messageId");
+        if (onMessageRead != null) {
+          onMessageRead!(messageId as String);
+        }
+      });
+
       print("SignalR connected successfully!");
     } catch (e) {
       print("Error connecting to SignalR: $e");
       _isConnected = false;
-      // Attempt to reconnect
       _reconnect();
     }
   }
@@ -77,6 +84,20 @@ class SignalRService {
       print("Message sent successfully!");
     } catch (e) {
       print("Error sending message: $e");
+    }
+  }
+
+  Future<void> markMessageAsRead(String messageId) async {
+    if (!_isConnected) {
+      print("SignalR connection not established.");
+      return;
+    }
+
+    try {
+      await _hubConnection.invoke("MarkMessageAsRead", args: [messageId]);
+      print("Message marked as read: $messageId");
+    } catch (e) {
+      print("Error marking message as read: $e");
     }
   }
 
