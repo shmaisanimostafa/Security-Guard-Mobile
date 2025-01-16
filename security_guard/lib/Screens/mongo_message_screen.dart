@@ -35,6 +35,7 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
     try {
       await signalRService.connect();
       signalRService.onMessageReceived = (message) {
+        print("Message received: $message");
         setState(() {
           messages.add(message); // Add new message to the end of the list
         });
