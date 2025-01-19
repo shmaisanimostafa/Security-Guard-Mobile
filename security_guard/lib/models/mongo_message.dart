@@ -6,6 +6,11 @@ class MongoMessage {
   DateTime timestamp; // When the message was sent
   bool isRead; // To track if the message has been read
   bool isAi; // To track if the message is AI generated
+  bool isEdited; // To track if the message has been edited
+  bool isFile; // To track if the message contains a file
+  String? fileUrl; // URL of the file (if any)
+  String? fileName; // Name of the file (if any)
+  Map<String, String> reactions; // Reactions to the message
 
   MongoMessage({
     this.id,
@@ -15,6 +20,11 @@ class MongoMessage {
     required this.timestamp,
     required this.isRead,
     required this.isAi,
+    this.isEdited = false,
+    this.isFile = false,
+    this.fileUrl,
+    this.fileName,
+    this.reactions = const {},
   });
 
   // Convert JSON to MongoMessage
@@ -27,6 +37,11 @@ class MongoMessage {
       timestamp: DateTime.parse(json['timestamp'] as String),
       isRead: json['isRead'] as bool,
       isAi: json['isAi'] as bool,
+      isEdited: json['isEdited'] as bool? ?? false,
+      isFile: json['isFile'] as bool? ?? false,
+      fileUrl: json['fileUrl'] as String?,
+      fileName: json['fileName'] as String?,
+      reactions: (json['reactions'] as Map<String, dynamic>?)?.map((key, value) => MapEntry(key, value as String)) ?? {},
     );
   }
 
@@ -40,6 +55,11 @@ class MongoMessage {
       'timestamp': timestamp.toIso8601String(),
       'isRead': isRead,
       'isAi': isAi,
+      'isEdited': isEdited,
+      'isFile': isFile,
+      'fileUrl': fileUrl,
+      'fileName': fileName,
+      'reactions': reactions,
     };
   }
 }

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:capstone_proj/services/signalr_service.dart';
-import 'package:capstone_proj/components/message_bubble.dart'; // Import the MessageBubble widget
-import 'package:capstone_proj/constants.dart'; // Import your constants
-import 'package:capstone_proj/Screens/ai_chat_screen.dart'; // Import AI chat screen
-import 'package:capstone_proj/Screens/speech_to_text.dart'; // Import speech-to-text screen
+import 'package:capstone_proj/components/message_bubble.dart';
+import 'package:capstone_proj/constants.dart';
+import 'package:capstone_proj/Screens/ai_chat_screen.dart';
+import 'package:capstone_proj/Screens/speech_to_text.dart';
 
 class MongoChatScreen extends StatefulWidget {
   const MongoChatScreen({super.key});
@@ -18,7 +18,7 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
 
   List<Map<String, dynamic>> messages = [];
   bool _isLoading = true;
-  bool _isSending = false; // Track if a message is being sent
+  bool _isSending = false;
 
   // Scroll controller for ListView
   final ScrollController _scrollController = ScrollController();
@@ -48,17 +48,39 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
         setState(() {
           messages.add(message); // Add new message to the end of the list
         });
-        // Scroll to the bottom when a new message is received
         _scrollToBottom();
       };
+signalRService.onMessageDeleted = (messageId) {
+  print("Message deleted: $messageId");
+  setState(() {
+    var index = messages.indexWhere((msg) => msg["id"] == messageId);
+    if (index != -1) {
+      // Update only the message content to "Message Deleted!"
+      messages[index]["content"] = "Message Deleted!";
+    }
+  });
+};
 
-      signalRService.onMessageRead = (messageId) {
-        print("Message read: $messageId");
+      signalRService.onMessageEdited = (message) {
+        print("Message edited: $message");
         setState(() {
-          var message = messages.firstWhere((msg) => msg["id"] == messageId);
-          message["isRead"] = true;
+          var index = messages.indexWhere((msg) => msg["id"] == message["id"]);
+          if (index != -1) {
+            messages[index] = message; // Update the edited message
+          }
         });
       };
+
+      signalRService.onMessageReacted = (reaction) {
+        print("Message reacted: $reaction");
+        setState(() {
+          var index = messages.indexWhere((msg) => msg["id"] == reaction["messageId"]);
+          if (index != -1) {
+            messages[index]["reactions"] = reaction["reactions"]; // Update reactions
+          }
+        });
+      };
+
     } catch (e) {
       print("Error initializing SignalR: $e");
     }
@@ -67,20 +89,19 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
   Future<void> _fetchMessages() async {
     try {
       setState(() {
-        _isLoading = true; // Show loading indicator
+        _isLoading = true;
       });
 
       final fetchedMessages = await signalRService.getMessageHistory();
       setState(() {
-        messages = List<Map<String, dynamic>>.from(fetchedMessages.reversed); // Reverse the fetched messages
+        messages = List<Map<String, dynamic>>.from(fetchedMessages.reversed);
       });
-      // Scroll to the bottom after fetching messages
       _scrollToBottom();
     } catch (e) {
       print("Error fetching messages: $e");
     } finally {
       setState(() {
-        _isLoading = false; // Hide loading indicator
+        _isLoading = false;
       });
     }
   }
@@ -89,37 +110,100 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
     if (text.isEmpty) return;
 
     setState(() {
-      _isSending = true; // Show sending indicator
+      _isSending = true;
     });
 
     final newMessage = {
-      "sender": "User1", // Replace with the actual sender
-      "receiver": "Group1", // Replace with the actual receiver
+      "id": DateTime.now().millisecondsSinceEpoch.toString(),
+      "sender": "User1",
+      "receiver": "Group1",
       "content": text,
       "timestamp": DateTime.now().toIso8601String(),
       "isAi": false,
       "isRead": false,
+      "isEdited": false,
+      "reactions": {},
     };
 
     setState(() {
-      messages.add(newMessage); // Add the message to the end of the list
+      messages.add(newMessage);
     });
 
     try {
       await signalRService.sendMessage("User1", "Group1", text, false);
-      messageTextController.clear();
-      // Scroll to the bottom after sending a message
+      setState(() {
+        messageTextController.clear(); // Clear the text field
+      });
       _scrollToBottom();
     } catch (e) {
       print("Error sending message: $e");
     } finally {
       setState(() {
-        _isSending = false; // Hide sending indicator
+        _isSending = false;
       });
     }
   }
 
-  // Scroll to the bottom of the ListView
+  Future<void> _editMessage(String messageId, String newContent) async {
+    try {
+      await signalRService.editMessage(messageId, newContent);
+    } catch (e) {
+      print("Error editing message: $e");
+    }
+  }
+
+Future<void> _deleteMessage(String messageId) async {
+  try {
+    await signalRService.deleteMessage(messageId);
+    print("Message deleted locally: $messageId");
+  } catch (e) {
+    print("Error deleting message: $e");
+    // Show an error message to the user
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("Failed to delete message: $e"),
+      ),
+    );
+  }
+}
+
+  void _showEditDialog(String messageId, String currentText) {
+    final textController = TextEditingController(text: currentText);
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Edit Message'),
+          content: TextField(
+            controller: textController,
+            decoration: const InputDecoration(
+              hintText: 'Edit your message...',
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                final newText = textController.text.trim();
+                if (newText.isNotEmpty) {
+                  _editMessage(messageId, newText);
+                  Navigator.pop(context);
+                }
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scrollController.hasClients) {
@@ -146,7 +230,6 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton.small(
-            // Open Chat with AI Screen
             onPressed: () {
               showModalBottomSheet(
                 context: context,
@@ -171,8 +254,8 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : ListView(
-                    reverse: false, // Set reverse to false
-                    controller: _scrollController, // Attach the scroll controller
+                    reverse: false,
+                    controller: _scrollController,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 10.0,
                       vertical: 20.0,
@@ -185,12 +268,20 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
                             MessageBubble(
                               sender: message["sender"],
                               text: message["content"],
-                              isMe: message["sender"] == "User1", // Replace with the actual sender
+                              isMe: message["sender"] == "User1",
                               isRead: message["isRead"],
+                              isEdited: message["isEdited"] ?? false,
+                              reactions: Map<String, String>.from(message["reactions"] ?? {}),
+                              onEdit: (currentText) {
+                                _showEditDialog(message["id"], currentText);
+                              },
+                              onDelete: () {
+                                _deleteMessage(message["id"]);
+                              },
                             ),
                           if (_isSending)
                             const Center(
-                              child: CircularProgressIndicator(), // Show sending indicator
+                              child: CircularProgressIndicator(),
                             ),
                         ],
                       ),
