@@ -173,6 +173,14 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
     }
   }
 
+  Future<void> _reactToMessage(String messageId, String reaction) async {
+    try {
+      await signalRService.reactToMessage(messageId, reaction);
+    } catch (e) {
+      print("Error reacting to message: $e");
+    }
+  }
+
   void _showEditDialog(String messageId, String currentText) {
     final textController = TextEditingController(text: currentText);
 
@@ -278,7 +286,6 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
                               sender: message["sender"],
                               text: message["content"],
                               isMe: message["sender"] == userData?["userName"], // Use the real username
-                              // profileImageUrl: userData?["imageURL"], // Pass the profile image URL
                               isRead: message["isRead"],
                               isEdited: message["isEdited"] ?? false,
                               reactions: Map<String, String>.from(message["reactions"] ?? {}),
@@ -287,6 +294,9 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
                               },
                               onDelete: () {
                                 _deleteMessage(message["id"]);
+                              },
+                              onReact: (reaction) {
+                                _reactToMessage(message["id"], reaction);
                               },
                             ),
                           if (_isSending)

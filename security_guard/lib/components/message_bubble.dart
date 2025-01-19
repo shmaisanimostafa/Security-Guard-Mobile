@@ -12,6 +12,7 @@ class MessageBubble extends StatelessWidget {
     this.reactions = const {},
     this.onEdit,
     this.onDelete,
+    this.onReact,
   });
 
   final String sender;
@@ -23,6 +24,7 @@ class MessageBubble extends StatelessWidget {
   final Map<String, String> reactions;
   final Function(String)? onEdit;
   final Function()? onDelete;
+  final Function(String)? onReact;
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +34,11 @@ class MessageBubble extends StatelessWidget {
       onLongPress: () {
         if (isMe && !isAI && !isDeleted) {
           _showMessageMenu(context); // Show the menu on long press
+        }
+      },
+      onTap: () {
+        if (!isMe && !isDeleted) {
+          _showReactionPicker(context); // Show reaction picker on tap
         }
       },
       child: Padding(
@@ -174,6 +181,68 @@ class MessageBubble extends StatelessWidget {
               },
             ),
           ],
+        );
+      },
+    );
+  }
+
+  // Show a reaction picker
+  void _showReactionPicker(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Container(
+          padding: EdgeInsets.all(16.0),
+          child: Wrap(
+            spacing: 8.0,
+            children: [
+              IconButton(
+                icon: Text('👍'),
+                onPressed: () {
+                  Navigator.pop(context);
+                  if (onReact != null) {
+                    onReact!('👍');
+                  }
+                },
+              ),
+              IconButton(
+                icon: Text('❤️'),
+                onPressed: () {
+                  Navigator.pop(context);
+                  if (onReact != null) {
+                    onReact!('❤️');
+                  }
+                },
+              ),
+              IconButton(
+                icon: Text('😄'),
+                onPressed: () {
+                  Navigator.pop(context);
+                  if (onReact != null) {
+                    onReact!('😄');
+                  }
+                },
+              ),
+              IconButton(
+                icon: Text('😢'),
+                onPressed: () {
+                  Navigator.pop(context);
+                  if (onReact != null) {
+                    onReact!('😢');
+                  }
+                },
+              ),
+              IconButton(
+                icon: Text('😡'),
+                onPressed: () {
+                  Navigator.pop(context);
+                  if (onReact != null) {
+                    onReact!('😡');
+                  }
+                },
+              ),
+            ],
+          ),
         );
       },
     );
