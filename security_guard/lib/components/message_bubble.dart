@@ -10,8 +10,8 @@ class MessageBubble extends StatelessWidget {
     this.isRead = false,
     this.isEdited = false,
     this.reactions = const {},
-    this.onEdit, // Add onEdit callback
-    this.onDelete, // Add onDelete callback
+    this.onEdit,
+    this.onDelete,
   });
 
   final String sender;
@@ -21,14 +21,16 @@ class MessageBubble extends StatelessWidget {
   final bool isRead;
   final bool isEdited;
   final Map<String, String> reactions;
-  final Function(String)? onEdit; // Callback for editing the message
-  final Function()? onDelete; // Callback for deleting the message
+  final Function(String)? onEdit;
+  final Function()? onDelete;
 
   @override
   Widget build(BuildContext context) {
+    final bool isDeleted = text == "Message Deleted!"; // Check if the message is deleted
+
     return GestureDetector(
       onLongPress: () {
-        if (isMe && !isAI) {
+        if (isMe && !isAI && !isDeleted) {
           _showMessageMenu(context); // Show the menu on long press
         }
       },
@@ -65,20 +67,26 @@ class MessageBubble extends StatelessWidget {
                           topRight: Radius.circular(30.0),
                           bottomLeft: Radius.circular(30.0),
                           bottomRight: Radius.circular(30.0)),
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: isAI
-                        ? [
-                            const Color(0xff027DFD),
-                            const Color(0xff4100E0),
-                            const Color(0xff1CDAC5),
-                            const Color(0xffF2DD22),
-                          ]
-                        : isMe
-                            ? [Colors.amber, Colors.amberAccent]
-                            : [Colors.white, Colors.white70],
-                  ),
+                  // Change the background color if the message is deleted
+                  color: isDeleted
+                      ? Colors.red.withOpacity(0.3) // Red background for deleted messages
+                      : null, // Default background (gradient)
+                  gradient: isDeleted
+                      ? null // Disable gradient for deleted messages
+                      : LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: isAI
+                              ? [
+                                  const Color(0xff027DFD),
+                                  const Color(0xff4100E0),
+                                  const Color(0xff1CDAC5),
+                                  const Color(0xffF2DD22),
+                                ]
+                              : isMe
+                                  ? [Colors.amber, Colors.amberAccent]
+                                  : [Colors.white, Colors.white70],
+                        ),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
@@ -90,12 +98,15 @@ class MessageBubble extends StatelessWidget {
                         isAI ? text.toUpperCase() : text,
                         style: TextStyle(
                           fontSize: 15.0,
-                          color: !isAI
-                              ? const Color.fromARGB(255, 0, 0, 0)
-                              : Colors.white,
+                          color: isDeleted
+                              ? Colors.white // White text for deleted messages
+                              : (!isAI
+                                  ? const Color.fromARGB(255, 0, 0, 0)
+                                  : const Color.fromARGB(255, 255, 255, 255)),
+                          fontStyle: isDeleted ? FontStyle.italic : FontStyle.normal, // Italic for deleted messages
                         ),
                       ),
-                      if (isEdited)
+                      if (isEdited && !isDeleted)
                         Text(
                           '(Edited)',
                           style: TextStyle(
@@ -119,7 +130,7 @@ class MessageBubble extends StatelessWidget {
                 ),
               ),
             ),
-            if (isMe && !isAI)
+            if (isMe && !isAI && !isDeleted)
               Padding(
                 padding: const EdgeInsets.only(top: 4.0),
                 child: Icon(

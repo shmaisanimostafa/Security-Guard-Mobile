@@ -50,16 +50,18 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
         });
         _scrollToBottom();
       };
-signalRService.onMessageDeleted = (messageId) {
-  print("Message deleted: $messageId");
-  setState(() {
-    var index = messages.indexWhere((msg) => msg["id"] == messageId);
-    if (index != -1) {
-      // Update only the message content to "Message Deleted!"
-      messages[index]["content"] = "Message Deleted!";
-    }
-  });
-};
+
+      signalRService.onMessageDeleted = (messageId) {
+        print("Message deleted: $messageId");
+        setState(() {
+          var index = messages.indexWhere((msg) => msg["id"] == messageId);
+          if (index != -1) {
+            // Update the message content to "Message Deleted!"
+            messages[index]["content"] = "Message Deleted!";
+            messages[index]["isDeleted"] = true; // Add a flag to indicate the message is deleted
+          }
+        });
+      };
 
       signalRService.onMessageEdited = (message) {
         print("Message edited: $message");
@@ -152,20 +154,20 @@ signalRService.onMessageDeleted = (messageId) {
     }
   }
 
-Future<void> _deleteMessage(String messageId) async {
-  try {
-    await signalRService.deleteMessage(messageId);
-    print("Message deleted locally: $messageId");
-  } catch (e) {
-    print("Error deleting message: $e");
-    // Show an error message to the user
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text("Failed to delete message: $e"),
-      ),
-    );
+  Future<void> _deleteMessage(String messageId) async {
+    try {
+      await signalRService.deleteMessage(messageId);
+      print("Message deleted locally: $messageId");
+    } catch (e) {
+      print("Error deleting message: $e");
+      // Show an error message to the user
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Failed to delete message: $e"),
+        ),
+      );
+    }
   }
-}
 
   void _showEditDialog(String messageId, String currentText) {
     final textController = TextEditingController(text: currentText);

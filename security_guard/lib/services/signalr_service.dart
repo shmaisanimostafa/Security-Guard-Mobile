@@ -91,8 +91,7 @@ class SignalRService {
         if (onFileReceived != null) {
           onFileReceived!(Map<String, dynamic>.from(file?[0] as Map<dynamic, dynamic>));
         }
-      }
-      );
+      });
 
       print("SignalR connected successfully!");
     } catch (e) {
@@ -134,21 +133,22 @@ class SignalRService {
   }
 
   Future<void> deleteMessage(String messageId) async {
-  if (!_isConnected) {
-    print("SignalR connection not established. Attempting to reconnect...");
-    await connect(); // Attempt to reconnect
-  }
+    if (!_isConnected) {
+      print("SignalR connection not established. Attempting to reconnect...");
+      await connect(); // Attempt to reconnect
+    }
 
-  try {
-    await _hubConnection.invoke("DeleteMessage", args: [messageId]);
-    print("Message deleted successfully: $messageId");
-  } catch (e) {
-    print("Error deleting message: $e");
-    // Attempt to reconnect and retry the operation
-    await _reconnect();
-    await deleteMessage(messageId); // Retry the delete operation
+    try {
+      // Call the EditMessage endpoint to update the message content
+      await _hubConnection.invoke("EditMessage", args: [messageId, "Message Deleted!"]);
+      print("Message content updated to 'Message Deleted!': $messageId");
+    } catch (e) {
+      print("Error updating message content: $e");
+      // Attempt to reconnect and retry the operation
+      await _reconnect();
+      await deleteMessage(messageId); // Retry the operation
+    }
   }
-}
 
   Future<void> reactToMessage(String messageId, String reaction) async {
     if (!_isConnected) return;
