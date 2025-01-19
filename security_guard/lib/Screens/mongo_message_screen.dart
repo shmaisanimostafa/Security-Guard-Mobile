@@ -1,9 +1,12 @@
+import 'package:capstone_proj/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:capstone_proj/services/signalr_service.dart';
 import 'package:capstone_proj/components/message_bubble.dart';
 import 'package:capstone_proj/constants.dart';
 import 'package:capstone_proj/Screens/ai_chat_screen.dart';
 import 'package:capstone_proj/Screens/speech_to_text.dart';
+import 'package:capstone_proj/models/auth_service.dart'; // Import AuthProvider
+import 'package:provider/provider.dart'; // Import Provider
 
 class MongoChatScreen extends StatefulWidget {
   const MongoChatScreen({super.key});
@@ -30,13 +33,10 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
       _fetchMessages();
     });
 
-    // Mark messages as read when the screen is opened
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      for (var message in messages) {
-        if (message["receiver"] == "User1" && !message["isRead"]) {
-          signalRService.markMessageAsRead(message["id"]);
-        }
-      }
+    // Fetch user data when the screen initializes
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      await authProvider.fetchUserData();
     });
   }
 
@@ -115,9 +115,13 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
       _isSending = true;
     });
 
+    // Get the current user's data
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final userData = authProvider.userData;
+
     final newMessage = {
       "id": DateTime.now().millisecondsSinceEpoch.toString(),
-      "sender": "User1",
+      "sender": userData?["userName"] ?? "Unknown", // Use the real username
       "receiver": "Group1",
       "content": text,
       "timestamp": DateTime.now().toIso8601String(),
@@ -132,7 +136,7 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
     });
 
     try {
-      await signalRService.sendMessage("User1", "Group1", text, false);
+      await signalRService.sendMessage(userData?["userName"] ?? "Unknown", "Group1", text, false);
       setState(() {
         messageTextController.clear(); // Clear the text field
       });
@@ -227,6 +231,9 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
+    final userData = authProvider.userData;
+
     return Scaffold(
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -270,7 +277,8 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
                             MessageBubble(
                               sender: message["sender"],
                               text: message["content"],
-                              isMe: message["sender"] == "User1",
+                              isMe: message["sender"] == userData?["userName"], // Use the real username
+                              // profileImageUrl: userData?["imageURL"], // Pass the profile image URL
                               isRead: message["isRead"],
                               isEdited: message["isEdited"] ?? false,
                               reactions: Map<String, String>.from(message["reactions"] ?? {}),
