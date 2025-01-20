@@ -2,14 +2,20 @@ import 'package:capstone_proj/models/fast_api_service.dart';
 import 'package:flutter/material.dart';
 
 class PredictionScreen extends StatefulWidget {
-  const PredictionScreen({super.key});
+  // Default constructor
+  const PredictionScreen({super.key, this.initialText});
+
+  // Named constructor with an optional parameter for pre-filled text
+  const PredictionScreen.withText({super.key, this.initialText});
+
+  final String? initialText;
 
   @override
   _PredictionScreenState createState() => _PredictionScreenState();
 }
 
 class _PredictionScreenState extends State<PredictionScreen> {
-  final FastAPIService apiService = FastAPIService('http://127.0.0.1:8000');
+  final FastAPIService apiService = FastAPIService('http://localhost:8000');
   final TextEditingController _textController = TextEditingController();
 
   Map<String, dynamic>? phishingBertResult;
@@ -17,6 +23,15 @@ class _PredictionScreenState extends State<PredictionScreen> {
   Map<String, dynamic>? phishingNewResult;
 
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Pre-fill the text field if initialText is provided
+    if (widget.initialText != null) {
+      _textController.text = widget.initialText!;
+    }
+  }
 
   Future<void> _predict() async {
     setState(() {
@@ -44,7 +59,7 @@ class _PredictionScreenState extends State<PredictionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Prediction'),
+        title: const Text('Prediction'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -53,40 +68,40 @@ class _PredictionScreenState extends State<PredictionScreen> {
           children: [
             TextField(
               controller: _textController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Enter text to analyze',
                 border: OutlineInputBorder(),
               ),
               maxLines: 4,
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             ElevatedButton(
               onPressed: _isLoading ? null : _predict,
               child: _isLoading
-                  ? CircularProgressIndicator()
-                  : Text('Predict'),
+                  ? const CircularProgressIndicator()
+                  : const Text('Predict'),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             if (_isLoading) ...[
-              Center(child: CircularProgressIndicator()),
+              const Center(child: CircularProgressIndicator()),
             ] else ...[
               if (phishingBertResult != null) ...[
-                Text('BERT Phishing Prediction:'),
+                const Text('BERT Phishing Prediction:'),
                 Text('Predicted Class: ${phishingBertResult?['predicted_class'] ?? 'N/A'}'),
                 Text('Confidence Score: ${phishingBertResult?['confidence_score'] ?? 'N/A'}'),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
               ],
               if (spamResult != null) ...[
-                Text('Spam Prediction:'),
+                const Text('Spam Prediction:'),
                 Text('Predicted Class: ${spamResult?['predicted_class'] ?? 'N/A'}'),
                 Text('Confidence Score: ${spamResult?['confidence_score'] ?? 'N/A'}'),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
               ],
               if (phishingNewResult != null) ...[
-                Text('New Phishing Detection Prediction:'),
+                const Text('New Phishing Detection Prediction:'),
                 Text('Predicted Class: ${phishingNewResult?['predicted_class'] ?? 'N/A'}'),
                 Text('Confidence Score: ${phishingNewResult?['confidence_score'] ?? 'N/A'}'),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
               ],
             ],
           ],
