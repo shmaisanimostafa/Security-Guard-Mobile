@@ -204,183 +204,191 @@ class _MyAppState extends State<MyApp> {
               ),
               const Text('Settings', textAlign: TextAlign.center),
               const Divider(),
-              ListTile(
-                title: const Row(
-                  children: [
-                    Icon(Icons.dark_mode_outlined),
-                    SizedBox(width: 10),
-                    Text('Theme Mode'),
-                  ],
-                ),
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('Select a theme mode'),
-                        content: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            ListTile(
-                              title: const Row(
-                                children: [
-                                  Icon(Icons.wb_sunny_outlined),
-                                  SizedBox(width: 10),
-                                  Text('Light Mode'),
-                                ],
-                              ),
-                              onTap: () {
-                                setState(() {
-                                  currentThemeMode = ThemeMode.light;
-                                });
-                                Navigator.pop(context);
-                              },
+              Builder(
+                builder: (context) {
+                  return ListTile(
+                    title: const Row(
+                      children: [
+                        Icon(Icons.dark_mode_outlined),
+                        SizedBox(width: 10),
+                        Text('Theme Mode'),
+                      ],
+                    ),
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Select a theme mode'),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                ListTile(
+                                  title: const Row(
+                                    children: [
+                                      Icon(Icons.wb_sunny_outlined),
+                                      SizedBox(width: 10),
+                                      Text('Light Mode'),
+                                    ],
+                                  ),
+                                  onTap: () {
+                                    setState(() {
+                                      currentThemeMode = ThemeMode.light;
+                                    });
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                                ListTile(
+                                  title: const Row(
+                                    children: [
+                                      Icon(Icons.nightlight_round),
+                                      SizedBox(width: 10),
+                                      Text('Dark Mode'),
+                                    ],
+                                  ),
+                                  onTap: () {
+                                    setState(() {
+                                      currentThemeMode = ThemeMode.dark;
+                                    });
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                                ListTile(
+                                  title: const Row(
+                                    children: [
+                                      Icon(Icons.auto_awesome_mosaic_outlined),
+                                      SizedBox(width: 10),
+                                      Text('System Mode'),
+                                    ],
+                                  ),
+                                  onTap: () {
+                                    setState(() {
+                                      currentThemeMode = ThemeMode.system;
+                                    });
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                              ],
                             ),
-                            ListTile(
-                              title: const Row(
-                                children: [
-                                  Icon(Icons.nightlight_round),
-                                  SizedBox(width: 10),
-                                  Text('Dark Mode'),
-                                ],
-                              ),
-                              onTap: () {
-                                setState(() {
-                                  currentThemeMode = ThemeMode.dark;
-                                });
-                                Navigator.pop(context);
-                              },
-                            ),
-                            ListTile(
-                              title: const Row(
-                                children: [
-                                  Icon(Icons.auto_awesome_mosaic_outlined),
-                                  SizedBox(width: 10),
-                                  Text('System Mode'),
-                                ],
-                              ),
-                              onTap: () {
-                                setState(() {
-                                  currentThemeMode = ThemeMode.system;
-                                });
-                                Navigator.pop(context);
-                              },
-                            ),
-                          ],
-                        ),
+                          );
+                        },
                       );
                     },
                   );
                 },
               ),
-              ListTile(
-                title: const Row(
-                  children: [
-                    Icon(Icons.color_lens_outlined),
-                    SizedBox(width: 10),
-                    Text('Color Scheme'),
-                  ],
-                ),
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('Select a color'),
-                        content: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            ListTile(
-                              title: const Row(
-                                children: [
-                                  Icon(Icons.color_lens, color: Colors.amber),
-                                  SizedBox(width: 10),
-                                  Text('Amber'),
-                                ],
-                              ),
-                              onTap: () {
-                                setState(() {
-                                  isColored = true;
-                                  schemeColor = Colors.amber;
-                                });
-                                Navigator.pop(context);
-                              },
+              Builder(
+                builder: (context) {
+                  return ListTile(
+                    title: const Row(
+                      children: [
+                        Icon(Icons.color_lens_outlined),
+                        SizedBox(width: 10),
+                        Text('Color Scheme'),
+                      ],
+                    ),
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Select a color'),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                ListTile(
+                                  title: const Row(
+                                    children: [
+                                      Icon(Icons.color_lens, color: Colors.amber),
+                                      SizedBox(width: 10),
+                                      Text('Amber'),
+                                    ],
+                                  ),
+                                  onTap: () {
+                                    setState(() {
+                                      isColored = true;
+                                      schemeColor = Colors.amber;
+                                    });
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                                ListTile(
+                                  title: const Row(
+                                    children: [
+                                      Icon(Icons.color_lens, color: Colors.blue),
+                                      SizedBox(width: 10),
+                                      Text('Blue'),
+                                    ],
+                                  ),
+                                  onTap: () {
+                                    setState(() {
+                                      isColored = true;
+                                      schemeColor = Colors.blue;
+                                    });
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                                ListTile(
+                                  title: const Row(
+                                    children: [
+                                      Icon(Icons.color_lens, color: Colors.red),
+                                      SizedBox(width: 10),
+                                      Text('Red'),
+                                    ],
+                                  ),
+                                  onTap: () {
+                                    setState(() {
+                                      isColored = true;
+                                      schemeColor = Colors.red;
+                                    });
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                                ListTile(
+                                  title: const Row(
+                                    children: [
+                                      Icon(Icons.color_lens, color: Colors.green),
+                                      SizedBox(width: 10),
+                                      Text('Green'),
+                                    ],
+                                  ),
+                                  onTap: () {
+                                    setState(() {
+                                      isColored = true;
+                                      schemeColor = Colors.green;
+                                    });
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                                ListTile(
+                                  title: const Row(
+                                    children: [
+                                      Icon(Icons.color_lens, color: Colors.deepPurple),
+                                      SizedBox(width: 10),
+                                      Text('Purple'),
+                                    ],
+                                  ),
+                                  onTap: () {
+                                    setState(() {
+                                      isColored = true;
+                                      schemeColor = Colors.deepPurple;
+                                    });
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                                ListTile(
+                                  title: const Text('Default'),
+                                  onTap: () {
+                                    setState(() {
+                                      isColored = false;
+                                    });
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                              ],
                             ),
-                            ListTile(
-                              title: const Row(
-                                children: [
-                                  Icon(Icons.color_lens, color: Colors.blue),
-                                  SizedBox(width: 10),
-                                  Text('Blue'),
-                                ],
-                              ),
-                              onTap: () {
-                                setState(() {
-                                  isColored = true;
-                                  schemeColor = Colors.blue;
-                                });
-                                Navigator.pop(context);
-                              },
-                            ),
-                            ListTile(
-                              title: const Row(
-                                children: [
-                                  Icon(Icons.color_lens, color: Colors.red),
-                                  SizedBox(width: 10),
-                                  Text('Red'),
-                                ],
-                              ),
-                              onTap: () {
-                                setState(() {
-                                  isColored = true;
-                                  schemeColor = Colors.red;
-                                });
-                                Navigator.pop(context);
-                              },
-                            ),
-                            ListTile(
-                              title: const Row(
-                                children: [
-                                  Icon(Icons.color_lens, color: Colors.green),
-                                  SizedBox(width: 10),
-                                  Text('Green'),
-                                ],
-                              ),
-                              onTap: () {
-                                setState(() {
-                                  isColored = true;
-                                  schemeColor = Colors.green;
-                                });
-                                Navigator.pop(context);
-                              },
-                            ),
-                            ListTile(
-                              title: const Row(
-                                children: [
-                                  Icon(Icons.color_lens, color: Colors.deepPurple),
-                                  SizedBox(width: 10),
-                                  Text('Purple'),
-                                ],
-                              ),
-                              onTap: () {
-                                setState(() {
-                                  isColored = true;
-                                  schemeColor = Colors.deepPurple;
-                                });
-                                Navigator.pop(context);
-                              },
-                            ),
-                            ListTile(
-                              title: const Text('Default'),
-                              onTap: () {
-                                setState(() {
-                                  isColored = false;
-                                });
-                                Navigator.pop(context);
-                              },
-                            ),
-                          ],
-                        ),
+                          );
+                        },
                       );
                     },
                   );
@@ -389,38 +397,46 @@ class _MyAppState extends State<MyApp> {
               const Divider(),
               const Text('Others', textAlign: TextAlign.center),
               const Divider(),
-              ListTile(
-                title: const Row(
-                  children: [
-                    Icon(Icons.bug_report_outlined),
-                    SizedBox(width: 10),
-                    Text('Feedback'),
-                  ],
-                ),
-                onTap: () {
-                  submitFeedback(context);
+              Builder(
+                builder: (context) {
+                  return ListTile(
+                    title: const Row(
+                      children: [
+                        Icon(Icons.bug_report_outlined),
+                        SizedBox(width: 10),
+                        Text('Feedback'),
+                      ],
+                    ),
+                    onTap: () {
+                      submitFeedback(context);
+                    },
+                  );
                 },
               ),
-              ListTile(
-                title: const Row(
-                  children: [
-                    Icon(Icons.info_outline),
-                    SizedBox(width: 10),
-                    Text('About'),
-                  ],
-                ),
-                onTap: () {
-                  showAboutDialog(
-                    context: context,
-                    applicationName: 'Security Guard',
-                    applicationVersion: '1.0.0',
-                    applicationIcon: const Image(
-                      image: AssetImage('images/Logo.png'),
-                      width: 50,
-                      height: 50,
+              Builder(
+                builder: (context) {
+                  return ListTile(
+                    title: const Row(
+                      children: [
+                        Icon(Icons.info_outline),
+                        SizedBox(width: 10),
+                        Text('About'),
+                      ],
                     ),
-                    applicationLegalese:
-                        '© ${DateTime.now().year} Mostafa Shmaisani',
+                    onTap: () {
+                      showAboutDialog(
+                        context: context,
+                        applicationName: 'Security Guard',
+                        applicationVersion: '1.0.0',
+                        applicationIcon: const Image(
+                          image: AssetImage('images/Logo.png'),
+                          width: 50,
+                          height: 50,
+                        ),
+                        applicationLegalese:
+                            '© ${DateTime.now().year} Mostafa Shmaisani',
+                      );
+                    },
                   );
                 },
               ),
@@ -435,19 +451,26 @@ class _MyAppState extends State<MyApp> {
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: currentPageIndex == 3
             ? null
-            : FloatingActionButton(
-                shape: const CircleBorder(),
-                child: scanIcon,
-                onPressed: () {
-                  setState(() {
-                    resetIcons(4);
-                  });
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
+            : Builder(
+                builder: (context) {
+                  return FloatingActionButton(
+                    shape: const CircleBorder(),
+                    child: scanIcon,
+                    onPressed: () {
+                      setState(() {
+                        resetIcons(4);
+                      });
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
                           builder: (context) => Theme(
-                              data: Theme.of(context).copyWith(),
-                              child: const Scan())));
+                            data: Theme.of(context).copyWith(),
+                            child: const Scan(),
+                          ),
+                        ),
+                      );
+                    },
+                  );
                 },
               ),
         bottomNavigationBar: NavigationBar(
