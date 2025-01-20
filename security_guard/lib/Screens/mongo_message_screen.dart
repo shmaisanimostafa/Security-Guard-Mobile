@@ -1,3 +1,4 @@
+import 'package:capstone_proj/Screens/registration_screens/log_in.dart';
 import 'package:capstone_proj/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:capstone_proj/services/signalr_service.dart';
@@ -5,8 +6,7 @@ import 'package:capstone_proj/components/message_bubble.dart';
 import 'package:capstone_proj/constants.dart';
 import 'package:capstone_proj/Screens/ai_chat_screen.dart';
 import 'package:capstone_proj/Screens/speech_to_text.dart';
-// import 'package:capstone_proj/models/auth_service.dart'; // Import AuthProvider
-import 'package:provider/provider.dart'; // Import Provider
+import 'package:provider/provider.dart';
 
 class MongoChatScreen extends StatefulWidget {
   const MongoChatScreen({super.key});
@@ -308,45 +308,60 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
                     ],
                   ),
           ),
-          Container(
-            decoration: kMessageContainerDecoration,
-            padding: const EdgeInsets.only(right: 5.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Expanded(
-                  child: TextField(
-                    controller: messageTextController,
-                    decoration: kMessageTextFieldDecoration,
+          if (authProvider.isAuthenticated)
+            Container(
+              decoration: kMessageContainerDecoration,
+              padding: const EdgeInsets.only(right: 5.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(
+                    child: TextField(
+                      controller: messageTextController,
+                      decoration: kMessageTextFieldDecoration,
+                    ),
                   ),
-                ),
-                TextButton(
-                  onPressed: () {
-                    if (messageTextController.text.isNotEmpty) {
-                      _sendMessage(messageTextController.text);
-                    }
-                  },
-                  child: const Text(
-                    'Send',
-                    style: kSendButtonTextStyle,
+                  TextButton(
+                    onPressed: () {
+                      if (messageTextController.text.isNotEmpty) {
+                        _sendMessage(messageTextController.text);
+                      }
+                    },
+                    child: const Text(
+                      'Send',
+                      style: kSendButtonTextStyle,
+                    ),
                   ),
-                ),
-                IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return const SpeechScreen();
-                        },
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.mic),
-                ),
-              ],
+                  IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return const SpeechScreen();
+                          },
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.mic),
+                  ),
+                ],
+              ),
+            )
+          else
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  // Navigate to the login screen
+                 Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const LogInScreen()),
+          );
+                },
+                child: const Text('Login to Chat'),
+              ),
             ),
-          ),
         ],
       ),
     );
