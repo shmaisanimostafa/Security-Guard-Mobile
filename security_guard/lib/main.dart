@@ -10,10 +10,8 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (context) => AuthProvider()),
       ],
-      child: const MaterialApp(
-        home: BetterFeedback(
-          child: MyApp(),
-        ),
+      child: const BetterFeedback(
+        child: MyApp(),
       ),
     ),
   );

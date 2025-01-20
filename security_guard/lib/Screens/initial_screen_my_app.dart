@@ -23,6 +23,7 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
+// Top-level function for writing feedback screenshot to storage
 Future<String> writeImageToStorage(Uint8List feedbackScreenshot) async {
   final Directory output = await getTemporaryDirectory();
   final String screenshotFilePath = '${output.path}/feedback.png';
@@ -142,51 +143,50 @@ class _MyAppState extends State<MyApp> {
           ),
           actions: [
             authProvider.isAuthenticated
-    ? TextButton(
-        style: TextButton.styleFrom(
-          shape: const CircleBorder(),
-          padding: const EdgeInsets.all(13),
-        ),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const Profile()),
-          );
-        },
-        child: FutureBuilder<String>(
-          future: authProvider.fetchProfileImageUrl(), // Fetch the profile image URL
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              // Show a smaller loading indicator while the image is being fetched
-              return SizedBox(
-                width: 20, // Adjust the width
-                height: 20, // Adjust the height
-                child: CircularProgressIndicator(
-                  strokeWidth: 2, // Adjust the thickness of the loading circle
-                ),
-              );
-            } else if (snapshot.hasError || snapshot.data == null || snapshot.data!.isEmpty) {
-              // Show an error icon or a fallback image if the image fails to load
-              return const Icon(Icons.error);
-            } else {
-              // Show the profile image once it's loaded
-              return CircleAvatar(
-                radius: 12.0,
-                backgroundImage: NetworkImage(snapshot.data!),
-              );
-            }
-          },
-        ),
-      )
-    : IconButton(
-        icon: const Icon(Icons.login),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const RegisterScreen()),
-          );
-        },
-      ),
+                ? TextButton(
+                    style: TextButton.styleFrom(
+                      shape: const CircleBorder(),
+                      padding: const EdgeInsets.all(13),
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const Profile()),
+                      );
+                    },
+                    child: FutureBuilder<String>(
+                      future: authProvider.fetchProfileImageUrl(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          );
+                        } else if (snapshot.hasError || snapshot.data == null || snapshot.data!.isEmpty) {
+                          return const Icon(Icons.error);
+                        } else {
+                          return CircleAvatar(
+                            radius: 12.0,
+                            backgroundImage: NetworkImage(snapshot.data!),
+                          );
+                        }
+                      },
+                    ),
+                  )
+                : Builder(
+                    builder: (context) {
+                      return IconButton(
+                        icon: const Icon(Icons.login),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const RegisterScreen()),
+                          );
+                        },
+                      );
+                    },
+                  ),
           ],
         ),
         drawer: Drawer(
