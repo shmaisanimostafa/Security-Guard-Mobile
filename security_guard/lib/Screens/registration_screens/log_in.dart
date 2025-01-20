@@ -5,14 +5,20 @@ import 'package:capstone_proj/Screens/initial_screen_my_app.dart';
 import 'package:capstone_proj/Screens/registration_screens/register.dart';
 import 'package:capstone_proj/Screens/registration_screens/forgot_password.dart';
 
-class LogInScreen extends StatelessWidget {
+class LogInScreen extends StatefulWidget {
   const LogInScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final usernameController = TextEditingController();
-    final passwordController = TextEditingController();
+  State<LogInScreen> createState() => _LogInScreenState();
+}
 
+class _LogInScreenState extends State<LogInScreen> {
+  final usernameController = TextEditingController();
+  final passwordController = TextEditingController();
+  bool _isLoading = false; // Track loading state
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Log In'),
@@ -42,33 +48,44 @@ class LogInScreen extends StatelessWidget {
                 obscureText: true,
               ),
               const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () async {
-                  final username = usernameController.text;
-                  final password = passwordController.text;
+              _isLoading
+                  ? const CircularProgressIndicator() // Show loading indicator
+                  : ElevatedButton(
+                      onPressed: () async {
+                        final username = usernameController.text;
+                        final password = passwordController.text;
 
-                  if (username.isEmpty || password.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Please enter both username and password')),
-                    );
-                    return;
-                  }
+                        if (username.isEmpty || password.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Please enter both username and password')),
+                          );
+                          return;
+                        }
 
-                  try {
-                    await Provider.of<AuthProvider>(context, listen: false).login(username, password);
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => const MyApp()),
-                    );
-                    print(AuthProvider().isAuthenticated);
-                  } catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Login failed: ${e.toString()}')),
-                    );
-                  }
-                },
-                child: const Text('Login'),
-              ),
+                        setState(() {
+                          _isLoading = true; // Start loading
+                        });
+
+                        try {
+                          await Provider.of<AuthProvider>(context, listen: false)
+                              .login(username, password);
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (context) => const MyApp()),
+                          );
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Login failed: ${e.toString()}')),
+                          );
+                        } finally {
+                          setState(() {
+                            _isLoading = false; // Stop loading
+                          });
+                        }
+                      },
+                      child: const Text('Login'),
+                    ),
               const SizedBox(height: 16),
               TextButton(
                 onPressed: () {
