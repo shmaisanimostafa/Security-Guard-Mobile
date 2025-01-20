@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:capstone_proj/models/comment.dart';
+// import 'package:capstone_proj/models/comment.dart';
 import 'package:capstone_proj/models/article.dart';
 import 'package:capstone_proj/constants.dart';
 

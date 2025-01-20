@@ -5,7 +5,7 @@ import 'package:capstone_proj/components/message_bubble.dart';
 import 'package:capstone_proj/constants.dart';
 import 'package:capstone_proj/Screens/ai_chat_screen.dart';
 import 'package:capstone_proj/Screens/speech_to_text.dart';
-import 'package:capstone_proj/models/auth_service.dart'; // Import AuthProvider
+// import 'package:capstone_proj/models/auth_service.dart'; // Import AuthProvider
 import 'package:provider/provider.dart'; // Import Provider
 
 class MongoChatScreen extends StatefulWidget {
