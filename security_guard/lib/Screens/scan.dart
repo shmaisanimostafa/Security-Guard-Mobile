@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:capstone_proj/Screens/prediction_screen.dart';
 import 'package:capstone_proj/components/upload_box.dart';
 import 'package:capstone_proj/functions/link_regex.dart';
 import 'package:capstone_proj/functions/pick_image.dart';
@@ -21,9 +22,7 @@ class _ScanState extends State<Scan> {
   // The recognized text
   String recognizedText = '';
 
-//
-// Image picker method
-//
+  // Image picker method
   void pickAndRecognizeImage(ImageSource source) async {
     final imageFile = await pickImage(source);
     if (imageFile != null) {
@@ -36,6 +35,16 @@ class _ScanState extends State<Scan> {
         textRecognizing = false;
       });
     }
+  }
+
+  // Navigate to prediction screen with text
+  void navigateToPrediction(String text) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PredictionScreen.withText(initialText: text),
+      ),
+    );
   }
 
   @override
@@ -51,13 +60,13 @@ class _ScanState extends State<Scan> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                // Display the selected image
                 image != null
                     ? Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Image.file(
-                          
                           image!,
                           width: 400,
                           height: 400,
@@ -69,24 +78,57 @@ class _ScanState extends State<Scan> {
                         textAlign: TextAlign.center,
                       ),
                 const SizedBox(height: 20.0),
+
+                // Show loading indicator while recognizing text
                 textRecognizing
                     ? const CircularProgressIndicator()
                     : Column(
                         children: [
+                          // Display recognized text
                           Text(recognizedText),
                           const SizedBox(height: 20.0),
-                          Text(
-                            extractLink(recognizedText),
-                            style: const TextStyle(
-                              color: Colors.blue,
-                              decoration: TextDecoration.underline,
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.bold,
+
+                          // Display extracted link (if any)
+                          if (extractLink(recognizedText).isNotEmpty)
+                            Text(
+                              extractLink(recognizedText),
+                              style: const TextStyle(
+                                color: Colors.blue,
+                                decoration: TextDecoration.underline,
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
+
+                          const SizedBox(height: 20.0),
+
+                          // Show prediction buttons if text is recognized
+                          if (recognizedText.isNotEmpty) ...[
+                            ElevatedButton(
+                              onPressed: () {
+                                navigateToPrediction(recognizedText);
+                              },
+                              child: const Text('Analyze Text'),
+                            ),
+                            const SizedBox(height: 10.0),
+                          ],
+
+                          // Show prediction button for link if a link is recognized
+                          if (extractLink(recognizedText).isNotEmpty) ...[
+                            ElevatedButton(
+                              onPressed: () {
+                                navigateToPrediction(extractLink(recognizedText));
+                              },
+                              child: const Text('Analyze Link'),
+                            ),
+                            const SizedBox(height: 10.0),
+                          ],
                         ],
                       ),
+
                 const SizedBox(height: 20.0),
+
+                // Upload image button
                 TextButton(
                   style: TextButton.styleFrom(
                     shape: RoundedRectangleBorder(
@@ -103,12 +145,15 @@ class _ScanState extends State<Scan> {
                     icon: Icons.image_search_rounded,
                   ),
                 ),
+
                 const SizedBox(height: 20.0),
                 const Text(
                   'OR',
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20.0),
+
+                // Capture image button
                 TextButton(
                   style: TextButton.styleFrom(
                     shape: RoundedRectangleBorder(
@@ -125,20 +170,6 @@ class _ScanState extends State<Scan> {
                     icon: Icons.camera_enhance,
                   ),
                 ),
-                // const SizedBox(height: 20.0),
-                // ElevatedButton(
-                //   onPressed: () {
-                //     pickImage(ImageSource.camera);
-                //   },
-                //   child: const Row(
-                //     mainAxisSize: MainAxisSize.min,
-                //     children: [
-                //       Icon(Icons.camera_alt),
-                //       SizedBox(width: 10.0),
-                //       Text('Capture Image'),
-                //     ],
-                //   ),
-                // ),
               ],
             ),
           ),
