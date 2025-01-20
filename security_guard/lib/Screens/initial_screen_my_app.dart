@@ -7,16 +7,14 @@ import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'dart:typed_data';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
-// import 'package:capstone_proj/models/messages.dart';
 import 'package:capstone_proj/Screens/scan.dart';
 import 'package:capstone_proj/Screens/registration_screens/register.dart';
 import 'package:capstone_proj/Screens/navigation_screens/file.dart';
 import 'package:capstone_proj/Screens/navigation_screens/home.dart';
 import 'package:capstone_proj/Screens/navigation_screens/link.dart';
-
 import 'package:capstone_proj/Screens/profile.dart';
 import 'package:capstone_proj/constants.dart';
-import 'package:capstone_proj/providers/auth_provider.dart'; // Import the AuthProvider
+import 'package:capstone_proj/providers/auth_provider.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -41,7 +39,7 @@ class _MyAppState extends State<MyApp> {
     const Home(),
     const Link(),
     const UploadFileScreen(),
-     MongoChatScreen(),
+    MongoChatScreen(),
     PredictionScreen(),
   ];
 
@@ -107,10 +105,10 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
 
-      // Ensure user data is fetched
-  if (authProvider.isAuthenticated && authProvider.userData == null) {
-    authProvider.fetchUserData();
-  }
+    // Ensure user data is fetched
+    if (authProvider.isAuthenticated && authProvider.userData == null) {
+      authProvider.fetchUserData();
+    }
 
     return MaterialApp(
       themeMode: currentThemeMode,
@@ -143,48 +141,52 @@ class _MyAppState extends State<MyApp> {
             ],
           ),
           actions: [
-            // IconButton(
-            //   icon: Badge(
-            //     isLabelVisible: isNotified,
-            //     child: notificationIcon,
-            //   ),
-            //   onPressed: () {
-            //     setState(() {
-            //       isNotified = !isNotified;
-            //       notificationIcon =
-            //           isNotified ? kNotificationFilled : kNotificationOut;
-            //     });
-            //   },
-            // ),
             authProvider.isAuthenticated
-                ? TextButton(
-                    style: TextButton.styleFrom(
-                      shape: const CircleBorder(),
-                      padding: const EdgeInsets.all(13),
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const Profile()),
-                      );
-                    },
-                    child: CircleAvatar(
-                    radius: 12.0,
-                    backgroundImage: 
-                    // authProvider.profileImageUrl != null ? 
-                    NetworkImage(authProvider.profileImageUrl),
-                        // : AssetImage('images/ProfilePic.png') as ImageProvider,
-                  ),
-                  )
-                : IconButton(
-                    icon: const Icon(Icons.login),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const RegisterScreen()),
-                      );
-                    },
-                  ),
+    ? TextButton(
+        style: TextButton.styleFrom(
+          shape: const CircleBorder(),
+          padding: const EdgeInsets.all(13),
+        ),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const Profile()),
+          );
+        },
+        child: FutureBuilder<String>(
+          future: authProvider.fetchProfileImageUrl(), // Fetch the profile image URL
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              // Show a smaller loading indicator while the image is being fetched
+              return SizedBox(
+                width: 20, // Adjust the width
+                height: 20, // Adjust the height
+                child: CircularProgressIndicator(
+                  strokeWidth: 2, // Adjust the thickness of the loading circle
+                ),
+              );
+            } else if (snapshot.hasError || snapshot.data == null || snapshot.data!.isEmpty) {
+              // Show an error icon or a fallback image if the image fails to load
+              return const Icon(Icons.error);
+            } else {
+              // Show the profile image once it's loaded
+              return CircleAvatar(
+                radius: 12.0,
+                backgroundImage: NetworkImage(snapshot.data!),
+              );
+            }
+          },
+        ),
+      )
+    : IconButton(
+        icon: const Icon(Icons.login),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const RegisterScreen()),
+          );
+        },
+      ),
           ],
         ),
         drawer: Drawer(
@@ -458,12 +460,11 @@ class _MyAppState extends State<MyApp> {
               icon: fileIcon,
               label: 'File',
             ),
-
             NavigationDestination(
               icon: chatIcon,
               label: 'Chat',
             ),
-                         NavigationDestination(
+            NavigationDestination(
               icon: fileIcon,
               label: 'Prediction',
             ),

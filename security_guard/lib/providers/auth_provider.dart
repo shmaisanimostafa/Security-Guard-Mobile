@@ -55,10 +55,30 @@ class AuthProvider with ChangeNotifier {
 
   // Get the profile image URL from the user data
   String get profileImageUrl {
-    if (userData == null) {
-      return '';
+    if (userData == null || userData!['imageURL'] == null) {
+      return ''; // Return an empty string if the image URL is not available
     }
     return userData!['imageURL']; // Adjust the key according to your API response
+  }
+
+  // Method to fetch the profile image URL asynchronously
+  Future<String> fetchProfileImageUrl() async {
+    if (_token == null) {
+      return ''; // Return an empty string if the token is not available
+    }
+
+    try {
+      final data = await _authService.getUserData(_token!);
+      if (data.containsKey('Message')) {
+        print('Error fetching user data: ${data['Message']}');
+        return ''; // Return an empty string if there's an error
+      } else {
+        return data['imageURL'] ?? ''; // Return the image URL or an empty string
+      }
+    } catch (e) {
+      print('Error fetching profile image URL: $e');
+      return ''; // Return an empty string if there's an error
+    }
   }
 
   Future<void> register(String username, String email, String password, String confirmPassword) async {
@@ -74,22 +94,22 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
- Future<void> login(String username, String password) async {
-  try {
-    final response = await _authService.login(username, password);
-    print('Login response: $response');
-    if (response.containsKey('token')) {
-      _token = response['token']; // Ensure this key matches your API response
-      await _storage.write(key: 'jwt_token', value: _token!);
-      print('Token saved: $_token');
-      notifyListeners(); // Notify listeners after successful login
-    } else {
-      throw Exception(response['Message'] ?? 'Login failed');
+  Future<void> login(String username, String password) async {
+    try {
+      final response = await _authService.login(username, password);
+      print('Login response: $response');
+      if (response.containsKey('token')) {
+        _token = response['token']; // Ensure this key matches your API response
+        await _storage.write(key: 'jwt_token', value: _token!);
+        print('Token saved: $_token');
+        notifyListeners(); // Notify listeners after successful login
+      } else {
+        throw Exception(response['Message'] ?? 'Login failed');
+      }
+    } catch (e) {
+      print('Error during login: $e');
     }
-  } catch (e) {
-    print('Error during login: $e');
   }
-}
 
   Future<void> logout() async {
     try {
