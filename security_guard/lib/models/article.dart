@@ -1,42 +1,5 @@
-// import 'dart:convert';
-import 'comment.dart';
-import 'article_tag.dart';
-// import 'user.dart';
-class Author {
-  final String name;
-  final bool isVerified;
-  final String firstName;
-  final String lastName;
-  final String imageURL;
-
-  Author({
-    required this.name,
-    required this.isVerified,
-    required this.firstName,
-    required this.lastName,
-    required this.imageURL,
-  });
-
-  factory Author.fromJson(Map<String, dynamic> json) {
-    return Author(
-      name: json['name'],
-      isVerified: json['isVerified'],
-      firstName: json['firstName'],
-      lastName: json['lastName'],
-      imageURL: json['imageURL'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'isVerified': isVerified,
-      'firstName': firstName,
-      'lastName': lastName,
-      'imageURL': imageURL,
-    };
-  }
-}
+import 'package:capstone_proj/models/author.dart';
+import 'package:capstone_proj/models/comment.dart';
 
 class Article {
   final int id;
@@ -51,9 +14,8 @@ class Article {
   final String title;
   final String imageURL;
   final DateTime publishDate;
-  final Author author; // Updated to include Author
+  final Author author;
   final List<Comment> comments;
-  final List<ArticleTag> articleTags;
 
   Article({
     required this.id,
@@ -69,8 +31,7 @@ class Article {
     required this.imageURL,
     required this.publishDate,
     required this.author,
-    this.comments = const [],
-    this.articleTags = const [],
+    this.comments = const [], // Default value for comments
   });
 
   factory Article.fromJson(Map<String, dynamic> json) {
@@ -91,11 +52,7 @@ class Article {
       comments: (json['comments'] as List<dynamic>?)
               ?.map((comment) => Comment.fromJson(comment))
               .toList() ??
-          [],
-      articleTags: (json['articleTags'] as List<dynamic>?)
-              ?.map((tag) => ArticleTag.fromJson(tag))
-              .toList() ??
-          [],
+          [], // Handle null or missing comments
     );
   }
 
@@ -115,8 +72,6 @@ class Article {
       'publishDate': publishDate.toIso8601String(),
       'author': author.toJson(),
       'comments': comments.map((comment) => comment.toJson()).toList(),
-      'articleTags': articleTags.map((tag) => tag.toJson()).toList(),
     };
   }
 }
-

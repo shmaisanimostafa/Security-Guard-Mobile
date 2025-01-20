@@ -1,42 +1,43 @@
-// import 'dart:convert';
-import 'article.dart';
-
 class Comment {
   final int id;
-  final int articleId;
-  final String author;
+  final int? articleId; // Make articleId nullable
   final String content;
   final DateTime createdDate;
-  final Article? article;
+  final String author;
 
   Comment({
     required this.id,
-    required this.articleId,
-    required this.author,
+    this.articleId, // Make articleId nullable
     required this.content,
     required this.createdDate,
-    this.article,
+    required this.author,
   });
 
   factory Comment.fromJson(Map<String, dynamic> json) {
     return Comment(
       id: json['id'],
-      articleId: json['articleId'],
-      author: json['author'],
+      articleId: json['articleId'], // Allow null values
       content: json['content'],
       createdDate: DateTime.parse(json['createdDate']),
-      article: json['article'] != null ? Article.fromJson(json['article']) : null,
+      author: json['author'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'articleId': articleId,
-      'author': author,
       'content': content,
       'createdDate': createdDate.toIso8601String(),
-      'article': article?.toJson(),
+      'author': author,
+      'articleId': articleId, // Include articleId in the payload
+    };
+  }
+
+  // Simplified toJson method for sending data to the API
+  Map<String, dynamic> toJsonForApi() {
+    return {
+      'author': author,
+      'content': content,
     };
   }
 }

@@ -1,6 +1,10 @@
-import 'package:capstone_proj/functions/article_api_handler.dart';
-import 'package:capstone_proj/models/article.dart';
+import 'package:capstone_proj/models/author.dart';
 import 'package:flutter/material.dart';
+import 'package:capstone_proj/models/article.dart';
+import 'package:capstone_proj/functions/article_api_handler.dart';
+import 'package:capstone_proj/providers/auth_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:capstone_proj/Screens/registration_screens/log_in.dart';
 
 class ArticleScreen extends StatefulWidget {
   const ArticleScreen({super.key, required this.id});
@@ -34,8 +38,10 @@ class _ArticleScreenState extends State<ArticleScreen> {
       imageURL: 'images/ProfilePic.png',
     ),
     comments: [],
-    articleTags: [],
   );
+
+  final TextEditingController _commentController = TextEditingController();
+  bool _isPosting = false; // Track whether a comment is being posted
 
   void getData() async {
     try {
@@ -49,6 +55,65 @@ class _ArticleScreenState extends State<ArticleScreen> {
     }
   }
 
+  void postComment() async {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+    // Check if the user is authenticated
+    if (!authProvider.isAuthenticated) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('You must be logged in to post a comment.')),
+      );
+      return;
+    }
+
+    // Get the comment content
+    final content = _commentController.text.trim();
+    if (content.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Comment cannot be empty.')),
+      );
+      return;
+    }
+
+    // Get the user's name from the AuthProvider
+    final username = authProvider.userData?['userName']; // Use the correct key for username
+    if (username == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Username not found. Please log in again.')),
+      );
+      return;
+    }
+
+    setState(() {
+      _isPosting = true; // Start loading animation
+    });
+
+    try {
+      // Post the comment
+      await apiHandler.addComment(widget.id, content, username);
+
+      // Clear the comment input
+      _commentController.clear();
+
+      // Refresh the article data to show the new comment
+setState(() {
+        getData();
+      // Show a success message
+});
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Comment posted successfully!')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to post comment: $e')),
+      );
+    } finally {
+      setState(() {
+        _isPosting = false; // Stop loading animation
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -57,6 +122,8 @@ class _ArticleScreenState extends State<ArticleScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
+
     return Scaffold(
       appBar: AppBar(),
       body: Padding(
@@ -123,6 +190,64 @@ class _ArticleScreenState extends State<ArticleScreen> {
               style: const TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 15.0),
+            // Display comments
+            Text(
+              'Comments',
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10.0),
+            ...data.comments.map((comment) => ListTile(
+                  title: Text(comment.author),
+                  subtitle: Text(comment.content),
+                  trailing: Text(comment.createdDate.toString()),
+                )),
+            const SizedBox(height: 20.0),
+            // Comment input section (only for signed-in users)
+            if (authProvider.isAuthenticated)
+              Column(
+                children: [
+                  TextField(
+                    controller: _commentController,
+                    decoration: InputDecoration(
+                      hintText: 'Write a comment...',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      suffixIcon: _isPosting
+                          ? const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: CircularProgressIndicator(), // Show loading indicator
+                            )
+                          : IconButton(
+                              icon: const Icon(Icons.send),
+                              onPressed: _isPosting
+                                  ? null // Disable the button while posting
+                                  : () {
+                                      setState(() {
+                                        postComment();
+                                      });
+                                    },
+                            ),
+                    ),
+                  ),
+                  const SizedBox(height: 10.0),
+                ],
+              )
+            else
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    // Navigate to the login screen
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LogInScreen(),
+                      ),
+                    );
+                  },
+                  child: const Text('Sign In to Comment'),
+                ),
+              ),
           ],
         ),
       ),
