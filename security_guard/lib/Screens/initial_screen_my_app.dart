@@ -143,36 +143,40 @@ class _MyAppState extends State<MyApp> {
           ),
           actions: [
             authProvider.isAuthenticated
-                ? TextButton(
-                    style: TextButton.styleFrom(
-                      shape: const CircleBorder(),
-                      padding: const EdgeInsets.all(13),
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const Profile()),
+                ? Builder(
+                    builder: (context) {
+                      return TextButton(
+                        style: TextButton.styleFrom(
+                          shape: const CircleBorder(),
+                          padding: const EdgeInsets.all(13),
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const Profile()),
+                          );
+                        },
+                        child: FutureBuilder<String>(
+                          future: authProvider.fetchProfileImageUrl(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(strokeWidth: 2),
+                              );
+                            } else if (snapshot.hasError || snapshot.data == null || snapshot.data!.isEmpty) {
+                              return const Icon(Icons.error);
+                            } else {
+                              return CircleAvatar(
+                                radius: 12.0,
+                                backgroundImage: NetworkImage(snapshot.data!),
+                              );
+                            }
+                          },
+                        ),
                       );
                     },
-                    child: FutureBuilder<String>(
-                      future: authProvider.fetchProfileImageUrl(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          );
-                        } else if (snapshot.hasError || snapshot.data == null || snapshot.data!.isEmpty) {
-                          return const Icon(Icons.error);
-                        } else {
-                          return CircleAvatar(
-                            radius: 12.0,
-                            backgroundImage: NetworkImage(snapshot.data!),
-                          );
-                        }
-                      },
-                    ),
                   )
                 : Builder(
                     builder: (context) {
