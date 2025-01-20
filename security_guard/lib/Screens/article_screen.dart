@@ -1,5 +1,6 @@
-import 'package:capstone_proj/models/author.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart'; // Import the shimmer package
+import 'package:capstone_proj/models/author.dart';
 import 'package:capstone_proj/models/article.dart';
 import 'package:capstone_proj/functions/article_api_handler.dart';
 import 'package:capstone_proj/providers/auth_provider.dart';
@@ -42,16 +43,21 @@ class _ArticleScreenState extends State<ArticleScreen> {
 
   final TextEditingController _commentController = TextEditingController();
   bool _isPosting = false; // Track whether a comment is being posted
+  bool _isLoading = true; // Track whether the article data is being loaded
 
-  void getData() async {
+  Future<void> getData() async {
     try {
       final fetchedData = await apiHandler.getArticle(widget.id);
       setState(() {
         data = fetchedData;
+        _isLoading = false; // Data has been loaded
       });
     } catch (e) {
       // Handle error (e.g., show a message to the user)
       print(e);
+      setState(() {
+        _isLoading = false; // Stop loading even if there's an error
+      });
     }
   }
 
@@ -96,10 +102,9 @@ class _ArticleScreenState extends State<ArticleScreen> {
       _commentController.clear();
 
       // Refresh the article data to show the new comment
-setState(() {
-        getData();
+      await getData();
+
       // Show a success message
-});
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Comment posted successfully!')),
       );
@@ -117,7 +122,7 @@ setState(() {
   @override
   void initState() {
     super.initState();
-    getData();
+    getData(); // Fetch the article data when the screen is first loaded
   }
 
   @override
@@ -128,128 +133,241 @@ setState(() {
       appBar: AppBar(),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: ListView(
-          children: [
-            Text(
-              data.title,
-              style: const TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 15.0),
-            Row(
-              children: [
-                CircleAvatar(
-                  radius: 15.0,
-                  backgroundImage: NetworkImage(data.author.imageURL.isNotEmpty
-                      ? data.author.imageURL
-                      : 'images/ProfilePic.png'),
-                ),
-                const SizedBox(width: 10),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          data.author.name,
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        if (data.author.isVerified) ...[
-                          const SizedBox(width: 5),
-                          const Icon(
-                            Icons.verified,
-                            size: 15,
-                            color: Colors.blue,
-                          ),
-                        ],
-                      ],
-                    ),
-                    Text(
-                      '${data.publishDate.day}-${data.publishDate.month}-${data.publishDate.year}',
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 15.0),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Image.network(
-                data.imageURL.isNotEmpty
-                    ? data.imageURL
-                    : 'images/Logo.png', // Fallback for missing image
-                fit: BoxFit.cover,
-              ),
-            ),
-            const SizedBox(height: 15.0),
-            Text(
-              data.content,
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 15.0),
-            // Display comments
-            Text(
-              'Comments',
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10.0),
-            ...data.comments.map((comment) => ListTile(
-                  title: Text(comment.author),
-                  subtitle: Text(comment.content),
-                  trailing: Text(comment.createdDate.toString()),
-                )),
-            const SizedBox(height: 20.0),
-            // Comment input section (only for signed-in users)
-            if (authProvider.isAuthenticated)
-              Column(
+        child: _isLoading
+            ? _buildShimmerEffect() // Show shimmer effect while loading
+            : ListView(
                 children: [
-                  TextField(
-                    controller: _commentController,
-                    decoration: InputDecoration(
-                      hintText: 'Write a comment...',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      suffixIcon: _isPosting
-                          ? const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: CircularProgressIndicator(), // Show loading indicator
-                            )
-                          : IconButton(
-                              icon: const Icon(Icons.send),
-                              onPressed: _isPosting
-                                  ? null // Disable the button while posting
-                                  : () {
-                                      setState(() {
-                                        postComment();
-                                      });
-                                    },
-                            ),
+                  Text(
+                    data.title,
+                    style: const TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 10.0),
-                ],
-              )
-            else
-              Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Navigate to the login screen
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LogInScreen(),
+                  const SizedBox(height: 15.0),
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 15.0,
+                        backgroundImage: NetworkImage(data.author.imageURL.isNotEmpty
+                            ? data.author.imageURL
+                            : 'images/ProfilePic.png'),
                       ),
-                    );
-                  },
-                  child: const Text('Sign In to Comment'),
-                ),
+                      const SizedBox(width: 10),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                data.author.name,
+                                style: const TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              if (data.author.isVerified) ...[
+                                const SizedBox(width: 5),
+                                const Icon(
+                                  Icons.verified,
+                                  size: 15,
+                                  color: Colors.blue,
+                                ),
+                              ],
+                            ],
+                          ),
+                          Text(
+                            '${data.publishDate.day}-${data.publishDate.month}-${data.publishDate.year}',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 15.0),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: FadeInImage.assetNetwork(
+                      placeholder: 'images/Logo.png', // Placeholder image
+                      image: data.imageURL.isNotEmpty
+                          ? data.imageURL
+                          : 'images/Logo.png', // Fallback for missing image
+                      fit: BoxFit.cover,
+                      imageErrorBuilder: (context, error, stackTrace) {
+                        return Image.asset(
+                          'images/Logo.png', // Fallback image if the network image fails to load
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 15.0),
+                  Text(
+                    data.content,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                  const SizedBox(height: 15.0),
+                  // Display comments
+                  Text(
+                    'Comments',
+                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 10.0),
+                  ...data.comments.map((comment) => ListTile(
+                        title: Text(comment.author),
+                        subtitle: Text(comment.content),
+                        trailing: Text(comment.createdDate.toString()),
+                      )),
+                  const SizedBox(height: 20.0),
+                  // Comment input section (only for signed-in users)
+                  if (authProvider.isAuthenticated)
+                    Column(
+                      children: [
+                        TextField(
+                          controller: _commentController,
+                          decoration: InputDecoration(
+                            hintText: 'Write a comment...',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            suffixIcon: _isPosting
+                                ? const Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: CircularProgressIndicator(), // Show loading indicator
+                                  )
+                                : IconButton(
+                                    icon: const Icon(Icons.send),
+                                    onPressed: _isPosting
+                                        ? null // Disable the button while posting
+                                        : () {
+                                            setState(() {
+                                              postComment();
+                                            });
+                                          },
+                                  ),
+                          ),
+                        ),
+                        const SizedBox(height: 10.0),
+                      ],
+                    )
+                  else
+                    Center(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          // Navigate to the login screen
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const LogInScreen(),
+                            ),
+                          );
+                        },
+                        child: const Text('Sign In to Comment'),
+                      ),
+                    ),
+                ],
               ),
-          ],
-        ),
+      ),
+    );
+  }
+
+  // Build the shimmer effect for the loading state
+  Widget _buildShimmerEffect() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      period: const Duration(milliseconds: 1500), // Adjust the animation speed
+      child: ListView(
+        children: [
+          // Shimmer effect for the title
+          ShimmerContainer(
+            width: double.infinity,
+            height: 30,
+            borderRadius: 5,
+          ),
+          const SizedBox(height: 15.0),
+          // Shimmer effect for the author section
+          Row(
+            children: [
+              ShimmerContainer(
+                width: 30,
+                height: 30,
+                borderRadius: 15, // Circular shape
+              ),
+              const SizedBox(width: 10),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ShimmerContainer(
+                    width: 100,
+                    height: 15,
+                    borderRadius: 5,
+                  ),
+                  const SizedBox(height: 5),
+                  ShimmerContainer(
+                    width: 80,
+                    height: 10,
+                    borderRadius: 5,
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 15.0),
+          // Shimmer effect for the image
+          ShimmerContainer(
+            width: double.infinity,
+            height: 200,
+            borderRadius: 10,
+          ),
+          const SizedBox(height: 15.0),
+          // Shimmer effect for the content
+          ShimmerContainer(
+            width: double.infinity,
+            height: 100,
+            borderRadius: 5,
+          ),
+          const SizedBox(height: 15.0),
+          // Shimmer effect for the comments section
+          ShimmerContainer(
+            width: double.infinity,
+            height: 20,
+            borderRadius: 5,
+          ),
+          const SizedBox(height: 10.0),
+          ...List.generate(3, (index) => ShimmerContainer(
+            width: double.infinity,
+            height: 50,
+            borderRadius: 5,
+            margin: const EdgeInsets.only(bottom: 10),
+          )),
+        ],
+      ),
+    );
+  }
+}
+
+// Reusable Shimmer Container Widget
+class ShimmerContainer extends StatelessWidget {
+  final double width;
+  final double height;
+  final double borderRadius;
+  final EdgeInsetsGeometry? margin;
+
+  const ShimmerContainer({
+    required this.width,
+    required this.height,
+    required this.borderRadius,
+    this.margin,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: width,
+      height: height,
+      margin: margin,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(borderRadius),
       ),
     );
   }
