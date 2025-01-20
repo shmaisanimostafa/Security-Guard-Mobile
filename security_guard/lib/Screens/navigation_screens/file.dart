@@ -1,8 +1,11 @@
+import 'package:capstone_proj/Screens/article_screen.dart';
 import 'package:capstone_proj/components/upload_box.dart';
 import 'package:capstone_proj/functions/file_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
+
+import 'package:url_launcher/url_launcher.dart';
 
 class UploadFileScreen extends StatefulWidget {
   const UploadFileScreen({super.key});
@@ -134,18 +137,18 @@ class _UploadFileScreenState extends State<UploadFileScreen>
           ),
 
           // Overlay with "Coming Soon" message
-          IgnorePointer(
-            child: AnimatedOpacity(
-              opacity: 1.0, // Fully visible
-              duration: const Duration(seconds: 1),
-              child: Container(
-                color: Colors.black.withOpacity(0.5), // Semi-transparent background
-                alignment: Alignment.center,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // Typing effect text
-                    Text(
+          AnimatedOpacity(
+            opacity: 1.0, // Fully visible
+            duration: const Duration(seconds: 1),
+            child: Container(
+              color: Colors.black.withOpacity(0.5), // Semi-transparent background
+              alignment: Alignment.center,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  // Typing effect text (non-interactive)
+                  IgnorePointer(
+                    child: Text(
                       _displayText,
                       style: const TextStyle(
                         color: Colors.white,
@@ -153,32 +156,42 @@ class _UploadFileScreenState extends State<UploadFileScreen>
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 20),
+                  ),
+                  const SizedBox(height: 20),
 
-                    // Pulsating "Learn More" button
-                    ScaleTransition(
-                      scale: _pulseAnimation,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          // Optional: Add an action for the button
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.amber,
-                          foregroundColor: Colors.black,
-                        ),
-                        child: const Text('Learn More'),
+                  // Pulsating "Learn More" button (clickable)
+                  ScaleTransition(
+                    scale: _pulseAnimation,
+                    child: ElevatedButton(
+onPressed: () async {
+  final url = Uri.parse('https://security-guard-container-app.blueocean-cf790c41.australiaeast.azurecontainerapps.io/Articles/ViewArticle/10');
+  if (await canLaunchUrl(url)) {
+    await launchUrl(url);
+  } else {
+    // Handle the case where the URL cannot be launched
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Could not launch the URL.')),
+    );
+  }
+},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.amber,
+                        foregroundColor: Colors.black,
                       ),
+                      child: const Text('Learn More'),
                     ),
+                  ),
 
-                    // Floating icons (optional)
-                    const SizedBox(height: 20),
-                    const Icon(
+                  // Floating icons (optional, non-interactive)
+                  const SizedBox(height: 20),
+                  IgnorePointer(
+                    child: const Icon(
                       Icons.access_time,
                       color: Colors.white,
                       size: 50,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
