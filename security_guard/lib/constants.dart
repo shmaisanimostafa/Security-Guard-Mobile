@@ -86,3 +86,10 @@ const Icon kNotificationFilled = Icon(
 const Icon kNotificationOut = Icon(
   Icons.notifications_outlined,
 );
+const Icon kAnalyseFilled = Icon(
+  Icons.query_stats_rounded
+);
+
+const Icon kAnalyseOut = Icon(
+  Icons.query_stats_outlined
+  );

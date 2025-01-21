@@ -52,6 +52,7 @@ class _MyAppState extends State<MyApp> {
   Icon chatIcon = kChatOut;
   Icon fileIcon = kFileOut;
   Icon notificationIcon = kNotificationFilled;
+  Icon analyseIcon = kAnalyseFilled;
 
   // Color Scheme
   bool isColored = false;
@@ -66,11 +67,11 @@ class _MyAppState extends State<MyApp> {
     if (index == 0) {
       homeIcon = kHomeFilled;
     } else if (index == 1) {
-      linkIcon = kLinkFilled;
-    } else if (index == 2) {
       fileIcon = kFileFilled;
-    } else if (index == 3) {
+    } else if (index == 2) {
       chatIcon = kChatFilled;
+    }  else if (index == 3) {
+      analyseIcon = kAnalyseOut;
     } else {
       scanIcon = kScanFilled;
     }
@@ -493,8 +494,8 @@ class _MyAppState extends State<MyApp> {
               label: 'Chat',
             ),
             NavigationDestination(
-              icon: fileIcon,
-              label: 'Prediction',
+              icon: analyseIcon,
+              label: 'Analyse',
             ),
           ],
           labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
