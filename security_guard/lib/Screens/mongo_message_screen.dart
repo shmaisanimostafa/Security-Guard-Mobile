@@ -1,6 +1,7 @@
+import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart'; // Import the shimmer package
 import 'package:capstone_proj/Screens/registration_screens/log_in.dart';
 import 'package:capstone_proj/providers/auth_provider.dart';
-import 'package:flutter/material.dart';
 import 'package:capstone_proj/services/signalr_service.dart';
 import 'package:capstone_proj/components/message_bubble.dart';
 import 'package:capstone_proj/constants.dart';
@@ -267,9 +268,13 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
       ),
       body: Column(
         children: [
+          if (_isLoading)
+            const LinearProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.yellow), // Yellow progress indicator
+            ),
           Expanded(
             child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
+                ? _buildShimmerLoading() // Use shimmer loading animation
                 : ListView(
                     reverse: false,
                     controller: _scrollController,
@@ -362,6 +367,76 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
                 child: const Text('Login to Chat'),
               ),
             ),
+        ],
+      ),
+    );
+  }
+
+  // Shimmer loading animation for chat
+  Widget _buildShimmerLoading() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: ListView(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Simulate received messages (left side)
+              _buildShimmerMessageBubble(isMe: false, width: 200.0),
+              _buildShimmerMessageBubble(isMe: false, width: 250.0),
+              _buildShimmerMessageBubble(isMe: false, width: 180.0),
+              // Simulate sent messages (right side)
+              _buildShimmerMessageBubble(isMe: true, width: 220.0),
+              _buildShimmerMessageBubble(isMe: true, width: 150.0),
+              _buildShimmerMessageBubble(isMe: true, width: 200.0),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Shimmer message bubble widget
+  Widget _buildShimmerMessageBubble({required bool isMe, required double width}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+        children: [
+          Container(
+            width: width,
+            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+            decoration: BoxDecoration(
+              borderRadius: isMe
+                  ? const BorderRadius.only(
+                      topLeft: Radius.circular(30.0),
+                      bottomLeft: Radius.circular(30.0),
+                      bottomRight: Radius.circular(30.0))
+                  : const BorderRadius.only(
+                      topRight: Radius.circular(30.0),
+                      bottomLeft: Radius.circular(30.0),
+                      bottomRight: Radius.circular(30.0)),
+              color: Colors.white,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: double.infinity,
+                  height: 16.0,
+                  color: Colors.white,
+                ),
+                const SizedBox(height: 5.0),
+                Container(
+                  width: width * 0.7,
+                  height: 12.0,
+                  color: Colors.white,
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
