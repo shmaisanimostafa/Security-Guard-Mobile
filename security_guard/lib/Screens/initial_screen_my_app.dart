@@ -1,6 +1,6 @@
 import 'package:capstone_proj/Screens/mongo_message_screen.dart';
 import 'package:capstone_proj/Screens/navigation_screens/analysis_screen.dart';
-import 'package:capstone_proj/Screens/prediction_screen.dart';
+// import 'package:capstone_proj/Screens/prediction_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:feedback/feedback.dart';
@@ -12,7 +12,7 @@ import 'package:capstone_proj/Screens/scan.dart';
 import 'package:capstone_proj/Screens/registration_screens/register.dart';
 import 'package:capstone_proj/Screens/navigation_screens/file.dart';
 import 'package:capstone_proj/Screens/navigation_screens/home.dart';
-import 'package:capstone_proj/Screens/navigation_screens/link.dart';
+// import 'package:capstone_proj/Screens/navigation_screens/link.dart';
 import 'package:capstone_proj/Screens/profile.dart';
 import 'package:capstone_proj/constants.dart';
 import 'package:capstone_proj/providers/auth_provider.dart';

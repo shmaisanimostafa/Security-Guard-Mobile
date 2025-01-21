@@ -1,4 +1,4 @@
-import 'package:capstone_proj/Screens/article_screen.dart';
+// import 'package:capstone_proj/Screens/article_screen.dart';
 import 'package:capstone_proj/components/upload_box.dart';
 import 'package:capstone_proj/functions/file_picker.dart';
 import 'package:file_picker/file_picker.dart';
