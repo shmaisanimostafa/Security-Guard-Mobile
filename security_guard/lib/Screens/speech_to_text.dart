@@ -69,12 +69,28 @@ class _SpeechScreenState extends State<SpeechScreen> {
   String _text = 'Press the button and start speaking';
   double _confidence = 1.0;
 
+  @override
+  void initState() {
+    super.initState();
+    _initializeSpeech();
+  }
+
+  void _initializeSpeech() async {
+    bool available = await _speech.initialize();
+    if (available) {
+      setState(() {
+        // Speech is available
+      });
+    } else {
+      setState(() {
+        _text = 'Speech recognition not available';
+      });
+    }
+  }
+
   void _listen() async {
     if (!_isListening) {
-      bool available = await _speech.initialize(
-          // onStatus: (val) => print('onStatus: $val'),
-          // onError: (val) => print('onError: $val'),
-          );
+      bool available = await _speech.initialize();
       if (available) {
         setState(() {
           _isListening = true;
@@ -87,6 +103,10 @@ class _SpeechScreenState extends State<SpeechScreen> {
             }
           }),
         );
+      } else {
+        setState(() {
+          _text = 'Speech recognition not available';
+        });
       }
     } else {
       setState(() {
@@ -97,17 +117,10 @@ class _SpeechScreenState extends State<SpeechScreen> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    _speech.initialize();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: const Color.fromRGBO(255, 196, 0, 0.498),
       appBar: AppBar(
-        title: Text('Confidence: ${_confidence * 100.0}%'),
+        title: Text('Confidence: ${(_confidence * 100.0).toStringAsFixed(1)}%'),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: AvatarGlow(
@@ -116,11 +129,8 @@ class _SpeechScreenState extends State<SpeechScreen> {
         glowRadiusFactor: 5.0,
         duration: const Duration(milliseconds: 2000),
         repeat: true,
-        // repeatPauseDuration: const Duration(milliseconds: 100),
         child: FloatingActionButton(
-          onPressed: () {
-            _listen();
-          },
+          onPressed: _listen,
           child: Icon(_isListening ? Icons.mic : Icons.mic_off),
         ),
       ),
