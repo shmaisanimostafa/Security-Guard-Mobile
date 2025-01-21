@@ -1,4 +1,5 @@
 import 'package:capstone_proj/Screens/mongo_message_screen.dart';
+import 'package:capstone_proj/Screens/navigation_screens/analysis_screen.dart';
 import 'package:capstone_proj/Screens/prediction_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -38,10 +39,10 @@ class _MyAppState extends State<MyApp> {
   ThemeMode? currentThemeMode = ThemeMode.system;
   List<Widget> screens = [
     const Home(),
-    const Link(),
+    // const Link(),
     const UploadFileScreen(),
     MongoChatScreen(),
-    PredictionScreen(),
+    AnalysisScreen(),
   ];
 
   // Navigation Icons
@@ -479,10 +480,10 @@ class _MyAppState extends State<MyApp> {
               icon: homeIcon,
               label: 'Home',
             ),
-            NavigationDestination(
-              icon: linkIcon,
-              label: 'Link',
-            ),
+            // NavigationDestination(
+            //   icon: linkIcon,
+            //   label: 'Link',
+            // ),
             NavigationDestination(
               icon: fileIcon,
               label: 'File',
