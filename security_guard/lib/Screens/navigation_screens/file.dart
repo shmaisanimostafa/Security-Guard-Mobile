@@ -1,11 +1,8 @@
-// import 'package:capstone_proj/Screens/article_screen.dart';
 import 'package:capstone_proj/components/upload_box.dart';
 import 'package:capstone_proj/functions/file_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
-
-import 'package:url_launcher/url_launcher.dart';
 
 class UploadFileScreen extends StatefulWidget {
   const UploadFileScreen({super.key});
@@ -22,7 +19,7 @@ class _UploadFileScreenState extends State<UploadFileScreen>
     size: 0,
   );
 
-  // Animation controller for pulsing button
+  // Animation controller for pulsing text
   late AnimationController _controller;
   late Animation<double> _pulseAnimation;
 
@@ -144,7 +141,7 @@ class _UploadFileScreenState extends State<UploadFileScreen>
               color: Colors.black.withOpacity(0.5), // Semi-transparent background
               alignment: Alignment.center,
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // Typing effect text (non-interactive)
                   IgnorePointer(
@@ -159,26 +156,16 @@ class _UploadFileScreenState extends State<UploadFileScreen>
                   ),
                   const SizedBox(height: 20),
 
-                  // Pulsating "Learn More" button (clickable)
+                  // Pulsating "Coming Soon" text
                   ScaleTransition(
                     scale: _pulseAnimation,
-                    child: ElevatedButton(
-onPressed: () async {
-  final url = Uri.parse('https://security-guard-container-app.blueocean-cf790c41.australiaeast.azurecontainerapps.io/Articles/ViewArticle/10');
-  if (await canLaunchUrl(url)) {
-    await launchUrl(url);
-  } else {
-    // Handle the case where the URL cannot be launched
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Could not launch the URL.')),
-    );
-  }
-},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.amber,
-                        foregroundColor: Colors.black,
+                    child: const Text(
+                      'Coming Soon',
+                      style: TextStyle(
+                        color: Colors.yellow, // Yellow color
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
                       ),
-                      child: const Text('Learn More'),
                     ),
                   ),
 

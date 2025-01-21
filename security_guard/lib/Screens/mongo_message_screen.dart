@@ -244,127 +244,158 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
     final userData = authProvider.userData;
 
     return Scaffold(
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FloatingActionButton.small(
-            onPressed: () {
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                builder: (context) => SingleChildScrollView(
-                  child: Container(
-                    padding: EdgeInsets.only(
-                        bottom: MediaQuery.of(context).viewInsets.bottom),
-                    child: const AskAIScreen(),
-                  ),
+      floatingActionButton: _isLoading
+          ? null // Hide the floating action button while loading
+          : Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                FloatingActionButton.small(
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      builder: (context) => SingleChildScrollView(
+                        child: Container(
+                          padding: EdgeInsets.only(
+                              bottom: MediaQuery.of(context).viewInsets.bottom),
+                          child: const AskAIScreen(),
+                        ),
+                      ),
+                    );
+                  },
+                  child: const Icon(Icons.auto_awesome_rounded),
                 ),
-              );
-            },
-            child: const Icon(Icons.auto_awesome_rounded),
-          ),
-          const SizedBox(height: 40.0),
-        ],
-      ),
-      body: Column(
-        children: [
-          if (_isLoading)
-            const LinearProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.yellow), // Yellow progress indicator
+                const SizedBox(height: 40.0),
+              ],
             ),
-          Expanded(
-            child: _isLoading
-                ? _buildShimmerLoading() // Use shimmer loading animation
-                : ListView(
-                    reverse: false,
-                    controller: _scrollController,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10.0,
-                      vertical: 20.0,
-                    ),
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
+      body: Stack(
+        children: [
+          Column(
+            children: [
+              if (_isLoading)
+                const LinearProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.yellow), // Yellow progress indicator
+                ),
+              Expanded(
+                child: _isLoading
+                    ? _buildShimmerLoading() // Use shimmer loading animation
+                    : ListView(
+                        reverse: false,
+                        controller: _scrollController,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10.0,
+                          vertical: 20.0,
+                        ),
                         children: [
-                          for (var message in messages)
-                            MessageBubble(
-                              sender: message["sender"],
-                              text: message["content"],
-                              isMe: message["sender"] == userData?["userName"], // Use the real username
-                              isRead: message["isRead"],
-                              isEdited: message["isEdited"] ?? false,
-                              reactions: Map<String, String>.from(message["reactions"] ?? {}),
-                              onEdit: (currentText) {
-                                _showEditDialog(message["id"], currentText);
-                              },
-                              onDelete: () {
-                                _deleteMessage(message["id"]);
-                              },
-                              onReact: (reaction) {
-                                _reactToMessage(message["id"], reaction);
-                              },
-                            ),
-                          if (_isSending)
-                            const Center(
-                              child: CircularProgressIndicator(),
-                            ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              for (var message in messages)
+                                MessageBubble(
+                                  sender: message["sender"],
+                                  text: message["content"],
+                                  isMe: message["sender"] == userData?["userName"], // Use the real username
+                                  isRead: message["isRead"],
+                                  isEdited: message["isEdited"] ?? false,
+                                  reactions: Map<String, String>.from(message["reactions"] ?? {}),
+                                  onEdit: (currentText) {
+                                    _showEditDialog(message["id"], currentText);
+                                  },
+                                  onDelete: () {
+                                    _deleteMessage(message["id"]);
+                                  },
+                                  onReact: (reaction) {
+                                    _reactToMessage(message["id"], reaction);
+                                  },
+                                ),
+                              if (_isSending)
+                                const Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                            ],
+                          ),
                         ],
+                      ),
+              ),
+              if (authProvider.isAuthenticated && !_isLoading)
+                Container(
+                  decoration: kMessageContainerDecoration,
+                  padding: const EdgeInsets.only(right: 5.0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        child: TextField(
+                          controller: messageTextController,
+                          decoration: kMessageTextFieldDecoration,
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          if (messageTextController.text.isNotEmpty) {
+                            _sendMessage(messageTextController.text);
+                          }
+                        },
+                        child: const Text(
+                          'Send',
+                          style: kSendButtonTextStyle,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return const SpeechScreen();
+                              },
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.mic),
                       ),
                     ],
                   ),
-          ),
-          if (authProvider.isAuthenticated)
-            Container(
-              decoration: kMessageContainerDecoration,
-              padding: const EdgeInsets.only(right: 5.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Expanded(
-                    child: TextField(
-                      controller: messageTextController,
-                      decoration: kMessageTextFieldDecoration,
-                    ),
-                  ),
-                  TextButton(
+                )
+              else if (!authProvider.isAuthenticated && !_isLoading)
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: ElevatedButton(
                     onPressed: () {
-                      if (messageTextController.text.isNotEmpty) {
-                        _sendMessage(messageTextController.text);
-                      }
-                    },
-                    child: const Text(
-                      'Send',
-                      style: kSendButtonTextStyle,
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () {
+                      // Navigate to the login screen
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return const SpeechScreen();
-                          },
-                        ),
+                        MaterialPageRoute(builder: (context) => const LogInScreen()),
                       );
                     },
-                    icon: const Icon(Icons.mic),
+                    child: const Text('Login to Chat'),
                   ),
-                ],
-              ),
-            )
-          else
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: ElevatedButton(
-                onPressed: () {
-                  // Navigate to the login screen
-                 Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const LogInScreen()),
-          );
-                },
-                child: const Text('Login to Chat'),
+                ),
+            ],
+          ),
+
+          // Overlay to block UI while loading
+          if (_isLoading)
+            Container(
+              color: Colors.black.withOpacity(0.5), // Semi-transparent background
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.yellow), // Yellow loading indicator
+                    ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Loading...',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
         ],
