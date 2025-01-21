@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:highlight_text/highlight_text.dart';
@@ -13,9 +14,7 @@ class SpeechScreen extends StatefulWidget {
 class _SpeechScreenState extends State<SpeechScreen> {
   final Map<String, HighlightedWord> _highLights = {
     "Flutter": HighlightedWord(
-      onTap: () {
-        // print("Flutter");
-      },
+      onTap: () {},
       textStyle: const TextStyle(
         color: Colors.blue,
         fontSize: 20.0,
@@ -23,9 +22,7 @@ class _SpeechScreenState extends State<SpeechScreen> {
       ),
     ),
     "open-source": HighlightedWord(
-      onTap: () {
-        // print("open-source");
-      },
+      onTap: () {},
       textStyle: const TextStyle(
         color: Colors.blue,
         fontSize: 20.0,
@@ -33,9 +30,7 @@ class _SpeechScreenState extends State<SpeechScreen> {
       ),
     ),
     "Android": HighlightedWord(
-      onTap: () {
-        // print("Android");
-      },
+      onTap: () {},
       textStyle: const TextStyle(
         color: Colors.green,
         fontSize: 20.0,
@@ -43,9 +38,7 @@ class _SpeechScreenState extends State<SpeechScreen> {
       ),
     ),
     "Malware": HighlightedWord(
-      onTap: () {
-        // print("Malware");
-      },
+      onTap: () {},
       textStyle: const TextStyle(
         color: Colors.red,
         fontSize: 20.0,
@@ -53,9 +46,7 @@ class _SpeechScreenState extends State<SpeechScreen> {
       ),
     ),
     "Security": HighlightedWord(
-      onTap: () {
-        // print("Security");
-      },
+      onTap: () {},
       textStyle: const TextStyle(
         color: Colors.yellow,
         fontSize: 20.0,
@@ -66,22 +57,50 @@ class _SpeechScreenState extends State<SpeechScreen> {
 
   final SpeechToText _speech = SpeechToText();
   bool _isListening = false;
+  bool _speechAvailable = false;
+  bool _isInitializing = false;
   String _text = 'Press the button and start speaking';
   double _confidence = 1.0;
 
   @override
   void initState() {
     super.initState();
-    _initializeSpeech();
+    _checkPermissions().then((_) {
+      _initializeSpeech();
+    });
+  }
+
+  Future<void> _checkPermissions() async {
+    // Use a MethodChannel to request permissions from the native side
+    const channel = MethodChannel('com.example.app/permissions');
+    try {
+      final bool hasPermission = await channel.invokeMethod('checkRecordAudioPermission');
+      if (!hasPermission) {
+        await channel.invokeMethod('requestRecordAudioPermission');
+      }
+    } catch (e) {
+      print('Error checking or requesting permissions: $e');
+    }
   }
 
   void _initializeSpeech() async {
-    bool available = await _speech.initialize();
-    if (available) {
-      setState(() {
-        // Speech is available
-      });
-    } else {
+    setState(() {
+      _isInitializing = true;
+    });
+    try {
+      _speechAvailable = await _speech.initialize(
+        debugLogging: true, // Enable debug logging
+        onStatus: (status) => print('Speech status: $status'),
+        onError: (error) => print('Speech error: $error'),
+      );
+    } catch (e) {
+      print('Error initializing speech: $e');
+      _speechAvailable = false;
+    }
+    setState(() {
+      _isInitializing = false;
+    });
+    if (!_speechAvailable) {
       setState(() {
         _text = 'Speech recognition not available';
       });
@@ -90,12 +109,12 @@ class _SpeechScreenState extends State<SpeechScreen> {
 
   void _listen() async {
     if (!_isListening) {
-      bool available = await _speech.initialize();
-      if (available) {
-        setState(() {
-          _isListening = true;
-        });
-        _speech.listen(
+      setState(() {
+        _isListening = true;
+        _text = ''; // Clear previous text
+      });
+      try {
+        await _speech.listen(
           onResult: (val) => setState(() {
             _text = val.recognizedWords;
             if (val.hasConfidenceRating && val.confidence > 0) {
@@ -103,9 +122,10 @@ class _SpeechScreenState extends State<SpeechScreen> {
             }
           }),
         );
-      } else {
+      } catch (e) {
         setState(() {
-          _text = 'Speech recognition not available';
+          _isListening = false;
+          _text = 'Error: ${e.toString()}';
         });
       }
     } else {
@@ -123,24 +143,26 @@ class _SpeechScreenState extends State<SpeechScreen> {
         title: Text('Confidence: ${(_confidence * 100.0).toStringAsFixed(1)}%'),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: AvatarGlow(
-        animate: _isListening,
-        glowColor: Theme.of(context).primaryColor,
-        glowRadiusFactor: 5.0,
-        duration: const Duration(milliseconds: 2000),
-        repeat: true,
-        child: FloatingActionButton(
-          onPressed: _listen,
-          child: Icon(_isListening ? Icons.mic : Icons.mic_off),
-        ),
-      ),
+      floatingActionButton: _isInitializing
+          ? CircularProgressIndicator()
+          : AvatarGlow(
+              animate: _isListening,
+              glowColor: Theme.of(context).primaryColor,
+              glowRadiusFactor: 5.0,
+              duration: const Duration(milliseconds: 2000),
+              repeat: true,
+              child: FloatingActionButton(
+                onPressed: _speechAvailable ? _listen : null,
+                child: Icon(_isListening ? Icons.mic : Icons.mic_off),
+              ),
+            ),
       body: SingleChildScrollView(
         reverse: true,
         child: Column(
           children: [
             _isListening
-                ? const Text('Listening...')
-                : const Text('Not Listening...'),
+                ? const Text('Listening...', style: TextStyle(color: Colors.green))
+                : const Text('Not Listening...', style: TextStyle(color: Colors.red)),
             const SizedBox(height: 20.0),
             Container(
               padding: const EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 150.0),
