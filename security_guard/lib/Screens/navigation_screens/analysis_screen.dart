@@ -1,6 +1,8 @@
+import 'package:capstone_proj/components/confidence_bar_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:capstone_proj/Screens/response_safe_screen.dart';
+// import 'package:capstone_proj/Screens/response_safe_screen.dart';
 import 'package:capstone_proj/models/fast_api_service.dart';
+import 'package:flutter/services.dart'; // For clipboard functionality
 
 class AnalysisScreen extends StatefulWidget {
   const AnalysisScreen({super.key});
@@ -24,6 +26,9 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
   Future<void> _predictText() async {
     setState(() {
       _isLoading = true;
+      phishingBertResult = null;
+      spamResult = null;
+      phishingNewResult = null;
     });
 
     try {
@@ -33,9 +38,9 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
       phishingNewResult = await apiService.predictPhishingNew(text);
     } catch (e) {
       print('Error during prediction: $e');
-      phishingBertResult = {'error': 'Failed to fetch data'};
-      spamResult = {'error': 'Failed to fetch data'};
-      phishingNewResult = {'error': 'Failed to fetch data'};
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to fetch data. Please try again.')),
+      );
     } finally {
       setState(() {
         _isLoading = false;
@@ -43,7 +48,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
     }
   }
 
-  void _submitLink() {
+  Future<void> _predictLink() async {
     final link = _linkController.text.trim();
     if (link.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -52,14 +57,43 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
       return;
     }
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ResponseSafeScreen(
-          link: link,
-          message: 'This is a safe link', // Replace with actual analysis result
-        ),
-      ),
+    setState(() {
+      _isLoading = true;
+      phishingBertResult = null;
+      spamResult = null;
+      phishingNewResult = null;
+    });
+
+    try {
+      phishingBertResult = await apiService.predictPhishingBert(link);
+      spamResult = await apiService.predictSpam(link);
+      phishingNewResult = await apiService.predictPhishingNew(link);
+    } catch (e) {
+      print('Error during prediction: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to fetch data. Please try again.')),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  void _clearInput() {
+    setState(() {
+      _textController.clear();
+      _linkController.clear();
+      phishingBertResult = null;
+      spamResult = null;
+      phishingNewResult = null;
+    });
+  }
+
+  void _copyToClipboard(String text) {
+    Clipboard.setData(ClipboardData(text: text));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Copied to clipboard!')),
     );
   }
 
@@ -68,6 +102,13 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Analysis'),
+        actions: [
+          IconButton(
+            onPressed: _clearInput,
+            icon: const Icon(Icons.clear),
+            tooltip: 'Clear',
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -129,8 +170,10 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                     ),
                     const SizedBox(height: 20),
                     ElevatedButton(
-                      onPressed: _submitLink,
-                      child: const Text('Analyse Link'),
+                      onPressed: _isLoading ? null : _predictLink,
+                      child: _isLoading
+                          ? const CircularProgressIndicator()
+                          : const Text('Analyse Link'),
                     ),
                   ],
                 ),
@@ -155,27 +198,37 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                     : const Text('Analyse Text'),
               ),
               const SizedBox(height: 16),
-              if (_isLoading) ...[
-                const Center(child: CircularProgressIndicator()),
-              ] else ...[
-                if (phishingBertResult != null) ...[
-                  const Text('BERT Phishing Prediction:'),
-                  Text('Predicted Class: ${phishingBertResult?['predicted_class'] ?? 'N/A'}'),
-                  Text('Confidence Score: ${phishingBertResult?['confidence_score'] ?? 'N/A'}'),
-                  const SizedBox(height: 16),
-                ],
-                if (spamResult != null) ...[
-                  const Text('Spam Prediction:'),
-                  Text('Predicted Class: ${spamResult?['predicted_class'] ?? 'N/A'}'),
-                  Text('Confidence Score: ${spamResult?['confidence_score'] ?? 'N/A'}'),
-                  const SizedBox(height: 16),
-                ],
-                if (phishingNewResult != null) ...[
-                  const Text('New Phishing Detection Prediction:'),
-                  Text('Predicted Class: ${phishingNewResult?['predicted_class'] ?? 'N/A'}'),
-                  Text('Confidence Score: ${phishingNewResult?['confidence_score'] ?? 'N/A'}'),
-                  const SizedBox(height: 16),
-                ],
+            ],
+
+            // Display Results
+            if (_isLoading) ...[
+              const Center(child: CircularProgressIndicator()),
+            ] else ...[
+              if (phishingBertResult != null || spamResult != null || phishingNewResult != null) ...[
+                const SizedBox(height: 20),
+                const Text(
+                  'Analysis Results',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 10),
+              ],
+              if (phishingBertResult != null) ...[
+                _buildResultCard(
+                  title: 'BERT Phishing Prediction',
+                  result: phishingBertResult!,
+                ),
+              ],
+              if (spamResult != null) ...[
+                _buildResultCard(
+                  title: 'Spam Prediction',
+                  result: spamResult!,
+                ),
+              ],
+              if (phishingNewResult != null) ...[
+                _buildResultCard(
+                  title: 'New Phishing Detection Prediction',
+                  result: phishingNewResult!,
+                ),
               ],
             ],
           ],
@@ -183,4 +236,50 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
       ),
     );
   }
+
+ Widget _buildResultCard({required String title, required Map<String, dynamic> result}) {
+  final predictedClass = result['predicted_class'] ?? 'N/A';
+  final confidenceScore = result['confidence_score'] ?? 'N/A';
+  final isPhishing = predictedClass == 1;
+
+  // Convert confidence scores to double
+  final confidenceScores = {
+    'Phishing': isPhishing ? (confidenceScore as num).toDouble() : (1 - confidenceScore as num).toDouble(),
+    'Safe': isPhishing ? (1 - confidenceScore as num).toDouble() : (confidenceScore as num).toDouble(),
+  };
+
+  return Card(
+    margin: const EdgeInsets.symmetric(vertical: 8.0),
+    child: ExpansionTile(
+      title: Text(
+        title,
+        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      ),
+      children: [
+        ListTile(
+          title: Text('Predicted Class: ${isPhishing ? "Phishing" : "Safe"}'),
+          trailing: Icon(
+            isPhishing ? Icons.warning : Icons.check_circle,
+            color: isPhishing ? Colors.red : Colors.green,
+          ),
+        ),
+        ListTile(
+          title: Text('Confidence Score: $confidenceScore'),
+          trailing: IconButton(
+            icon: const Icon(Icons.copy),
+            onPressed: () => _copyToClipboard('$title\nPredicted Class: ${isPhishing ? "Phishing" : "Safe"}\nConfidence Score: $confidenceScore'),
+          ),
+        ),
+        const SizedBox(height: 16),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: SizedBox(
+            height: 200,
+            child: ConfidenceBarChart(confidenceScores: confidenceScores),
+          ),
+        ),
+      ],
+    ),
+  );
+}
 }
