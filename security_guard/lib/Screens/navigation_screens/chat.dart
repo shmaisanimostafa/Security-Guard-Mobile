@@ -132,14 +132,14 @@ class _ChatState extends State<Chat> {
                 ),
                 IconButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return const SpeechScreen();
-                        },
-                      ),
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) {
+                    //       // return const SpeechScreen();
+                    //     },
+                    //   ),
+                    // );
                   },
                   icon: const Icon(Icons.mic),
                 )

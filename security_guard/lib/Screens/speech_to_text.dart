@@ -5,7 +5,9 @@ import 'package:avatar_glow/avatar_glow.dart';
 import 'package:highlight_text/highlight_text.dart';
 
 class SpeechScreen extends StatefulWidget {
-  const SpeechScreen({super.key});
+  final Function(String) onTextRecognized; // Callback to send recognized text
+
+  const SpeechScreen({super.key, required this.onTextRecognized});
 
   @override
   State<SpeechScreen> createState() => _SpeechScreenState();
@@ -62,6 +64,9 @@ class _SpeechScreenState extends State<SpeechScreen> {
   String _text = 'Press the button and start speaking';
   double _confidence = 1.0;
 
+  // Controller for the editable text field
+  final TextEditingController _textController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -112,11 +117,13 @@ class _SpeechScreenState extends State<SpeechScreen> {
       setState(() {
         _isListening = true;
         _text = ''; // Clear previous text
+        _textController.clear(); // Clear the text field
       });
       try {
         await _speech.listen(
           onResult: (val) => setState(() {
             _text = val.recognizedWords;
+            _textController.text = _text; // Update the text field with recognized text
             if (val.hasConfidenceRating && val.confidence > 0) {
               _confidence = val.confidence;
             }
@@ -133,6 +140,14 @@ class _SpeechScreenState extends State<SpeechScreen> {
         _isListening = false;
         _speech.stop();
       });
+    }
+  }
+
+  void _sendRecognizedText() {
+    final textToSend = _textController.text.trim(); // Get the text from the text field
+    if (textToSend.isNotEmpty) {
+      widget.onTextRecognized(textToSend); // Send the text
+      Navigator.pop(context); // Close the SpeechScreen
     }
   }
 
@@ -176,6 +191,36 @@ class _SpeechScreenState extends State<SpeechScreen> {
                 ),
               ),
             ),
+            if (!_isListening && _text.isNotEmpty) // Show editable text field and "Click to Send" button
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    TextField(
+                      controller: _textController,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Edit your message',
+                      ),
+                      maxLines: 3,
+                    ),
+                    const SizedBox(height: 16.0),
+                    ElevatedButton(
+                      onPressed: _sendRecognizedText,
+                      style: ElevatedButton.styleFrom(
+                        // backgroundColor: Colors.blue,
+                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                      ),
+                      child: const Text(
+                        'Click to Send',
+                        style: TextStyle(fontSize: 18,
+                        //  color: Colors.white
+                         ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
           ],
         ),
       ),

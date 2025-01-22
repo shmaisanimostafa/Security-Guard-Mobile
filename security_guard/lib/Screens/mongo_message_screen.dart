@@ -346,9 +346,13 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) {
-                                return const SpeechScreen();
-                              },
+                              builder: (context) => SpeechScreen(
+                                onTextRecognized: (recognizedText) {
+                                  if (recognizedText.isNotEmpty) {
+                                    _sendMessage(recognizedText); // Send the recognized text
+                                  }
+                                },
+                              ),
                             ),
                           );
                         },
