@@ -5,7 +5,7 @@ import 'package:capstone_proj/providers/auth_provider.dart';
 import 'package:capstone_proj/services/signalr_service.dart';
 import 'package:capstone_proj/components/message_bubble.dart';
 import 'package:capstone_proj/constants.dart';
-import 'package:capstone_proj/Screens/ai_chat_screen.dart';
+import 'package:capstone_proj/Screens/ask_ai_screen.dart';
 import 'package:capstone_proj/Screens/speech_to_text.dart';
 import 'package:provider/provider.dart';
 
@@ -83,7 +83,6 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
           }
         });
       };
-
     } catch (e) {
       print("Error initializing SignalR: $e");
     }
@@ -109,7 +108,7 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
     }
   }
 
-  Future<void> _sendMessage(String text) async {
+  Future<void> _sendMessage(String text, {bool isAi = false}) async {
     if (text.isEmpty) return;
 
     setState(() {
@@ -122,11 +121,11 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
 
     final newMessage = {
       "id": DateTime.now().millisecondsSinceEpoch.toString(),
-      "sender": userData?["userName"] ?? "Unknown", // Use the real username
+      "sender": isAi ? "AI Chatbot" : userData?["userName"] ?? "Unknown", // Use "AI Chatbot" for AI messages
       "receiver": "Group1",
       "content": text,
       "timestamp": DateTime.now().toIso8601String(),
-      "isAi": false,
+      "isAi": isAi, // Set the isAi flag
       "isRead": false,
       "isEdited": false,
       "reactions": {},
@@ -137,7 +136,12 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
     });
 
     try {
-      await signalRService.sendMessage(userData?["userName"] ?? "Unknown", "Group1", text, false);
+      await signalRService.sendMessage(
+        isAi ? "AI Chatbot" : userData?["userName"] ?? "Unknown", // Use "AI Chatbot" for AI messages
+        "Group1",
+        text,
+        isAi, // Pass the isAi flag to the SignalR service
+      );
       setState(() {
         messageTextController.clear(); // Clear the text field
       });
@@ -258,7 +262,11 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
                         child: Container(
                           padding: EdgeInsets.only(
                               bottom: MediaQuery.of(context).viewInsets.bottom),
-                          child: const AskAIScreen(),
+                          child: AskAIScreen(
+                            onAIMessageGenerated: (aiMessage) {
+                              _sendMessage(aiMessage, isAi: true); // Send AI message with isAi flag
+                            },
+                          ),
                         ),
                       ),
                     );
@@ -297,6 +305,7 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
                                   isMe: message["sender"] == userData?["userName"], // Use the real username
                                   isRead: message["isRead"],
                                   isEdited: message["isEdited"] ?? false,
+                                  isAI: message["isAi"] ?? false, // Pass the isAi flag
                                   reactions: Map<String, String>.from(message["reactions"] ?? {}),
                                   onEdit: (currentText) {
                                     _showEditDialog(message["id"], currentText);

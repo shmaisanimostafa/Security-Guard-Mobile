@@ -6,7 +6,7 @@ class MessageBubble extends StatelessWidget {
     required this.sender,
     required this.text,
     required this.isMe,
-    this.isAI = false,
+    required this.isAI,
     this.isRead = false,
     this.isEdited = false,
     this.reactions = const {},

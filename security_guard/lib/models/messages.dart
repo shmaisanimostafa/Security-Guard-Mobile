@@ -11,14 +11,19 @@ class Messages extends ChangeNotifier {
       sender: 'me',
       text: 'Hello',
       isMe: true,
+      isAI: false,
     ),
     const MessageBubble(
       sender: 'you',
       text: 'Hi',
       isMe: false,
+            isAI: false,
+
     ),
     const MessageBubble(
       sender: 'me',
+
+      isAI: false,
       text: 'How are you?',
       isMe: true,
     ),
@@ -26,36 +31,50 @@ class Messages extends ChangeNotifier {
       sender: 'you',
       text: 'I am fine, thank you.',
       isMe: false,
+            isAI: false,
+
     ),
     const MessageBubble(
       sender: 'me',
       text: 'Good to hear that.',
       isMe: true,
+            isAI: false,
+
     ),
     const MessageBubble(
       sender: 'you',
       text: 'How about you?',
       isMe: false,
+            isAI: false,
+
     ),
     const MessageBubble(
       sender: 'me',
       text: 'I am doing great.',
       isMe: true,
+            isAI: false,
+
     ),
     const MessageBubble(
       sender: 'you',
       text: 'That is good to hear.',
       isMe: false,
+            isAI: false,
+
     ),
     const MessageBubble(
       sender: 'me',
       text: 'I have to go now.',
       isMe: true,
+            isAI: false,
+
     ),
     const MessageBubble(
       sender: 'you',
       text: 'Okay, see you later.',
       isMe: false,
+            isAI: false,
+
     ),
   ];
 

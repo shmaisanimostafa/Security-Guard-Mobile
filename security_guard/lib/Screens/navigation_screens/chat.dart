@@ -2,8 +2,8 @@ import 'package:capstone_proj/components/message_bubble.dart';
 import 'package:capstone_proj/constants.dart';
 import 'package:capstone_proj/functions/message_api_handler.dart';
 import 'package:capstone_proj/models/message.dart';
-import 'package:capstone_proj/Screens/ai_chat_screen.dart';
-import 'package:capstone_proj/Screens/speech_to_text.dart';
+// import 'package:capstone_proj/Screens/ask_ai_screen.dart';
+// import 'package:capstone_proj/Screens/speech_to_text.dart';
 import 'package:flutter/material.dart';
 
 class Chat extends StatefulWidget {
@@ -61,7 +61,7 @@ class _ChatState extends State<Chat> {
                   child: Container(
                     padding: EdgeInsets.only(
                         bottom: MediaQuery.of(context).viewInsets.bottom),
-                    child: const AskAIScreen(),
+                    // child: const AskAIScreen(),
                   ),
                 ),
               );
@@ -88,6 +88,7 @@ class _ChatState extends State<Chat> {
                     for (Message message in data)
                       MessageBubble(
                         sender: message.sender,
+                        isAI: false,
                         text: message.text,
                         isMe: message.sender == 'Mostafa' ? true : false,
                       ),
