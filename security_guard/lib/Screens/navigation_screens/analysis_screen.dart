@@ -28,14 +28,14 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
     });
 
     try {
-      final text = _textController.text;
+      // final text = _textController.text;
       // Simulate API calls (replace with actual API calls)
       await Future.delayed(const Duration(seconds: 2));
       phishingBertResult = {'predicted_class': 1, 'confidence_score': 0.85};
       spamResult = {'predicted_class': 0, 'confidence_score': 0.92};
       phishingNewResult = {'predicted_class': 1, 'confidence_score': 0.78};
     } catch (e) {
-      print('Error during prediction: $e');
+      debugPrint('Error during prediction: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Failed to fetch data. Please try again.')),
       );
@@ -69,7 +69,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
       spamResult = {'predicted_class': 1, 'confidence_score': 0.87};
       phishingNewResult = {'predicted_class': 0, 'confidence_score': 0.89};
     } catch (e) {
-      print('Error during prediction: $e');
+      debugPrint('Error during prediction: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Failed to fetch data. Please try again.')),
       );
