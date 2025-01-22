@@ -1,7 +1,4 @@
-import 'package:capstone_proj/components/confidence_bar_chart.dart';
 import 'package:flutter/material.dart';
-// import 'package:capstone_proj/Screens/response_safe_screen.dart';
-import 'package:capstone_proj/models/fast_api_service.dart';
 import 'package:flutter/services.dart'; // For clipboard functionality
 
 class AnalysisScreen extends StatefulWidget {
@@ -12,7 +9,6 @@ class AnalysisScreen extends StatefulWidget {
 }
 
 class _AnalysisScreenState extends State<AnalysisScreen> {
-  final FastAPIService apiService = FastAPIService('http://localhost:8000');
   final TextEditingController _textController = TextEditingController();
   final TextEditingController _linkController = TextEditingController();
 
@@ -33,9 +29,11 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
 
     try {
       final text = _textController.text;
-      phishingBertResult = await apiService.predictPhishingBert(text);
-      spamResult = await apiService.predictSpam(text);
-      phishingNewResult = await apiService.predictPhishingNew(text);
+      // Simulate API calls (replace with actual API calls)
+      await Future.delayed(const Duration(seconds: 2));
+      phishingBertResult = {'predicted_class': 1, 'confidence_score': 0.85};
+      spamResult = {'predicted_class': 0, 'confidence_score': 0.92};
+      phishingNewResult = {'predicted_class': 1, 'confidence_score': 0.78};
     } catch (e) {
       print('Error during prediction: $e');
       ScaffoldMessenger.of(context).showSnackBar(
@@ -65,9 +63,11 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
     });
 
     try {
-      phishingBertResult = await apiService.predictPhishingBert(link);
-      spamResult = await apiService.predictSpam(link);
-      phishingNewResult = await apiService.predictPhishingNew(link);
+      // Simulate API calls (replace with actual API calls)
+      await Future.delayed(const Duration(seconds: 2));
+      phishingBertResult = {'predicted_class': 0, 'confidence_score': 0.91};
+      spamResult = {'predicted_class': 1, 'confidence_score': 0.87};
+      phishingNewResult = {'predicted_class': 0, 'confidence_score': 0.89};
     } catch (e) {
       print('Error during prediction: $e');
       ScaffoldMessenger.of(context).showSnackBar(
@@ -237,49 +237,35 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
     );
   }
 
- Widget _buildResultCard({required String title, required Map<String, dynamic> result}) {
-  final predictedClass = result['predicted_class'] ?? 'N/A';
-  final confidenceScore = result['confidence_score'] ?? 'N/A';
-  final isPhishing = predictedClass == 1;
+  Widget _buildResultCard({required String title, required Map<String, dynamic> result}) {
+    final predictedClass = result['predicted_class'] ?? 'N/A';
+    final confidenceScore = result['confidence_score'] ?? 'N/A';
+    final isPhishing = predictedClass == 1;
 
-  // Convert confidence scores to double
-  final confidenceScores = {
-    'Phishing': isPhishing ? (confidenceScore as num).toDouble() : (1 - confidenceScore as num).toDouble(),
-    'Safe': isPhishing ? (1 - confidenceScore as num).toDouble() : (confidenceScore as num).toDouble(),
-  };
-
-  return Card(
-    margin: const EdgeInsets.symmetric(vertical: 8.0),
-    child: ExpansionTile(
-      title: Text(
-        title,
-        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      child: ExpansionTile(
+        title: Text(
+          title,
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        children: [
+          ListTile(
+            title: Text('Predicted Class: $predictedClass'),
+            trailing: Icon(
+              isPhishing ? Icons.warning : Icons.check_circle,
+              color: isPhishing ? Colors.red : Colors.green,
+            ),
+          ),
+          ListTile(
+            title: Text('Confidence Score: $confidenceScore'),
+            trailing: IconButton(
+              icon: const Icon(Icons.copy),
+              onPressed: () => _copyToClipboard('$title\nPredicted Class: $predictedClass\nConfidence Score: $confidenceScore'),
+            ),
+          ),
+        ],
       ),
-      children: [
-        ListTile(
-          title: Text('Predicted Class: ${isPhishing ? "Phishing" : "Safe"}'),
-          trailing: Icon(
-            isPhishing ? Icons.warning : Icons.check_circle,
-            color: isPhishing ? Colors.red : Colors.green,
-          ),
-        ),
-        ListTile(
-          title: Text('Confidence Score: $confidenceScore'),
-          trailing: IconButton(
-            icon: const Icon(Icons.copy),
-            onPressed: () => _copyToClipboard('$title\nPredicted Class: ${isPhishing ? "Phishing" : "Safe"}\nConfidence Score: $confidenceScore'),
-          ),
-        ),
-        const SizedBox(height: 16),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: SizedBox(
-            height: 200,
-            child: ConfidenceBarChart(confidenceScores: confidenceScores),
-          ),
-        ),
-      ],
-    ),
-  );
-}
+    );
+  }
 }
