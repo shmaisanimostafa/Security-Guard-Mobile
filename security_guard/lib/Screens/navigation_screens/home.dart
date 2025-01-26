@@ -51,36 +51,26 @@ class _HomeState extends State<Home> {
                   ],
                 ),
                 const SizedBox(height: 10),
-                // Refresh Button with Loading State
-                Opacity(
-                  opacity: isLoading ? 0.5 : 1, // Reduce opacity when disabled
-                  child: MaterialButton(
-                    onPressed: isLoading ? null : getData, // Disable when loading
-                    color: Colors.blue, // Button color
-                    child: isLoading
-                        ? const Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              SizedBox(
-                                width: 16, // Smaller width
-                                height: 16, // Smaller height
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2, // Thinner stroke
-                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                ),
+                // Normal Refresh Button
+                TextButton(
+                  onPressed: isLoading ? null : getData, // Disable when loading
+                  child: isLoading
+                      ? const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SizedBox(
+                              width: 16, // Smaller width
+                              height: 16, // Smaller height
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2, // Thinner stroke
+                                valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
                               ),
-                              SizedBox(width: 8),
-                              Text(
-                                'Refreshing...',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ],
-                          )
-                        : const Text(
-                            'Refresh',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                  ),
+                            ),
+                            SizedBox(width: 8),
+                            Text('Refreshing...'),
+                          ],
+                        )
+                      : const Text('Refresh'),
                 ),
                 const SizedBox(height: 10),
                 // Show linear progress indicator when loading
