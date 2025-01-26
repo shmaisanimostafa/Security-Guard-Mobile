@@ -115,6 +115,129 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
     );
   }
 
+  // Build the status banner
+  Widget _buildStatusBanner(String status, double confidence) {
+    Color backgroundColor;
+    Color textColor;
+    IconData icon;
+    String statusText;
+
+    switch (status) {
+      case "safe":
+        backgroundColor = Colors.green.shade100;
+        textColor = Colors.green.shade900;
+        icon = Icons.check_circle;
+        statusText = "SAFE";
+        break;
+      case "danger":
+        backgroundColor = Colors.red.shade100;
+        textColor = Colors.red.shade900;
+        icon = Icons.warning;
+        statusText = "DANGER";
+        break;
+      default:
+        backgroundColor = Colors.orange.shade100;
+        textColor = Colors.orange.shade900;
+        icon = Icons.error;
+        statusText = "AMBIGUOUS";
+        break;
+    }
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16.0),
+      margin: const EdgeInsets.only(bottom: 20.0),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      child: Column(
+        children: [
+          Icon(icon, size: 48, color: textColor),
+          const SizedBox(height: 10),
+          Text(
+            "Analysis has finished!",
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: textColor,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            statusText,
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: textColor,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            "Confidence score: ${confidence.toStringAsFixed(2)}",
+            style: TextStyle(
+              fontSize: 16,
+              color: textColor,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            status == "safe"
+                ? "The link is safe to use."
+                : status == "danger"
+                    ? "This link is dangerous!"
+                    : "This link is ambiguous.",
+            style: TextStyle(
+              fontSize: 16,
+              color: textColor,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            "Always be cautious when clicking on unknown links.",
+            style: TextStyle(
+              fontSize: 14,
+              color: textColor.withOpacity(0.8),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Build a result card for individual models
+  Widget _buildResultCard({required String title, required Map<String, dynamic> result}) {
+    final predictedClass = result['predictedClass']?.toString() ?? 'N/A';
+    final confidenceScore = result['confidenceScore']?.toString() ?? 'N/A';
+    final isPhishing = predictedClass == '1';
+
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      child: ExpansionTile(
+        title: Text(
+          title,
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        children: [
+          ListTile(
+            title: Text('Predicted Class: $predictedClass'),
+            trailing: Icon(
+              isPhishing ? Icons.warning : Icons.check_circle,
+              color: isPhishing ? Colors.red : Colors.green,
+            ),
+          ),
+          ListTile(
+            title: Text('Confidence Score: $confidenceScore'),
+            trailing: IconButton(
+              icon: const Icon(Icons.copy),
+              onPressed: () => _copyToClipboard('$title\nPredicted Class: $predictedClass\nConfidence Score: $confidenceScore'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -204,6 +327,11 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
             ] else ...[
               if (phishingBertResult != null || spamResult != null || phishingNewResult != null || phishingLogisticResult != null || averageResult != null) ...[
                 const SizedBox(height: 20),
+                // Status Banner
+                _buildStatusBanner(
+                  averageResult?['predictedClass'] == 1 ? "danger" : "safe",
+                  averageResult?['confidenceScore'] ?? 0.0,
+                ),
                 const Text(
                   'Analysis Results',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -234,47 +362,9 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                   result: phishingLogisticResult!,
                 ),
               ],
-              if (averageResult != null) ...[
-                _buildResultCard(
-                  title: 'Average Prediction',
-                  result: averageResult!,
-                ),
-              ],
             ],
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildResultCard({required String title, required Map<String, dynamic> result}) {
-    final predictedClass = result['predictedClass']?.toString() ?? 'N/A';
-    final confidenceScore = result['confidenceScore']?.toString() ?? 'N/A';
-    final isPhishing = predictedClass == '1';
-
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8.0),
-      child: ExpansionTile(
-        title: Text(
-          title,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
-        children: [
-          ListTile(
-            title: Text('Predicted Class: $predictedClass'),
-            trailing: Icon(
-              isPhishing ? Icons.warning : Icons.check_circle,
-              color: isPhishing ? Colors.red : Colors.green,
-            ),
-          ),
-          ListTile(
-            title: Text('Confidence Score: $confidenceScore'),
-            trailing: IconButton(
-              icon: const Icon(Icons.copy),
-              onPressed: () => _copyToClipboard('$title\nPredicted Class: $predictedClass\nConfidence Score: $confidenceScore'),
-            ),
-          ),
-        ],
       ),
     );
   }
