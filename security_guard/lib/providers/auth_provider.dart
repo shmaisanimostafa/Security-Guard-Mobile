@@ -84,13 +84,16 @@ class AuthProvider with ChangeNotifier {
   Future<void> register(String username, String email, String password, String confirmPassword) async {
     try {
       final response = await _authService.register(username, email, password, confirmPassword);
-      if (response['Message'] == 'User registered successfully') {
+      if (response['message'] == 'User registered successfully') {
         print('Registration successful');
+        // Automatically log in the user after successful registration
+        await login(username, password);
       } else {
-        throw Exception(response['Message'] ?? 'Registration failed');
+        throw Exception(response['message'] ?? 'Registration failed');
       }
     } catch (e) {
       print('Error during registration: $e');
+      throw e; // Re-throw the exception to handle it in the UI
     }
   }
 
@@ -104,12 +107,34 @@ class AuthProvider with ChangeNotifier {
         print('Token saved: $_token');
         notifyListeners(); // Notify listeners after successful login
       } else {
-        throw Exception(response['Message'] ?? 'Login failed');
+        throw Exception(response['message'] ?? 'Login failed');
       }
     } catch (e) {
       print('Error during login: $e');
+      throw e; // Re-throw the exception to handle it in the UI
     }
   }
+
+Future<void> updateProfile(Map<String, dynamic> updatedData) async {
+  try {
+    final response = await _authService.updateProfile(
+      updatedData['username'] as String,
+      updatedData['email'] as String,
+      updatedData['password'] as String,
+      updatedData['confirmPassword'] as String,
+      updatedData['firstName'] as String,
+      updatedData['lastName'] as String,
+    );
+    if (response['message'] == 'Profile updated successfully') {
+      await fetchUserData(); // Refresh user data
+    } else {
+      throw Exception(response['message'] ?? 'Failed to update profile');
+    }
+  } catch (e) {
+    print('Error updating profile: $e');
+    throw e;
+  }
+}
 
   Future<void> logout() async {
     try {
