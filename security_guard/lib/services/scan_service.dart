@@ -1,8 +1,9 @@
 import 'dart:convert';
+import 'package:capstone_proj/constants.dart';
 import 'package:http/http.dart' as http;
 
 class ScanService {
-  static const String baseUrl = "https://localhost:32773/api/ScanAPI";
+  static const String baseUrl =apiBaseUrl + "/api/ScanAPI";
 
   // Scan a link
   static Future<Map<String, dynamic>> scanLink(String url, String userName) async {
