@@ -19,6 +19,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
   Map<String, dynamic>? phishingBertResult;
   Map<String, dynamic>? spamResult;
   Map<String, dynamic>? phishingNewResult;
+  Map<String, dynamic>? phishingLogisticResult;
   Map<String, dynamic>? averageResult;
 
   bool _isLoading = false;
@@ -48,6 +49,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
       phishingBertResult = null;
       spamResult = null;
       phishingNewResult = null;
+      phishingLogisticResult = null;
       averageResult = null;
     });
 
@@ -68,6 +70,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
         phishingBertResult = result['results']['phishingBert'];
         spamResult = result['results']['spam'];
         phishingNewResult = result['results']['phishingNew'];
+        phishingLogisticResult = result['results']['phishingLogistic'];
         averageResult = {
           'predictedClass': result['status'] == 'danger' ? 1 : 0,
           'confidenceScore': result['confidence'],
@@ -79,6 +82,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
       debugPrint('phishingBertResult: $phishingBertResult');
       debugPrint('spamResult: $spamResult');
       debugPrint('phishingNewResult: $phishingNewResult');
+      debugPrint('phishingLogisticResult: $phishingLogisticResult');
       debugPrint('averageResult: $averageResult');
     } catch (e) {
       debugPrint('Error during prediction: $e');
@@ -99,6 +103,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
       phishingBertResult = null;
       spamResult = null;
       phishingNewResult = null;
+      phishingLogisticResult = null;
       averageResult = null;
     });
   }
@@ -197,7 +202,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
             if (_isLoading) ...[
               const Center(child: CircularProgressIndicator()),
             ] else ...[
-              if (phishingBertResult != null || spamResult != null || phishingNewResult != null || averageResult != null) ...[
+              if (phishingBertResult != null || spamResult != null || phishingNewResult != null || phishingLogisticResult != null || averageResult != null) ...[
                 const SizedBox(height: 20),
                 const Text(
                   'Analysis Results',
@@ -221,6 +226,12 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                 _buildResultCard(
                   title: 'New Phishing Detection Prediction',
                   result: phishingNewResult!,
+                ),
+              ],
+              if (phishingLogisticResult != null) ...[
+                _buildResultCard(
+                  title: 'Logistic Regression Phishing Prediction',
+                  result: phishingLogisticResult!,
                 ),
               ],
               if (averageResult != null) ...[
