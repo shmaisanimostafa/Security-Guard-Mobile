@@ -1,5 +1,7 @@
+import 'package:capstone_proj/services/scan_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // For clipboard functionality
+// import 'package:security_guard/services/scan_service.dart'; // Import the ScanService
 
 class AnalysisScreen extends StatefulWidget {
   const AnalysisScreen({super.key});
@@ -28,9 +30,9 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
     });
 
     try {
-      // final text = _textController.text;
-      // Simulate API calls (replace with actual API calls)
-      await Future.delayed(const Duration(seconds: 2));
+      final text = _textController.text;
+      // Call the API to analyze text (replace with actual API call if available)
+      await Future.delayed(const Duration(seconds: 2)); // Simulate API call
       phishingBertResult = {'predicted_class': 1, 'confidence_score': 0.85};
       spamResult = {'predicted_class': 0, 'confidence_score': 0.92};
       phishingNewResult = {'predicted_class': 1, 'confidence_score': 0.78};
@@ -63,11 +65,14 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
     });
 
     try {
-      // Simulate API calls (replace with actual API calls)
-      await Future.delayed(const Duration(seconds: 2));
-      phishingBertResult = {'predicted_class': 0, 'confidence_score': 0.91};
-      spamResult = {'predicted_class': 1, 'confidence_score': 0.87};
-      phishingNewResult = {'predicted_class': 0, 'confidence_score': 0.89};
+      // Call the API to scan the link
+      final result = await ScanService.scanLink(link, "user1"); // Replace "user1" with actual username
+      setState(() {
+        phishingBertResult = {
+          'predicted_class': result['status'] == 'danger' ? 1 : 0,
+          'confidence_score': result['confidence'],
+        };
+      });
     } catch (e) {
       debugPrint('Error during prediction: $e');
       ScaffoldMessenger.of(context).showSnackBar(
