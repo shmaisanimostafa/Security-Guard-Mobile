@@ -96,6 +96,67 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
     }
   }
 
+  Future<void> _predictText() async {
+    final text = _textController.text.trim();
+    if (text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter some text.')),
+      );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+      phishingBertResult = null;
+      spamResult = null;
+      phishingNewResult = null;
+      phishingLogisticResult = null;
+      averageResult = null;
+    });
+
+    try {
+      // Get the current user's data
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final userData = authProvider.userData;
+      final username = userData?["userName"] ?? "Guest"; // Use "Guest" if not authenticated
+
+      // Call the API to scan the text
+      final result = await ScanService.scanText(text, username);
+
+      // Log the entire backend response for debugging
+      debugPrint('Backend Response: ${jsonEncode(result)}');
+
+      // Parse the results
+      setState(() {
+        phishingBertResult = result['results']['phishingBert'];
+        spamResult = result['results']['spam'];
+        phishingNewResult = result['results']['phishingNew'];
+        phishingLogisticResult = result['results']['phishingLogistic'];
+        averageResult = {
+          'predictedClass': result['status'] == 'danger' ? 1 : 0,
+          'confidenceScore': result['confidence'],
+        };
+      });
+
+      // Log the parsed results for debugging
+      debugPrint('Parsed Results:');
+      debugPrint('phishingBertResult: $phishingBertResult');
+      debugPrint('spamResult: $spamResult');
+      debugPrint('phishingNewResult: $phishingNewResult');
+      debugPrint('phishingLogisticResult: $phishingLogisticResult');
+      debugPrint('averageResult: $averageResult');
+    } catch (e) {
+      debugPrint('Error during prediction: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to fetch data. Please try again.')),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
   void _clearInput() {
     setState(() {
       _textController.clear();
@@ -183,10 +244,10 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
           const SizedBox(height: 10),
           Text(
             status == "safe"
-                ? "The link is safe to use."
+                ? "The content is safe."
                 : status == "danger"
-                    ? "This link is dangerous!"
-                    : "This link is ambiguous.",
+                    ? "This content is dangerous!"
+                    : "This content is ambiguous.",
             style: TextStyle(
               fontSize: 16,
               color: textColor,
@@ -194,7 +255,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
           ),
           const SizedBox(height: 10),
           Text(
-            "Always be cautious when clicking on unknown links.",
+            "Always be cautious when dealing with unknown content.",
             style: TextStyle(
               fontSize: 14,
               color: textColor.withOpacity(0.8),
@@ -315,6 +376,34 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                       child: _isLoading
                           ? const CircularProgressIndicator()
                           : const Text('Analyse Link'),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+
+            // Text Analysis Section (Centered)
+            if (!_isLinkAnalysis) ...[
+              Center(
+                child: Column(
+                  children: [
+                    SizedBox(
+                      width: 250,
+                      child: TextField(
+                        controller: _textController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Enter the text here',
+                        ),
+                        maxLines: 5,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: _isLoading ? null : _predictText,
+                      child: _isLoading
+                          ? const CircularProgressIndicator()
+                          : const Text('Analyse Text'),
                     ),
                   ],
                 ),
