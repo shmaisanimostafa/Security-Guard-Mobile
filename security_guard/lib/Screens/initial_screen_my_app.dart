@@ -14,6 +14,7 @@ import 'package:capstone_proj/Screens/navigation_screens/file.dart';
 import 'package:capstone_proj/Screens/navigation_screens/home.dart';
 // import 'package:capstone_proj/Screens/navigation_screens/link.dart';
 import 'package:capstone_proj/Screens/profile.dart';
+// import 'package:capstone_proj/Screens/profile.dart';
 import 'package:capstone_proj/constants.dart';
 import 'package:capstone_proj/providers/auth_provider.dart';
 
@@ -155,7 +156,7 @@ class _MyAppState extends State<MyApp> {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const Profile()),
+                            MaterialPageRoute(builder: (context) =>  Profile()),
                           );
                         },
                         child: FutureBuilder<String>(
