@@ -1,7 +1,9 @@
-import 'package:capstone_proj/services/scan_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // For clipboard functionality
-// import 'package:security_guard/services/scan_service.dart'; // Import the ScanService
+import 'package:provider/provider.dart';
+import 'package:capstone_proj/providers/auth_provider.dart'; // Import the AuthProvider
+import 'package:capstone_proj/services/scan_service.dart'; // Import the ScanService
+import 'dart:convert'; // For jsonEncode
 
 class AnalysisScreen extends StatefulWidget {
   const AnalysisScreen({super.key});
@@ -17,35 +19,19 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
   Map<String, dynamic>? phishingBertResult;
   Map<String, dynamic>? spamResult;
   Map<String, dynamic>? phishingNewResult;
+  Map<String, dynamic>? averageResult;
 
   bool _isLoading = false;
   bool _isLinkAnalysis = true; // Toggle between link and text analysis
 
-  Future<void> _predictText() async {
-    setState(() {
-      _isLoading = true;
-      phishingBertResult = null;
-      spamResult = null;
-      phishingNewResult = null;
+  @override
+  void initState() {
+    super.initState();
+    // Fetch user data when the screen initializes
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      await authProvider.fetchUserData();
     });
-
-    try {
-      final text = _textController.text;
-      // Call the API to analyze text (replace with actual API call if available)
-      await Future.delayed(const Duration(seconds: 2)); // Simulate API call
-      phishingBertResult = {'predicted_class': 1, 'confidence_score': 0.85};
-      spamResult = {'predicted_class': 0, 'confidence_score': 0.92};
-      phishingNewResult = {'predicted_class': 1, 'confidence_score': 0.78};
-    } catch (e) {
-      debugPrint('Error during prediction: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to fetch data. Please try again.')),
-      );
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
   }
 
   Future<void> _predictLink() async {
@@ -62,17 +48,38 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
       phishingBertResult = null;
       spamResult = null;
       phishingNewResult = null;
+      averageResult = null;
     });
 
     try {
+      // Get the current user's data
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final userData = authProvider.userData;
+      final username = userData?["userName"] ?? "Guest"; // Use "Guest" if not authenticated
+
       // Call the API to scan the link
-      final result = await ScanService.scanLink(link, "user1"); // Replace "user1" with actual username
+      final result = await ScanService.scanLink(link, username);
+
+      // Log the entire backend response for debugging
+      debugPrint('Backend Response: ${jsonEncode(result)}');
+
+      // Parse the results
       setState(() {
-        phishingBertResult = {
-          'predicted_class': result['status'] == 'danger' ? 1 : 0,
-          'confidence_score': result['confidence'],
+        phishingBertResult = result['results']['phishingBert'];
+        spamResult = result['results']['spam'];
+        phishingNewResult = result['results']['phishingNew'];
+        averageResult = {
+          'predictedClass': result['status'] == 'danger' ? 1 : 0,
+          'confidenceScore': result['confidence'],
         };
       });
+
+      // Log the parsed results for debugging
+      debugPrint('Parsed Results:');
+      debugPrint('phishingBertResult: $phishingBertResult');
+      debugPrint('spamResult: $spamResult');
+      debugPrint('phishingNewResult: $phishingNewResult');
+      debugPrint('averageResult: $averageResult');
     } catch (e) {
       debugPrint('Error during prediction: $e');
       ScaffoldMessenger.of(context).showSnackBar(
@@ -92,6 +99,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
       phishingBertResult = null;
       spamResult = null;
       phishingNewResult = null;
+      averageResult = null;
     });
   }
 
@@ -185,31 +193,11 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
               ),
             ],
 
-            // Text Analysis Section
-            if (!_isLinkAnalysis) ...[
-              TextField(
-                controller: _textController,
-                decoration: const InputDecoration(
-                  labelText: 'Enter text to analyse',
-                  border: OutlineInputBorder(),
-                ),
-                maxLines: 4,
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: _isLoading ? null : _predictText,
-                child: _isLoading
-                    ? const CircularProgressIndicator()
-                    : const Text('Analyse Text'),
-              ),
-              const SizedBox(height: 16),
-            ],
-
             // Display Results
             if (_isLoading) ...[
               const Center(child: CircularProgressIndicator()),
             ] else ...[
-              if (phishingBertResult != null || spamResult != null || phishingNewResult != null) ...[
+              if (phishingBertResult != null || spamResult != null || phishingNewResult != null || averageResult != null) ...[
                 const SizedBox(height: 20),
                 const Text(
                   'Analysis Results',
@@ -235,6 +223,12 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                   result: phishingNewResult!,
                 ),
               ],
+              if (averageResult != null) ...[
+                _buildResultCard(
+                  title: 'Average Prediction',
+                  result: averageResult!,
+                ),
+              ],
             ],
           ],
         ),
@@ -243,9 +237,9 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
   }
 
   Widget _buildResultCard({required String title, required Map<String, dynamic> result}) {
-    final predictedClass = result['predicted_class'] ?? 'N/A';
-    final confidenceScore = result['confidence_score'] ?? 'N/A';
-    final isPhishing = predictedClass == 1;
+    final predictedClass = result['predictedClass']?.toString() ?? 'N/A';
+    final confidenceScore = result['confidenceScore']?.toString() ?? 'N/A';
+    final isPhishing = predictedClass == '1';
 
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8.0),
