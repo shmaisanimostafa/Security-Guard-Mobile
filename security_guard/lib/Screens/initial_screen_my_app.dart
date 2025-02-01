@@ -1,6 +1,5 @@
 import 'package:capstone_proj/Screens/mongo_message_screen.dart';
 import 'package:capstone_proj/Screens/navigation_screens/analysis_screen.dart';
-// import 'package:capstone_proj/Screens/prediction_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:feedback/feedback.dart';
@@ -12,9 +11,7 @@ import 'package:capstone_proj/Screens/scan.dart';
 import 'package:capstone_proj/Screens/registration_screens/register.dart';
 import 'package:capstone_proj/Screens/navigation_screens/file.dart';
 import 'package:capstone_proj/Screens/navigation_screens/home.dart';
-// import 'package:capstone_proj/Screens/navigation_screens/link.dart';
 import 'package:capstone_proj/Screens/profile.dart';
-// import 'package:capstone_proj/Screens/profile.dart';
 import 'package:capstone_proj/constants.dart';
 import 'package:capstone_proj/providers/auth_provider.dart';
 
@@ -40,7 +37,6 @@ class _MyAppState extends State<MyApp> {
   ThemeMode? currentThemeMode = ThemeMode.system;
   List<Widget> screens = [
     const Home(),
-    // const Link(),
     const UploadFileScreen(),
     MongoChatScreen(),
     AnalysisScreen(),
@@ -60,22 +56,24 @@ class _MyAppState extends State<MyApp> {
   MaterialColor schemeColor = Colors.amber;
 
   void resetIcons(int index) {
-    homeIcon = kHomeOut;
-    linkIcon = kLinkOut;
-    scanIcon = kScanOut;
-    chatIcon = kChatOut;
-    fileIcon = kFileOut;
-    if (index == 0) {
-      homeIcon = kHomeFilled;
-    } else if (index == 1) {
-      fileIcon = kFileFilled;
-    } else if (index == 2) {
-      chatIcon = kChatFilled;
-    }  else if (index == 3) {
-      analyseIcon = kAnalyseOut;
-    } else {
-      scanIcon = kScanFilled;
-    }
+    setState(() {
+      homeIcon = kHomeOut;
+      linkIcon = kLinkOut;
+      scanIcon = kScanOut;
+      chatIcon = kChatOut;
+      fileIcon = kFileOut;
+      if (index == 0) {
+        homeIcon = kHomeFilled;
+      } else if (index == 1) {
+        fileIcon = kFileFilled;
+      } else if (index == 2) {
+        chatIcon = kChatFilled;
+      } else if (index == 3) {
+        analyseIcon = kAnalyseOut;
+      } else {
+        scanIcon = kScanFilled;
+      }
+    });
   }
 
   void setCurrentPageIndex(int index) {
@@ -117,14 +115,18 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       themeMode: currentThemeMode,
       darkTheme: ThemeData.dark().copyWith(
-        colorScheme: isColored
-            ? ColorScheme.dark().copyWith(primary: schemeColor)
-            : null,
+        colorScheme: ColorScheme.dark(
+          primary: isColored ? schemeColor : Colors.blue, // Default to blue if not colored
+          secondary: isColored ? schemeColor.shade200 : Colors.blue.shade200,
+          // Add other color scheme properties as needed
+        ),
       ),
-      theme: ThemeData(
-        colorScheme: isColored
-            ? ColorScheme.fromSwatch(primarySwatch: schemeColor)
-            : null,
+      theme: ThemeData.light().copyWith(
+        colorScheme: ColorScheme.light(
+          primary: isColored ? schemeColor : Colors.blue, // Default to blue if not colored
+          secondary: isColored ? schemeColor.shade200 : Colors.blue.shade200,
+          // Add other color scheme properties as needed
+        ),
       ),
       home: Scaffold(
         appBar: AppBar(
@@ -482,10 +484,6 @@ class _MyAppState extends State<MyApp> {
               icon: homeIcon,
               label: 'Home',
             ),
-            // NavigationDestination(
-            //   icon: linkIcon,
-            //   label: 'Link',
-            // ),
             NavigationDestination(
               icon: fileIcon,
               label: 'File',
