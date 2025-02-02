@@ -1,5 +1,6 @@
 import 'dart:io';
-import 'package:capstone_proj/Screens/prediction_screen.dart';
+import 'package:capstone_proj/Screens/navigation_screens/analysis_screen.dart';
+// import 'package:capstone_proj/Screens/prediction_screen.dart';
 import 'package:capstone_proj/components/upload_box.dart';
 import 'package:capstone_proj/functions/link_regex.dart';
 import 'package:capstone_proj/functions/pick_image.dart';
@@ -38,11 +39,16 @@ class _ScanState extends State<Scan> {
   }
 
   // Navigate to prediction screen with text
-  void navigateToPrediction(String text) {
+  void navigateToAnalysis(String text, bool isLink) {
     Navigator.push(
       context,
+      isLink
+          ? MaterialPageRoute(
+              builder: (context) => AnalysisScreen.withLink(initialLink: text),
+            )
+          :
       MaterialPageRoute(
-        builder: (context) => PredictionScreen.withText(initialText: text),
+        builder: (context) => AnalysisScreen.withText(initialText: text),
       ),
     );
   }
@@ -106,7 +112,7 @@ class _ScanState extends State<Scan> {
                           if (recognizedText.isNotEmpty) ...[
                             ElevatedButton(
                               onPressed: () {
-                                navigateToPrediction(recognizedText);
+                                navigateToAnalysis(recognizedText, false);
                               },
                               child: const Text('Analyze Text'),
                             ),
@@ -117,7 +123,7 @@ class _ScanState extends State<Scan> {
                           if (extractLink(recognizedText).isNotEmpty) ...[
                             ElevatedButton(
                               onPressed: () {
-                                navigateToPrediction(extractLink(recognizedText));
+                                navigateToAnalysis(extractLink(recognizedText), true);
                               },
                               child: const Text('Analyze Link'),
                             ),

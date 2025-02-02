@@ -6,7 +6,20 @@ import 'package:capstone_proj/services/scan_service.dart'; // Import the ScanSer
 import 'dart:convert'; // For jsonEncode
 
 class AnalysisScreen extends StatefulWidget {
-  const AnalysisScreen({super.key});
+  final String? initialText;
+  final String? initialLink;
+
+  const AnalysisScreen({super.key, this.initialText, this.initialLink});
+
+  // Constructor for text analysis
+  AnalysisScreen.withText({super.key, required String initialText})
+      : initialText = initialText,
+        initialLink = null;
+
+  // Constructor for link analysis
+  AnalysisScreen.withLink({super.key, required String initialLink})
+      : initialLink = initialLink,
+        initialText = null;
 
   @override
   State<AnalysisScreen> createState() => _AnalysisScreenState();
@@ -28,6 +41,24 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
   @override
   void initState() {
     super.initState();
+    // Pre-fill the text or link if provided
+    if (widget.initialText != null) {
+      _textController.text = widget.initialText!;
+      _isLinkAnalysis = false;
+    } else if (widget.initialLink != null) {
+      _linkController.text = widget.initialLink!;
+      _isLinkAnalysis = true;
+    }
+
+    // Automatically trigger analysis if initial text or link is provided
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.initialText != null) {
+        _predictText();
+      } else if (widget.initialLink != null) {
+        _predictLink();
+      }
+    });
+
     // Fetch user data when the screen initializes
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
@@ -318,49 +349,49 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
           children: [
             // Toggle between Link and Text Analysis using SegmentedButton
             Theme(
-  data: Theme.of(context).copyWith(
-    segmentedButtonTheme: SegmentedButtonThemeData(
-      style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.resolveWith<Color>(
-          (Set<MaterialState> states) {
-            if (states.contains(MaterialState.selected)) {
-              return Theme.of(context).colorScheme.primary; // Use primary color for selected segment
-            }
-            return Colors.transparent; // Unselected segment color (default)
-          },
-        ),
-        foregroundColor: MaterialStateProperty.resolveWith<Color>(
-          (Set<MaterialState> states) {
-            if (states.contains(MaterialState.selected)) {
-              return Theme.of(context).colorScheme.onPrimary; // Text color for selected segment
-            }
-            return Theme.of(context).colorScheme.onSurface; // Default text color
-          },
-        ),
-        side: MaterialStateProperty.resolveWith<BorderSide>(
-          (Set<MaterialState> states) {
-            return BorderSide(
-              color: Theme.of(context).colorScheme.primary, // Border color for segments
-              width: 1.0,
-            );
-          },
-        ),
-      ),
-    ),
-  ),
-  child: SegmentedButton<bool>(
-    segments: const [
-      ButtonSegment(value: true, label: Text('Link')),
-      ButtonSegment(value: false, label: Text('Text')),
-    ],
-    selected: {_isLinkAnalysis},
-    onSelectionChanged: (Set<bool> newSelection) {
-      setState(() {
-        _isLinkAnalysis = newSelection.first;
-      });
-    },
-  ),
-),
+              data: Theme.of(context).copyWith(
+                segmentedButtonTheme: SegmentedButtonThemeData(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                      (Set<MaterialState> states) {
+                        if (states.contains(MaterialState.selected)) {
+                          return Theme.of(context).colorScheme.primary; // Use primary color for selected segment
+                        }
+                        return Colors.transparent; // Unselected segment color (default)
+                      },
+                    ),
+                    foregroundColor: MaterialStateProperty.resolveWith<Color>(
+                      (Set<MaterialState> states) {
+                        if (states.contains(MaterialState.selected)) {
+                          return Theme.of(context).colorScheme.onPrimary; // Text color for selected segment
+                        }
+                        return Theme.of(context).colorScheme.onSurface; // Default text color
+                      },
+                    ),
+                    side: MaterialStateProperty.resolveWith<BorderSide>(
+                      (Set<MaterialState> states) {
+                        return BorderSide(
+                          color: Theme.of(context).colorScheme.primary, // Border color for segments
+                          width: 1.0,
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              child: SegmentedButton<bool>(
+                segments: const [
+                  ButtonSegment(value: true, label: Text('Link')),
+                  ButtonSegment(value: false, label: Text('Text')),
+                ],
+                selected: {_isLinkAnalysis},
+                onSelectionChanged: (Set<bool> newSelection) {
+                  setState(() {
+                    _isLinkAnalysis = newSelection.first;
+                  });
+                },
+              ),
+            ),
             const SizedBox(height: 20),
 
             // Link Analysis Section (Centered)
