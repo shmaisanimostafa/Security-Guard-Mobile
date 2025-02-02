@@ -451,7 +451,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
 
             // Display Results
             if (_isLoading) ...[
-              const Center(child: CircularProgressIndicator()),
+              const Center(),
             ] else ...[
               if (phishingBertResult != null || spamResult != null || phishingNewResult != null || phishingLogisticResult != null || averageResult != null) ...[
                 const SizedBox(height: 20),
