@@ -63,7 +63,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   try {
-    await authProvider.updateProfile(updatedData, token!); // Pass token here
+    await authProvider.updateProfile(updatedData, token); // Pass token here
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Profile updated successfully')),
     );
