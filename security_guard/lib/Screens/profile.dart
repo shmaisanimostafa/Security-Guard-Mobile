@@ -18,23 +18,17 @@ class Profile extends StatelessWidget {
           },
         ),
         title: const Text('Profile', style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.black87, // Consistent with login screen
+        backgroundColor: Colors.black87,
         elevation: 0,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings, color: Colors.white),
-            onPressed: () {
-              // Navigate to settings screen
-            },
-          ),
-        ],
       ),
       body: Container(
+        width: double.infinity, // Ensure container fills width
+        height: double.infinity, // Ensure container fills height
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Colors.yellow.shade200, Colors.yellow.shade800], // Consistent gradient
+            colors: [Colors.yellow.shade200, Colors.yellow.shade800], // Yellow gradient
           ),
         ),
         child: Consumer<AuthProvider>(
@@ -49,235 +43,148 @@ class Profile extends StatelessWidget {
             return SingleChildScrollView(
               child: Column(
                 children: [
-                  // Header Section with Gradient
+                  // Profile Header Section with Image
                   Container(
-                    height: 200,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [Colors.black87, Colors.black54], // Dark gradient
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                    ),
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CircleAvatar(
+                    alignment: Alignment.center,
+                    height: 250,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircleAvatar(
+                          radius: 55,
+                          backgroundColor: Colors.white,
+                          child: CircleAvatar(
                             radius: 50,
                             backgroundImage: userData?['imageURL'] != null
                                 ? NetworkImage(userData!['imageURL'])
                                 : const AssetImage("images/ProfilePic.png") as ImageProvider,
                           ),
-                          const SizedBox(height: 10),
-                          Text(
-                            '${userData?['firstName']} ${userData?['lastName']}',
-                            style: const TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          '${userData?['firstName']} ${userData?['lastName']}',
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
                           ),
-                          const SizedBox(height: 5),
-                          Text(
-                            '@${userData?['userName']}',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              color: Colors.white70,
-                            ),
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          '@${userData?['userName']}',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.white70,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 30),
 
-                  // Account Information Card
-                  Card(
-                    margin: const EdgeInsets.symmetric(horizontal: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    elevation: 4,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        children: [
-                          const ListTile(
-                            leading: Icon(Icons.email, color: Colors.black87),
-                            title: Text('Email'),
-                            subtitle: Text('user@example.com'),
-                          ),
-                          const SizedBox(height: 20),
-
-                          // Grouped Buttons for Change Password and Edit Profile
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Expanded(
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => const ChangePasswordScreen(),
-                                      ),
-                                    );
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.black87,
-                                    padding: const EdgeInsets.symmetric(vertical: 12),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                  child: const Text(
-                                    'Change Password',
-                                    style: TextStyle(color: Colors.yellow),
-                                  ),
-                                ),
+                  // Grouped Buttons for Change Password and Edit Profile
+                  Column(
+                    children: [
+                      // Change Password Button
+                      Container(
+                        width: 250, // Set a smaller width for the button
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const ChangePasswordScreen(),
                               ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => EditProfileScreen(userData: userData),
-                                      ),
-                                    );
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.black87,
-                                    padding: const EdgeInsets.symmetric(vertical: 12),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                  child: const Text(
-                                    'Edit Profile',
-                                    style: TextStyle(color: Colors.yellow),
-                                  ),
-                                ),
-                              ),
-                            ],
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.black87,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            minimumSize: Size(double.infinity, 50),
                           ),
-                        ],
+                          child: const Text(
+                            'Change Password',
+                            style: TextStyle(color: Colors.yellow, fontSize: 16),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-
-                  // About Me Card (Coming Soon)
-                  Card(
-                    margin: const EdgeInsets.symmetric(horizontal: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    elevation: 4,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        children: [
-                          const ListTile(
-                            leading: Icon(Icons.info, color: Colors.black87),
-                            title: Text('About Me'),
-                            subtitle: Text('This feature is coming soon!'),
-                          ),
-                          const SizedBox(height: 10),
-                          ElevatedButton(
-                            onPressed: () {
-                              // Show a "Coming Soon" message
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('About Me feature is coming soon!'),
-                                  duration: Duration(seconds: 2),
-                                ),
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.black87,
-                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
+                      const SizedBox(height: 16),
+                      // Edit Profile Button
+                      Container(
+                        width: 250, // Set a smaller width for the button
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EditProfileScreen(userData: userData),
                               ),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.black87,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                            child: const Text(
-                              'Edit About Me',
-                              style: TextStyle(color: Colors.yellow),
-                            ),
+                            minimumSize: Size(double.infinity, 50),
                           ),
-                        ],
+                          child: const Text(
+                            'Edit Profile',
+                            style: TextStyle(color: Colors.yellow, fontSize: 16),
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
+
                   const SizedBox(height: 20),
 
-                  // Connections Card (Coming Soon)
-                  Card(
-                    margin: const EdgeInsets.symmetric(horizontal: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    elevation: 4,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        children: [
-                          const ListTile(
-                            leading: Icon(Icons.link, color: Colors.black87),
-                            title: Text('Connections'),
-                            subtitle: Text('This feature is coming soon!'),
-                          ),
-                          const SizedBox(height: 10),
-                          ElevatedButton(
-                            onPressed: () {
-                              // Show a "Coming Soon" message
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Connections feature is coming soon!'),
-                                  duration: Duration(seconds: 2),
-                                ),
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.black87,
-                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                            child: const Text(
-                              'Edit Connections',
-                              style: TextStyle(color: Colors.yellow),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Log Out Button
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                  // Log Out Button with Confirmation
+                  Container(
+                    width: 250, // Set a smaller width for the button
                     child: ElevatedButton(
-                      onPressed: () {
-                        final authProvider = Provider.of<AuthProvider>(context, listen: false);
-                        authProvider.logout();
-                        Navigator.popUntil(context, ModalRoute.withName('/'));
+                      onPressed: () async {
+                        bool confirmLogout = await showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('Log Out'),
+                              content: const Text('Are you sure you want to log out?'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context, false),
+                                  child: const Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context, true),
+                                  child: const Text('Log Out'),
+                                ),
+                              ],
+                            );
+                          },
+                        ) ?? false;
+
+                        if (confirmLogout) {
+                          final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                          authProvider.logout();
+                          Navigator.popUntil(context, ModalRoute.withName('/'));
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red.shade700,
-                        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(12),
                         ),
+                        minimumSize: Size(double.infinity, 50),
                       ),
                       child: const Text(
                         'Log Out',
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(color: Colors.white, fontSize: 16),
                       ),
                     ),
                   ),
