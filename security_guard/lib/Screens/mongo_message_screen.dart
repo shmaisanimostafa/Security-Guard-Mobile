@@ -119,21 +119,21 @@ class _MongoChatScreenState extends State<MongoChatScreen> {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final userData = authProvider.userData;
 
-    final newMessage = {
-      "id": DateTime.now().millisecondsSinceEpoch.toString(),
-      "sender": isAi ? "AI Chatbot" : userData?["userName"] ?? "Unknown", // Use "AI Chatbot" for AI messages
-      "receiver": "Group1",
-      "content": text,
-      "timestamp": DateTime.now().toIso8601String(),
-      "isAi": isAi, // Set the isAi flag
-      "isRead": false,
-      "isEdited": false,
-      "reactions": {},
-    };
+    // final newMessage = {
+    //   "id": DateTime.now().millisecondsSinceEpoch.toString(),
+    //   "sender": isAi ? "AI Chatbot" : userData?["userName"] ?? "Unknown", // Use "AI Chatbot" for AI messages
+    //   "receiver": "Group1",
+    //   "content": text,
+    //   "timestamp": DateTime.now().toIso8601String(),
+    //   "isAi": isAi, // Set the isAi flag
+    //   "isRead": false,
+    //   "isEdited": false,
+    //   "reactions": {},
+    // };
 
-    setState(() {
-      messages.add(newMessage);
-    });
+    // setState(() {
+    //   messages.add(newMessage);
+    // });
 
     try {
       await signalRService.sendMessage(
