@@ -115,15 +115,15 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-Future<void> updateProfile(Map<String, dynamic> updatedData) async {
+Future<void> updateProfile(Map<String, dynamic> updatedData, String token) async {
   try {
     final response = await _authService.updateProfile(
+      token, // Add the token here
       updatedData['username'] as String,
       updatedData['email'] as String,
-      updatedData['password'] as String,
-      updatedData['confirmPassword'] as String,
       updatedData['firstName'] as String,
       updatedData['lastName'] as String,
+      updatedData['imageURL'] as String,  // Make sure this is passed correctly
     );
     if (response['message'] == 'Profile updated successfully') {
       await fetchUserData(); // Refresh user data
@@ -135,6 +135,8 @@ Future<void> updateProfile(Map<String, dynamic> updatedData) async {
     throw e;
   }
 }
+
+
 
   Future<void> logout() async {
     try {

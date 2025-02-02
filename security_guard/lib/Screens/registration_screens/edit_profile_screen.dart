@@ -39,33 +39,45 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Future<void> _saveProfile() async {
-    if (!_formKey.currentState!.validate()) return;
+  if (!_formKey.currentState!.validate()) return;
 
-    setState(() => _isLoading = true);
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+  setState(() => _isLoading = true);
+  final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
-    final updatedData = {
-      'username': widget.userData?['userName'],
-      'firstName': _firstNameController.text,
-      'lastName': _lastNameController.text,
-      'email': _emailController.text,
-      'imageURL': _profileImage != null ? _profileImage!.path : widget.userData?['imageURL'],
-    };
+  final updatedData = {
+    'username': widget.userData?['userName'],  // Fetch from user data
+    'firstName': _firstNameController.text,
+    'lastName': _lastNameController.text,
+    'email': _emailController.text,
+    'imageURL': _profileImage != null ? _profileImage!.path : widget.userData?['imageURL'],
+  };
 
-    try {
-      await authProvider.updateProfile(updatedData);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Profile updated successfully')),
-      );
-      Navigator.pop(context);
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to update profile: $e')),
-      );
-    } finally {
-      setState(() => _isLoading = false);
-    }
+  // Fetch the token from the AuthProvider (assuming it's stored there)
+  final token = authProvider.token; // Make sure `token` is stored in the provider
+
+  if (token!.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Token is missing. Please log in again.')),
+    );
+    return;
   }
+
+  try {
+    await authProvider.updateProfile(updatedData, token!); // Pass token here
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Profile updated successfully')),
+    );
+    Navigator.pop(context);
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Failed to update profile: $e')),
+    );
+  } finally {
+    setState(() => _isLoading = false);
+  }
+}
+
+
 
   @override
   Widget build(BuildContext context) {
