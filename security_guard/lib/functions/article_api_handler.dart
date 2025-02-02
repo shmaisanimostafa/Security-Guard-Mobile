@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 // import 'package:capstone_proj/models/comment.dart';
 import 'package:capstone_proj/models/article.dart';
@@ -48,7 +49,9 @@ class ArticleAPIHandler {
   );
 
   if (response.statusCode != 201) {
-    throw "Failed to add comment. Status code: ${response.statusCode}. Response: ${response.body}";
+    // throw "Failed to add comment. Status code: ${response.statusCode}. Response: ${response.body}";
   }
+  
 }
+
 }

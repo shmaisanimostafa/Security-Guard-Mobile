@@ -62,62 +62,64 @@ class _ArticleScreenState extends State<ArticleScreen> {
   }
 
   void postComment() async {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+  final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
-    // Check if the user is authenticated
-    if (!authProvider.isAuthenticated) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('You must be logged in to post a comment.')),
-      );
-      return;
-    }
-
-    // Get the comment content
-    final content = _commentController.text.trim();
-    if (content.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Comment cannot be empty.')),
-      );
-      return;
-    }
-
-    // Get the user's name from the AuthProvider
-    final username = authProvider.userData?['userName']; // Use the correct key for username
-    if (username == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Username not found. Please log in again.')),
-      );
-      return;
-    }
-
-    setState(() {
-      _isPosting = true; // Start loading animation
-    });
-
-    try {
-      // Post the comment
-      await apiHandler.addComment(widget.id, content, username);
-
-      // Clear the comment input
-      _commentController.clear();
-
-      // Refresh the article data to show the new comment
-      await getData();
-
-      // Show a success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Comment posted successfully!')),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to post comment: $e')),
-      );
-    } finally {
-      setState(() {
-        _isPosting = false; // Stop loading animation
-      });
-    }
+  // Check if the user is authenticated
+  if (!authProvider.isAuthenticated) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('You must be logged in to post a comment.')),
+    );
+    return;
   }
+
+  // Get the comment content
+  final content = _commentController.text.trim();
+  if (content.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Comment cannot be empty.')),
+    );
+    return;
+  }
+
+  // Get the user's name from the AuthProvider
+  final username = authProvider.userData?['userName']; // Use the correct key for username
+  if (username == null) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Username not found. Please log in again.')),
+    );
+    return;
+  }
+
+  setState(() {
+    _isPosting = true; // Start loading animation
+  });
+
+  try {
+    // Post the comment using the simplified serialization
+    await apiHandler.addComment(widget.id, content, username);
+
+    // Clear the comment input
+    _commentController.clear();
+
+    // Refresh the article data to show the new comment
+    await getData();
+
+    // Show a success message
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Comment posted successfully!')),
+    );
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Failed to post comment: $e')),
+    );
+  } finally {
+    setState(() {
+      _isPosting = false; // Stop loading animation
+    });
+  }
+}
+
+
 
   @override
   void initState() {
