@@ -318,41 +318,49 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
           children: [
             // Toggle between Link and Text Analysis using SegmentedButton
             Theme(
-              data: Theme.of(context).copyWith(
-                segmentedButtonTheme: SegmentedButtonThemeData(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                      (Set<MaterialState> states) {
-                        if (states.contains(MaterialState.selected)) {
-                          return Colors.yellow; // Selected segment color
-                        }
-                        return Colors.transparent; // Unselected segment color (default)
-                      },
-                    ),
-                    foregroundColor: MaterialStateProperty.resolveWith<Color>(
-                      (Set<MaterialState> states) {
-                        if (states.contains(MaterialState.selected)) {
-                          return Colors.black; // Text color for selected segment
-                        }
-                        return Theme.of(context).colorScheme.onSurface; // Default text color
-                      },
-                    ),
-                  ),
-                ),
-              ),
-              child: SegmentedButton<bool>(
-                segments: const [
-                  ButtonSegment(value: true, label: Text('Link')),
-                  ButtonSegment(value: false, label: Text('Text')),
-                ],
-                selected: {_isLinkAnalysis},
-                onSelectionChanged: (Set<bool> newSelection) {
-                  setState(() {
-                    _isLinkAnalysis = newSelection.first;
-                  });
-                },
-              ),
-            ),
+  data: Theme.of(context).copyWith(
+    segmentedButtonTheme: SegmentedButtonThemeData(
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.resolveWith<Color>(
+          (Set<MaterialState> states) {
+            if (states.contains(MaterialState.selected)) {
+              return Theme.of(context).colorScheme.primary; // Use primary color for selected segment
+            }
+            return Colors.transparent; // Unselected segment color (default)
+          },
+        ),
+        foregroundColor: MaterialStateProperty.resolveWith<Color>(
+          (Set<MaterialState> states) {
+            if (states.contains(MaterialState.selected)) {
+              return Theme.of(context).colorScheme.onPrimary; // Text color for selected segment
+            }
+            return Theme.of(context).colorScheme.onSurface; // Default text color
+          },
+        ),
+        side: MaterialStateProperty.resolveWith<BorderSide>(
+          (Set<MaterialState> states) {
+            return BorderSide(
+              color: Theme.of(context).colorScheme.primary, // Border color for segments
+              width: 1.0,
+            );
+          },
+        ),
+      ),
+    ),
+  ),
+  child: SegmentedButton<bool>(
+    segments: const [
+      ButtonSegment(value: true, label: Text('Link')),
+      ButtonSegment(value: false, label: Text('Text')),
+    ],
+    selected: {_isLinkAnalysis},
+    onSelectionChanged: (Set<bool> newSelection) {
+      setState(() {
+        _isLinkAnalysis = newSelection.first;
+      });
+    },
+  ),
+),
             const SizedBox(height: 20),
 
             // Link Analysis Section (Centered)
